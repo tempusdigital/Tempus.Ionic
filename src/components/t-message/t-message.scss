@@ -1,0 +1,35 @@
+ion-item.item-has-message-validation {
+  --highlight-background: var(--highlight-color-invalid);
+  --border-color: var(--highlight-color-invalid);
+}
+
+t-message {
+  display: block;
+  width: 100%;
+  font-size: 12px;
+
+  .t-message-helper {
+    color: gray;
+  }
+
+  .t-message-validation {
+    color: var(--highlight-color-invalid);
+  }
+}
+
+.item t-message {
+  bottom: -18px; 
+  left: 0;
+  position: absolute;
+}
+
+.item.item-has-message {
+  overflow: visible;
+  margin-bottom: 18px;
+}
+
+.item.item-has-message .item-inner {
+  overflow: visible;
+  position: relative;
+
+}

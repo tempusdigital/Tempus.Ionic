@@ -1,0 +1,110 @@
+
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Select</title>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/typography.css">
+  <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
+  <script src="/build/tempus-ionic.js"></script>
+
+</head>
+<body>
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Stacked</ion-label>
+      <t-select name="selectTeste">
+        <t-select-option value="1" >Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Stacked Disabled</ion-label>
+      <t-select name="selectTeste" disabled>
+        <t-select-option value="1" selected>Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Floating</ion-label>
+      <t-select name="selectTeste">
+        <t-select-option value="1" selected>Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Floating Disabled</ion-label>
+      <t-select name="selectTeste" disabled>
+        <t-select-option value="1" selected>Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Em branco, sem placeholder, opcional</ion-label>
+      <t-select name="selectTeste">
+        <t-select-option value="1">Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Em branco, sem placeholder, obigatório</ion-label>
+      <t-select name="selectTeste" required>
+        <t-select-option value="1">Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Em branco, com placeholder, opcional</ion-label>
+      <t-select name="selectTeste" placeholder="selecione">
+        <t-select-option value="1">Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Em branco, com placeholder, obrigatório</ion-label>
+      <t-select name="selectTeste" placeholder="selecione" required>
+        <t-select-option value="1">Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Sem opções</ion-label>
+      <t-select name="selectTeste" placeholder="selecione" required>
+      </t-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Com validacao</ion-label>
+      <t-select name="selectTeste" placeholder="selecione" required>
+        <t-select-option value="1">Um</t-select-option>
+        <t-select-option value="2">Dois</t-select-option>
+        <t-select-option value="3">Três</t-select-option>
+      </t-select>
+      <t-message validationMessage="Mensagem de validação"></t-message>
+    </ion-item>
+  </ion-list>
+
+
+</body>
+</html>

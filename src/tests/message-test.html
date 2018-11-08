@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Select</title>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/typography.css">
+  <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
+  <script src="/build/tempus-ionic.js"></script>
+
+</head>
+<body>
+        <p padding>Out of a ion-list</p>
+        <ion-item>
+          <ion-label>Empty - Fixed Label</ion-label>
+          <ion-input></ion-input>
+          <t-message></t-message>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Validation - Floating Label</ion-label>
+          <ion-input></ion-input>
+          <t-message validation-message="Validation message here"></t-message>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Helper - Stacked Label</ion-label>
+          <ion-input></ion-input>
+          <t-message helper-message="Helper message here"></t-message>
+        </ion-item>
+<br>
+        <p padding>Inside a ion-list</p>
+        <ion-list>
+          <ion-item>
+            <ion-label>Empty - Fixed Label</ion-label>
+            <ion-input></ion-input>
+            <t-message></t-message>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Validation - Floating Label</ion-label>
+            <ion-input></ion-input>
+            <t-message validation-message="Validation message here"></t-message>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Helper - Stacked Label</ion-label>
+            <ion-input></ion-input>
+            <t-message helper-message="Helper message here"></t-message>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="stacked">Date</ion-label>
+            <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
+            <t-message validation-message="Validation message here"></t-message>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Select</ion-label>
+            <ion-select value="brown" ok-text="Okay" cancel-text="Dismiss">
+              <ion-select-option value="brown">Brown</ion-select-option>
+              <ion-select-option value="blonde">Blonde</ion-select-option>
+              <ion-select-option value="black">Black</ion-select-option>
+              <ion-select-option value="red">Red</ion-select-option>
+            </ion-select>
+            <t-message validation-message="Validation message here"></t-message>
+          </ion-item>
+        </ion-list>
+
+      </body>
+  </html>
