@@ -25,6 +25,9 @@ export class TPopupMenuPopover {
   }
 
   render() {
+    if (!this.buttons)
+    return;
+    
     return [
       <ion-list lines="none" no-margin>
         {

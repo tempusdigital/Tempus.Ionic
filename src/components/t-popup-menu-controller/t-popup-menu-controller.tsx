@@ -36,6 +36,9 @@ export class TPopupMenuController {
   }
 
   render() {
-    return (<ion-popover-controller ref={e => this.popoverController = e as any}></ion-popover-controller>)
+    return [
+      <ion-popover-controller ref={e => this.popoverController = e as any}></ion-popover-controller>,
+      <t-popup-menu-popover></t-popup-menu-popover> // Fixes a problem that causes the menu to not be rendered on apps developed with Stencil
+    ];
   }
 }
