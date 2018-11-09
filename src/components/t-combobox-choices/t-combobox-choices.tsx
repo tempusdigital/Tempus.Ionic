@@ -65,7 +65,7 @@ export class TComboboxChoices implements ICombobox {
 
   @Event() ionStyle!: EventEmitter;
 
-  choices: Choices;
+  choices: any;
 
   nativeSelect: HTMLSelectElement;
 

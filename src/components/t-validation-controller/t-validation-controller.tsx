@@ -6,7 +6,7 @@ import { FormInput, FormValidationMessages } from './t-validation-controller-int
  */
 @Component({
   tag: 't-validation-controller',
-  styles: 't-validation-controller { display: none; }'
+  styleUrl: 't-validation-controller.scss'
 })
 export class TValidationController {
   private normalizeLabel(elementName: string) {

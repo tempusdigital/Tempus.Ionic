@@ -3,7 +3,7 @@ import { PopupMenuOptions } from "./t-popup-menu-controller-interface";
 
 @Component({
   tag: 't-popup-menu-controller',
-  styles: 't-popup-menu-controller { display: none; }'
+  styleUrl: 't-popup-menu-controller.scss'
 })
 export class TPopupMenuController {
   @Prop({ context: 'window' }) win!: Window;

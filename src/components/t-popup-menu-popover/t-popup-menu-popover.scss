@@ -3,8 +3,10 @@ t-popup-menu-popover {
     min-width: 230px;
     max-width: 230px;
   }
+}
 
-  .item:hover {
-    background-color: var(--ion-color-light);
+@media (hover: hover) {
+  t-popup-menu-popover ion-item:hover {
+    --background: var(--ion-color-light);
   }
 }

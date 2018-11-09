@@ -1,5 +1,12 @@
 import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
+import sassInlineSvg from 'sass-inline-svg';
+
+let sassOptions :any =  {
+  functions: {
+    'svg-inline': sassInlineSvg('node_modules/choices.js/assets/icons')
+  }
+};
 
 export const config: Config = {
   bundles: [
@@ -13,12 +20,12 @@ export const config: Config = {
     { components: ['t-select', 't-select-option'] },
   ],
   plugins: [
-    sass()
+    sass(sassOptions)
   ],
   copy: [
     { src: 'tests' }
   ],
-  namespace: 'tempus-ionic',
+  namespace: 'TempusDigitalIonic',
   outputTargets:[
     {
       type: 'dist'

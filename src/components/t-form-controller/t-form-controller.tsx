@@ -4,7 +4,7 @@ import { FormValidationMessages } from "../t-validation-controller/t-validation-
 
 @Component({
   tag: 't-form-controller',
-  styles: 't-form-controller { display: none; }'
+  styleUrl: 't-form-controller.scss'
 })
 export class TFormController {
   private messages = {

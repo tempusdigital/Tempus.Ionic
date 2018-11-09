@@ -1,8 +1,24 @@
+
 $choices-bg-color: tranparent;
 $choices-bg-color-disabled: transparent;
 $choices-primary-color: #a0a0a0;
-$choices-button-icon-path: '../../assets/icons';
-@import '../../../node_modules/choices.js/assets/styles/scss/choices';
+$choices-button-icon-path: '';
+$choices-selector: 'choices';
+
+@import 'node_modules/choices.js/assets/styles/scss/choices.scss';
+
+.#{ $choices-selector }[data-type*="select-one"] {
+  .#{ $choices-selector }__button {
+    background-image: svg-inline('cross-inverse.svg');
+  }
+}
+
+.#{ $choices-selector }[data-type*="select-multiple"],
+.#{ $choices-selector }[data-type*="text"]  {
+  .#{ $choices-selector }__button {
+    background-image: svg-inline('cross.svg');
+  }
+}
 
 t-combobox-choices {
   display: block;

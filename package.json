@@ -1,10 +1,11 @@
 {
-  "name": "tempus-ionic",
-  "version": "0.0.1",
+  "name": "@tempusdigital/ionic",
+  "private": false,
+  "version": "1.0.0-beta.1-12",
   "description": "Tempus Digital Custom Ionic Components",
   "module": "dist/esm/index.js",
   "main": "dist/index.js",
-  "types": "dist/types/components.d.ts",
+  "types": "dist/types/interface.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "files": [
     "dist/"
@@ -16,10 +17,14 @@
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
   "dependencies": {},
+  "peerDependencies": {
+    "choices.js": "~3.0.4"
+  },
   "devDependencies": {
-    "@stencil/core": "~0.15.1",
+    "@stencil/core": "0.16.0-0",
     "@stencil/sass": "0.1.1",
-    "choices.js": "3.0.4"
+    "choices.js": "3.0.4",
+    "sass-inline-svg": "1.2.0"
   },
   "repository": {
     "type": "git",

@@ -396,7 +396,7 @@ export namespace Components {
     'onSelectOptionDidLoad'?: (event: CustomEvent<void>) => void;
     'onSelectOptionDidUnload'?: (event: CustomEvent<void>) => void;
     'selected'?: boolean;
-    'value'?: string;
+    'value': string;
   }
 
   interface TSelect {
