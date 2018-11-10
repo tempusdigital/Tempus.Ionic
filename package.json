@@ -23,8 +23,7 @@
   "devDependencies": {
     "@stencil/core": "0.16.0-0",
     "@stencil/sass": "0.1.1",
-    "choices.js": "3.0.4",
-    "sass-inline-svg": "1.2.0"
+    "choices.js": "3.0.4"
   },
   "repository": {
     "type": "git",
