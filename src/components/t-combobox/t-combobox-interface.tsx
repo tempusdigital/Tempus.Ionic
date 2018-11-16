@@ -15,10 +15,6 @@ export interface ICombobox {
 
   options: IComboboxOption[];
 
-  search: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-
-  searchDebounce: number;
-
   change: any;
 }
 

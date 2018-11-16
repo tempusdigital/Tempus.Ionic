@@ -1,5 +1,5 @@
 import { Component, Prop, Event, EventEmitter, State, Element, Watch } from '@stencil/core';
-import { ICombobox, IComboboxOption, ComboboxDefaultOptions, isEmpty } from '../t-combobox/t-combobox-interface';
+import { ICombobox, IComboboxOption, isEmpty } from '../t-combobox/t-combobox-interface';
 import { deferEvent } from '../../utils/helpers';
 
 @Component({
@@ -7,16 +7,6 @@ import { deferEvent } from '../../utils/helpers';
   styleUrl: 't-combobox-modal.scss'
 })
 export class TComboboxModal implements ICombobox {
-
-  /**
-  * Override the default search behavior. Useful to send the search to a web server.
-  */
-  @Prop() search: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-
-  /**
-   * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-   */
-  @Prop() searchDebounce: number = ComboboxDefaultOptions.searchDebounce;
 
   /**
    * Set the input's placeholder when no option is selected.
@@ -82,7 +72,6 @@ export class TComboboxModal implements ICombobox {
   async componentWillLoad() {
     this.change = deferEvent(this.change);
     this.ionStyle = deferEvent(this.ionStyle);
-    await this.loadInicialOptions();
   }
 
   componentDidLoad() {
@@ -93,19 +82,6 @@ export class TComboboxModal implements ICombobox {
     this.emitStyle();
   }
 
-  async loadInicialOptions() {
-    if (!this.search)
-      return;
-
-    let result = this.search({ searchText: '' });
-
-    if ('then' in result) {
-      result = await result;
-    }
-
-    this.options = result;
-  }
-
   async presentModal() {
     await this.modalController.componentOnReady();
 
@@ -113,11 +89,9 @@ export class TComboboxModal implements ICombobox {
       component: 't-combobox-modal-list',
       componentProps: {
         multiple: this.multiple,
-        search: this.search,
         value: this.value,
         handleChange: this.handleChange.bind(this),
-        options: this.options,
-        searchDebounce: this.searchDebounce
+        options: this.options
       }
     });
 

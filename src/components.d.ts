@@ -60,14 +60,6 @@ export namespace Components {
     */
     'required': boolean;
     /**
-    * Override the default search behavior. Useful to send the search to a web server.
-    */
-    'search': (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-    /**
-    * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-    */
-    'searchDebounce': number;
-    /**
     * The value of the input.
     */
     'value': any;
@@ -107,14 +99,6 @@ export namespace Components {
     */
     'required'?: boolean;
     /**
-    * Override the default search behavior. Useful to send the search to a web server.
-    */
-    'search'?: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-    /**
-    * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-    */
-    'searchDebounce'?: number;
-    /**
     * The value of the input.
     */
     'value'?: any;
@@ -124,16 +108,12 @@ export namespace Components {
     'handleChange': (selectedOption: IComboboxOption[]) => void;
     'multiple': boolean;
     'options': IComboboxOption[];
-    'search': (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-    'searchDebounce': number;
     'value': any | any[];
   }
   interface TComboboxModalListAttributes extends StencilHTMLAttributes {
     'handleChange'?: (selectedOption: IComboboxOption[]) => void;
     'multiple'?: boolean;
     'options'?: IComboboxOption[];
-    'search'?: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-    'searchDebounce'?: number;
     'value'?: any | any[];
   }
 
@@ -170,14 +150,6 @@ export namespace Components {
     * If `true`, the user must fill in a value before submitting a form.
     */
     'required': boolean;
-    /**
-    * Override the default search behavior. Useful to send the search to a web server.
-    */
-    'search': (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-    /**
-    * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-    */
-    'searchDebounce': number;
     /**
     * The value of the input.
     */
@@ -221,14 +193,6 @@ export namespace Components {
     * If `true`, the user must fill in a value before submitting a form.
     */
     'required'?: boolean;
-    /**
-    * Override the default search behavior. Useful to send the search to a web server.
-    */
-    'search'?: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-    /**
-    * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-    */
-    'searchDebounce'?: number;
     /**
     * The value of the input.
     */

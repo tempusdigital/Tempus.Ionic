@@ -94,8 +94,6 @@ export class TCombobox implements ICombobox {
         required={this.required}
         value={this.value}
         multiple={this.multiple}
-        search={this.search}
-        searchDebounce={this.searchDebounce}
         options={this.options}
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}
@@ -113,8 +111,6 @@ export class TCombobox implements ICombobox {
         required={this.required}
         value={this.value}
         multiple={this.multiple}
-        search={this.search}
-        searchDebounce={this.searchDebounce}
         options={this.options}
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}

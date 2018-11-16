@@ -1,23 +1,13 @@
 import { Component, Prop, Event, EventEmitter, Watch, Method } from '@stencil/core';
 import Choices from 'choices.js';
 import { IComboboxOption, ICombobox, ComboboxDefaultOptions, isEmpty } from '../t-combobox/t-combobox-interface';
-import { deferEvent, debounce } from '../../utils/helpers';
+import { deferEvent } from '../../utils/helpers';
 
 @Component({
   tag: 't-combobox-choices',
   styleUrl: 't-combobox-choices.scss'
 })
 export class TComboboxChoices implements ICombobox {
-  /**
-  * Override the default search behavior. Useful to send the search to a web server.
-  */
-  @Prop() search: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-
-  /**
-   * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-   */
-  @Prop() searchDebounce: number = ComboboxDefaultOptions.searchDebounce;
-
   /**
    * Set the input's placeholder when no option is selected.
    */
@@ -76,8 +66,6 @@ export class TComboboxChoices implements ICombobox {
   async componentWillLoad() {
     this.change = deferEvent(this.change);
     this.ionStyle = deferEvent(this.ionStyle);
-
-    await this.loadInicialOptions();
   }
 
   async componentDidLoad() {
@@ -90,7 +78,6 @@ export class TComboboxChoices implements ICombobox {
       placeholder: !!this.placeholder,
       placeholderValue: this.placeholder,
       removeItemButton: true,
-      searchChoices: !this.search,
       duplicateItems: false,
       silent: true
     });
@@ -110,27 +97,12 @@ export class TComboboxChoices implements ICombobox {
       this.emitStyle();
     });
     this.choicesContainer.addEventListener('hideDropdown', () => this.emitStyle());
-    this.choicesContainer.addEventListener('search', (e) => this.handleSearch(e));
 
     this.disabledChanged();
-    this.searchDebounceChanged();
 
     if (this.autofocus) {
       this.choicesContainer.focus();
     }
-  }
-
-  async loadInicialOptions() {
-    if (!this.search)
-      return;
-
-    let result = this.search({ searchText: '' });
-
-    if ('then' in result) {
-      result = await result;
-    }
-
-    this.options = result;
   }
 
   componentDidUnload() {
@@ -167,24 +139,6 @@ export class TComboboxChoices implements ICombobox {
     let itemWrapper = host.querySelector('.input-wrapper') as HTMLDivElement;
     itemWrapper.style.overflow = 'visible';
   }
-
-  async _handleSearch(event: any) {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-
-    if (!this.search)
-      return;
-
-    // Execute custom search logic
-    let data = this.search({ searchText: event.detail && event.detail.value || '' });
-
-    if ('then' in data)
-      data = await data;
-
-    this.setOptions(data);
-  }
-
-  handleSearch: (event: any) => void;
 
   setOptions(options: IComboboxOption[]) {
     this.options = options;
@@ -238,11 +192,6 @@ export class TComboboxChoices implements ICombobox {
 
   hasValue() {
     return !isEmpty(this.value);
-  }
-
-  @Watch('searchDebounce')
-  searchDebounceChanged() {
-    this.handleSearch = debounce((e) => this._handleSearch(e), this.searchDebounce);
   }
 
   @Watch('disabled')

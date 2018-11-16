@@ -5,97 +5,94 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Select</title>
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/core.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/normalize.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/structure.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.15/css/typography.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.16/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.16/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.16/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.0.0-beta.16/css/typography.css">
   <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
   <script src="/build/tempusdigitalionic.js"></script>
 
 </head>
 
 <body>
-  <ion-content>
-    <form novalidate>
-      <ion-list>
-        <ion-list-header>Main</ion-list-header>
+  <ion-app>
+    <ion-content>
+      <form novalidate>
+        <ion-list>
+          <ion-list-header>Main</ion-list-header>
 
-        <ion-item>
-          <ion-label position="stacked">Stacked (with change event)</ion-label>
-          <t-combobox id="single"> </t-combobox>
-        </ion-item>
-        <pre>Single: <span id="single-value"></span></pre>
+          <ion-item>
+            <ion-label position="stacked">Stacked (with change event)</ion-label>
+            <t-combobox id="single"> </t-combobox>
+          </ion-item>
+          <pre>Single: <span id="single-value"></span></pre>
 
-        <ion-item>
-          <ion-label position="stacked">Stacked Multiple (with change event)</ion-label>
-          <t-combobox multiple id="multiple"> </t-combobox>
-        </ion-item>
-        <pre>Multiple: <span id="multiple-value"></span></pre>
+          <ion-item>
+            <ion-label position="stacked">Stacked Multiple (with change event)</ion-label>
+            <t-combobox multiple id="multiple"> </t-combobox>
+          </ion-item>
+          <pre>Multiple: <span id="multiple-value"></span></pre>
 
-        <ion-list-header>Secondary</ion-list-header>
-        <ion-item>
-          <ion-label position="stacked">Stacked Multiple (with server search)</ion-label>
-          <t-combobox multiple id="search"> </t-combobox>
-        </ion-item>
-        
-        <ion-item>
-          <ion-label position="stacked">Multiple (with placeholder)</ion-label>
-          <t-combobox multiple placeholder="This is a placeholder"> </t-combobox>
-        </ion-item>
-        <ion-item>
-          <ion-label>Toggle</ion-label>
-          <ion-toggle> </ion-toggle>
-        </ion-item>
-        
-        <ion-item>
-          <ion-label position="stacked">Single (with placeholder)</ion-label>
-          <t-combobox placeholder="This is a placeholder"> </t-combobox>
-        </ion-item>
+          <ion-list-header>Others</ion-list-header>
+          <ion-item>
+            <ion-label position="stacked">Multiple (with placeholder)</ion-label>
+            <t-combobox multiple placeholder="This is a placeholder"> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Stacked Disabled</ion-label>
-          <t-combobox disabled> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label>Toggle</ion-label>
+            <ion-toggle> </ion-toggle>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Floating</ion-label>
-          <t-combobox> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Single (with placeholder)</ion-label>
+            <t-combobox placeholder="This is a placeholder"> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Floating Disabled</ion-label>
-          <t-combobox disabled> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Stacked Disabled</ion-label>
+            <t-combobox disabled> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Em branco, opcional</ion-label>
-          <t-combobox> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Floating</ion-label>
+            <t-combobox> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Em branco, obrigatório</ion-label>
-          <t-combobox required> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Floating Disabled</ion-label>
+            <t-combobox disabled> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Em branco, sem placeholder, obrigatório</ion-label>
-          <t-combobox required multiple> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Em branco, opcional</ion-label>
+            <t-combobox> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Sem opções</ion-label>
-          <t-combobox required> </t-combobox>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Em branco, obrigatório</ion-label>
+            <t-combobox required> </t-combobox>
+          </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Com validacao</ion-label>
-          <t-combobox name="selectTeste" required> </t-combobox>
-          <t-message validation-message="Mensagem de validação"></t-message>
-        </ion-item>
-      </ion-list>
-    </form>
-  </ion-content>
+          <ion-item>
+            <ion-label position="floating">Em branco, sem placeholder, obrigatório</ion-label>
+            <t-combobox required multiple> </t-combobox>
+          </ion-item>
 
+          <ion-item>
+            <ion-label position="floating">Sem opções</ion-label>
+            <t-combobox required> </t-combobox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Com validacao</ion-label>
+            <t-combobox name="selectTeste" required> </t-combobox>
+            <t-message validation-message="Mensagem de validação"></t-message>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-content>
+  </ion-app>
 
   <script>
     var multiple;
@@ -105,7 +102,7 @@
     var options = [];
 
     function init() {
-      for (let i = 1; i < 50; i++) {
+      for (let i = 1; i < 300; i++) {
         options.push({
           value: 'Value' + i,
           text: 'Text' + i,
@@ -122,9 +119,9 @@
         if (combo.id == 'multiple') {
           combo.addEventListener('change', handleMultipleChange);
           combo.value = ['Value1', 'Value5'];
-          
+
           var multipleValue = document.getElementById('multiple-value');
-          multipleValue.textContent = JSON.stringify(combo.value );
+          multipleValue.textContent = JSON.stringify(combo.value);
         }
         else if (combo.id == 'single') {
           combo.addEventListener('change', handleSingleChange);
@@ -132,9 +129,6 @@
 
           var singleValue = document.getElementById('single-value');
           singleValue.textContent = combo.value;
-        }
-        else if (combo.id == 'search') {
-          combo.search = handleSearch;
         }
       }
     }
@@ -169,20 +163,6 @@
 
       var singleValue = document.getElementById('single-value');
       singleValue.textContent = JSON.stringify(single);
-    }
-
-    function handleSearch(e) {
-      var searchText = e.searchText;
-
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          let data = options.filter(e => {
-            return e.text.toLowerCase().indexOf(searchText.toLowerCase()) >= 0
-          });
-
-          resolve(data);
-        }, 1000);
-      });
     }
 
     init();
