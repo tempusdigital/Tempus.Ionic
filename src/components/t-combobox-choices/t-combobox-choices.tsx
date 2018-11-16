@@ -192,7 +192,7 @@ export class TComboboxChoices implements ICombobox {
     let optionsWithPlaceholder = [];
 
     // Add placeholder as one of ChoicesJs options
-    if (this.placeholder)
+    if (this.placeholder && !this.multiple)
       optionsWithPlaceholder.push({
         placeholder: true,
         value: this.placeholder,
