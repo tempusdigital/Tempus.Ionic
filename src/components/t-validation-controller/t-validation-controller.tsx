@@ -33,7 +33,7 @@ export class TValidationController {
       if (!validationMessages)
         continue;
 
-      let element = this.getElementByName(form, elementName);
+      let element = this.getFormInputByName(form, elementName);
 
       if (!element) {
         globalMessages.push(...validationMessages.map(m => this.normalizeLabel(elementName) + ': ' + m));
@@ -54,21 +54,22 @@ export class TValidationController {
     this.setCustomValidity(form, data);
   }
 
-  private getElements(form: HTMLFormElement): FormInput[] {
+  private getAllFormInputs(form: HTMLFormElement): FormInput[] {
     let result = [];
-    let elements = form.querySelectorAll('input,select,textarea');
+    let elements = form.querySelectorAll('input,select,textarea,ion-textarea');
 
     this.forEachElement(elements, element => {
       let validatorElement = this.getValidatorElement(element as FormInput);
 
-      result.push(validatorElement);
+      if (validatorElement)
+        result.push(validatorElement);
     });
 
     return result;
   }
 
-  private getElementByName(form: HTMLFormElement, name: string) {
-    let element = form.querySelector(`[name="${name}"]`);
+  private getFormInputByName(form: HTMLFormElement, name: string) {
+    let element = form.querySelector(`[name="${name}"]:not(t-message)`);
 
     if (!element)
       return null;
@@ -86,12 +87,16 @@ export class TValidationController {
     // Ionic use a hidden input on <ion-input> to fix keyboad position,
     // but the validation are only
     // appended to another input on the shadow dom
-    if (!element.classList.contains('aux-input'))
+    if (element.classList.contains('aux-input') || element.tagName == 'ION-TEXTAREA') {
+      let container = element.parentElement.shadowRoot || element.parentElement;
+
+      element = container.querySelector('.native-input,.native-textarea') || element;
+    }
+
+    if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA')
       return element;
 
-    let container = element.parentElement.shadowRoot || element.parentElement;
-
-    return container.querySelector('.native-input') || element;
+    return null;
   }
 
   private readonly _globalCustomValidityName = '__globalValidity';
@@ -119,7 +124,7 @@ export class TValidationController {
   }
 
   private getOrCreateGlobalCustomValidityElement(form: HTMLFormElement): HTMLInputElement {
-    let element = this.getElementByName(form, this._globalCustomValidityName) as HTMLInputElement;
+    let element = this.getFormInputByName(form, this._globalCustomValidityName) as HTMLInputElement;
 
     if (!element) {
       element = document.createElement('input');
@@ -141,7 +146,7 @@ export class TValidationController {
    */
   @Method()
   clearCustomValidity(form: HTMLFormElement): void {
-    for (let element of this.getElements(form))
+    for (let element of this.getAllFormInputs(form))
       element.setCustomValidity('')
   }
 
@@ -161,7 +166,7 @@ export class TValidationController {
     let globalMessages = [];
     let firstInvalidInput: FormInput;
 
-    for (let element of this.getElements(form)) {
+    for (let element of this.getAllFormInputs(form)) {
       if (!element.checkValidity()) {
         valid = false;
 

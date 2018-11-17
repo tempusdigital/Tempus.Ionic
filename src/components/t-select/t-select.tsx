@@ -149,7 +149,7 @@ export class TSelect {
         required={this.required}
         multiple={this.multiple}
         disabled={this.disabled}
-        class="select-text"
+        class="native-select"
         onFocus={this.onFocus.bind(this)}
         onBlur={this.onBlur.bind(this)}
         onChange={this.handleChange.bind(this)}

@@ -1,6 +1,10 @@
 ion-item.item-has-message-validation {
   --highlight-background: var(--highlight-color-invalid);
   --border-color: var(--highlight-color-invalid);
+
+  ion-label {
+  --color: var(--highlight-color-invalid) !important;
+  }
 }
 
 t-message {
@@ -21,6 +25,7 @@ t-message {
   bottom: -18px; 
   left: 0;
   position: absolute;
+  padding-left: 16px; 
 }
 
 .item.item-has-message {
