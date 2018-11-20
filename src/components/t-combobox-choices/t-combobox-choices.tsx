@@ -55,7 +55,7 @@ export class TComboboxChoices implements ICombobox {
 
   @Event() ionStyle!: EventEmitter;
 
-  choices: any;
+  choices: Choices;
 
   nativeSelect: HTMLSelectElement;
 
@@ -155,7 +155,8 @@ export class TComboboxChoices implements ICombobox {
 
     optionsWithPlaceholder.push(...options);
 
-    this.choices.setChoices(optionsWithPlaceholder, 'value', 'text', true);
+    this.choices.clearStore(); // Clear options manually because cleaning by setChoices is not working
+    this.choices.setChoices(optionsWithPlaceholder, 'value', 'text', false);
   }
 
   getValue() {

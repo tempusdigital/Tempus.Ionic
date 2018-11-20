@@ -21,6 +21,8 @@
         <ion-list>
           <ion-list-header>Main</ion-list-header>
 
+          <ion-button onclick="addOption()" padding>Add option</ion-button>
+
           <ion-item>
             <ion-label position="stacked">Stacked (with change event)</ion-label>
             <t-combobox id="single"> </t-combobox>
@@ -163,6 +165,23 @@
 
       var singleValue = document.getElementById('single-value');
       singleValue.textContent = JSON.stringify(single);
+    }
+
+    function addOption() {
+      var i = options.length + 1;
+
+      options = [...options, {
+        value: 'Value' + i,
+        text: 'Text' + i,
+      }];
+
+      var combos = document.getElementsByTagName('t-combobox');
+
+      for (let i = 0; i < combos.length; i++) {
+        var combo = combos.item(i);
+
+        combo.options = options;
+      }
     }
 
     init();
