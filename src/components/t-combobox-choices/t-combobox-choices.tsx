@@ -1,6 +1,6 @@
 import { Component, Prop, Event, EventEmitter, Watch, Method } from '@stencil/core';
 import Choices from 'choices.js';
-import { IComboboxOption, ICombobox, ComboboxDefaultOptions, isEmpty, normalizeValue, normalizeOptions } from '../t-combobox/t-combobox-interface';
+import { IComboboxOption, ICombobox, ComboboxDefaultOptions, isEmpty, normalizeValue } from '../t-combobox/t-combobox-interface';
 import { deferEvent, debounce } from '../../utils/helpers';
 
 @Component({
@@ -186,13 +186,6 @@ export class TComboboxChoices implements ICombobox {
 
   @Watch('options')
   optionsChanged() {
-    let normalizedOptions = normalizeOptions(this.options);
-
-    if (this.options !== normalizedOptions) {
-      this.options = normalizedOptions;
-      return;
-    }
-
     if ((!this.options || !this.options.length) && this.value !== '')
       this.value = '';
 
@@ -215,6 +208,7 @@ export class TComboboxChoices implements ICombobox {
     this.emitStyle();
   }
 
+  /** Update ChoicesJs value to the match this.value */
   syncChoicesValue() {
     if (!this.choices)
       return;
@@ -224,6 +218,15 @@ export class TComboboxChoices implements ICombobox {
     if (this.value === currentValue)
       return;
 
+    if (isEmpty(this.value) || !this.options || !this.options.length) {
+      if (!this.multiple && this.placeholder)
+        this.choices.setValueByChoice(this.placeholder);
+      else
+        this.choices.removeActiveItems();
+
+      return;
+    }
+
     if (Array.isArray(this.value) && Array.isArray(currentValue) && this.value.length === currentValue.length) {
       let equal = !this.value.some(v => !currentValue.includes(v));
 
@@ -231,19 +234,7 @@ export class TComboboxChoices implements ICombobox {
         return;
     }
 
-    if (isEmpty(this.value) || !this.options || !this.options.length) {
-      if (!this.multiple) {
-        if (this.placeholder)
-          this.choices.setValueByChoice(this.placeholder);
-        else
-          this.choices.setValueByChoice(null);
-      }
-      else
-        this.choices.setValueByChoice([]);
-
-      return;
-    }
-
+    this.choices.removeActiveItems(); // Without this command,  when multiple is enabled and options are removed from the selection the ChoicesJs does not deselect the options
     this.choices.setValueByChoice(this.value);
   }
 
@@ -256,24 +247,47 @@ export class TComboboxChoices implements ICombobox {
       return;
     }
 
-    let optionsWithPlaceholder: any[];
+    // Keep previous selection, bacause to update the options list is necessary to remove all options and add them again
+    let currentValue = this.getChoicesValue();
+    let currentValueIsEmpty = isEmpty(currentValue);
+    let currentValueIsArray = Array.isArray(currentValue);
+
+    let isSelected = (value) => {
+      if (currentValueIsEmpty)
+        return false;
+
+      if (currentValueIsArray)
+        return currentValue.includes(value);
+
+      return value === currentValue;
+    };
+
+    let optionsWithPlaceholder = this.options.map(option => {
+      let normalizedValue = normalizeValue(option.value);
+
+      return {
+        placeholder: false,
+        value: normalizedValue,
+        label: option.text,
+        selected: isSelected(normalizedValue)
+      };
+    });
 
     if (this.placeholder && !this.multiple) {
       // Add placeholder as one of ChoicesJs options
       let placeholder = {
         placeholder: true,
         value: this.placeholder,
-        label: this.placeholder
+        label: this.placeholder,
+        selected: isEmpty(this.value)
       };
 
-      optionsWithPlaceholder = [placeholder, ...this.options];
-    }
-    else {
-      optionsWithPlaceholder = this.options;
+      optionsWithPlaceholder = [placeholder, ...optionsWithPlaceholder];
     }
 
     this.choices.clearStore(); // Clear options manually because cleaning by setChoices is not working
-    this.choices.setChoices(optionsWithPlaceholder, 'value', 'text', false);
+
+    this.choices.setChoices(optionsWithPlaceholder, 'value', 'label', true);
   }
 
   emitStyle() {
