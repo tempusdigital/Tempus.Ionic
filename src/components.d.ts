@@ -62,7 +62,7 @@ export namespace Components {
     /**
     * The value of the input.
     */
-    'value': any;
+    'value': string | string[];
   }
   interface TComboboxChoicesAttributes extends StencilHTMLAttributes {
     /**
@@ -101,7 +101,7 @@ export namespace Components {
     /**
     * The value of the input.
     */
-    'value'?: any;
+    'value'?: string | string[];
   }
 
   interface TComboboxModalList {
@@ -153,7 +153,7 @@ export namespace Components {
     /**
     * The value of the input.
     */
-    'value': any;
+    'value': string | string[];
   }
   interface TComboboxModalAttributes extends StencilHTMLAttributes {
     /**
@@ -196,7 +196,7 @@ export namespace Components {
     /**
     * The value of the input.
     */
-    'value'?: any;
+    'value'?: string | string[];
   }
 
   interface TCombobox {

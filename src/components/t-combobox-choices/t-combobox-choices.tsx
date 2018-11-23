@@ -1,7 +1,7 @@
 import { Component, Prop, Event, EventEmitter, Watch, Method } from '@stencil/core';
 import Choices from 'choices.js';
-import { IComboboxOption, ICombobox, ComboboxDefaultOptions, isEmpty } from '../t-combobox/t-combobox-interface';
-import { deferEvent } from '../../utils/helpers';
+import { IComboboxOption, ICombobox, ComboboxDefaultOptions, isEmpty, normalizeValue, normalizeOptions } from '../t-combobox/t-combobox-interface';
+import { deferEvent, debounce } from '../../utils/helpers';
 
 @Component({
   tag: 't-combobox-choices',
@@ -41,12 +41,12 @@ export class TComboboxChoices implements ICombobox {
   /**
    * The value of the input.
    */
-  @Prop({ mutable: true }) value: any;
+  @Prop({ mutable: true }) value: string | string[] = '';
 
   /**
    * The visible options to select.
    */
-  @Prop({ mutable: true }) options: IComboboxOption[];
+  @Prop({ mutable: true }) options: IComboboxOption[] = [];
 
   /**
    * Trigger change event when value has changed
@@ -65,7 +65,7 @@ export class TComboboxChoices implements ICombobox {
 
   async componentWillLoad() {
     this.change = deferEvent(this.change);
-    this.ionStyle = deferEvent(this.ionStyle);
+    this.emitStyle = debounce(this.emitStyle.bind(this));
   }
 
   async componentDidLoad() {
@@ -82,11 +82,9 @@ export class TComboboxChoices implements ICombobox {
       silent: true
     });
 
-    if (this.options) {
-      this.setOptions(this.options);
-    }
-
-    this.syncChoicesValue();
+    this.optionsChanged();
+    this.valueChanged();
+    this.disabledChanged();
 
     this.choicesContainer = (this.choices as any).containerOuter;
     this.choicesContainer.addEventListener('change', e => this.handleChange(e as any));
@@ -97,8 +95,6 @@ export class TComboboxChoices implements ICombobox {
       this.emitStyle();
     });
     this.choicesContainer.addEventListener('hideDropdown', () => this.emitStyle());
-
-    this.disabledChanged();
 
     if (this.autofocus) {
       this.choicesContainer.focus();
@@ -140,38 +136,19 @@ export class TComboboxChoices implements ICombobox {
     itemWrapper.style.overflow = 'visible';
   }
 
-  setOptions(options: IComboboxOption[]) {
-    this.options = options;
-
-    let optionsWithPlaceholder = [];
-
-    // Add placeholder as one of ChoicesJs options
-    if (this.placeholder && !this.multiple)
-      optionsWithPlaceholder.push({
-        placeholder: true,
-        value: this.placeholder,
-        label: this.placeholder
-      });
-
-    optionsWithPlaceholder.push(...options);
-
-    this.choices.clearStore(); // Clear options manually because cleaning by setChoices is not working
-    this.choices.setChoices(optionsWithPlaceholder, 'value', 'text', false);
-  }
-
-  getValue() {
+  getChoicesValue() {
     if (!this.choices)
-      return "";
+      return this.value;
 
     let objValue = this.choices.getValue() as any;
 
     if (!objValue || objValue.placeholder)
-      return "";
+      return '';
 
     if (Array.isArray(objValue))
-      return objValue.map(o => o.value || o.id);
+      return objValue.map(o => o.value);
 
-    return objValue.value || objValue.id;
+    return objValue.value;
   }
 
   hasFocus() {
@@ -207,9 +184,42 @@ export class TComboboxChoices implements ICombobox {
     this.emitStyle();
   }
 
+  @Watch('options')
+  optionsChanged() {
+    let normalizedOptions = normalizeOptions(this.options);
+
+    if (this.options !== normalizedOptions) {
+      this.options = normalizedOptions;
+      return;
+    }
+
+    if ((!this.options || !this.options.length) && this.value !== '')
+      this.value = '';
+
+    this.syncChoicesOptions();
+
+    this.emitStyle();
+  }
+
   @Watch('value')
   valueChanged() {
-    let currentValue = this.getValue();
+    let normalizedValue = normalizeValue(this.value);
+
+    if (this.value !== normalizedValue) {
+      this.value = normalizedValue;
+      return;
+    }
+
+    this.syncChoicesValue();
+
+    this.emitStyle();
+  }
+
+  syncChoicesValue() {
+    if (!this.choices)
+      return;
+
+    let currentValue = this.getChoicesValue();
 
     if (this.value === currentValue)
       return;
@@ -221,46 +231,49 @@ export class TComboboxChoices implements ICombobox {
         return;
     }
 
-    this.syncChoicesValue();
-
-    this.emitStyle();
-  }
-
-  @Watch('options')
-  optionsChanged() {
-    if (this.choices) {
-      this.setOptions(this.options || []);
-
-      if (!this.options || !this.options.length) {
-        this.value = '';
-        this.choices.clearStore();
+    if (isEmpty(this.value) || !this.options || !this.options.length) {
+      if (!this.multiple) {
+        if (this.placeholder)
+          this.choices.setValueByChoice(this.placeholder);
+        else
+          this.choices.setValueByChoice(null);
       }
+      else
+        this.choices.setValueByChoice([]);
+
+      return;
     }
 
-    this.syncChoicesValue();
-    this.emitStyle();
+    this.choices.setValueByChoice(this.value);
   }
 
-  syncChoicesValue() {
+  syncChoicesOptions() {
     if (!this.choices)
       return;
 
-    if (isEmpty(this.value)) {
-      this.choices.setValueByChoice(this.placeholder);
+    if (!this.options || !this.options.length) {
+      this.choices.clearStore();
       return;
     }
 
-    if (!this.options || !this.options.length) {
-      this.choices.setValueByChoice(null);
+    let optionsWithPlaceholder: any[];
+
+    if (this.placeholder && !this.multiple) {
+      // Add placeholder as one of ChoicesJs options
+      let placeholder = {
+        placeholder: true,
+        value: this.placeholder,
+        label: this.placeholder
+      };
+
+      optionsWithPlaceholder = [placeholder, ...this.options];
     }
     else {
-      if (Array.isArray(this.value)) {
-        this.choices.setValueByChoice(this.value.map(v => isEmpty(v) ? '' : v.toString()))
-      }
-      else {
-        this.choices.setValueByChoice(this.value.toString());
-      }
+      optionsWithPlaceholder = this.options;
     }
+
+    this.choices.clearStore(); // Clear options manually because cleaning by setChoices is not working
+    this.choices.setChoices(optionsWithPlaceholder, 'value', 'text', false);
   }
 
   emitStyle() {
@@ -279,7 +292,7 @@ export class TComboboxChoices implements ICombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    let newValue = this.getValue();
+    let newValue = this.getChoicesValue();
     if (this.value !== newValue) {
       this.value = newValue;
       this.change.emit();

@@ -11,7 +11,7 @@ export interface ICombobox {
 
   multiple: boolean;
 
-  value: any;
+  value: string | string[];
 
   options: IComboboxOption[];
 
@@ -41,4 +41,40 @@ export function isEmpty(value: any) {
     return value.length <= 0;
 
   return value === null || value === undefined || value === '';
+}
+
+
+export function normalizeValue(value: any): string | string[] {
+  if (isEmpty(value))
+    return '';
+
+  if (typeof value === 'string')
+    return value;
+
+  if (Array.isArray(value)) {
+    let needToNormalize = value.some(v => typeof v !== 'string');
+
+    if (!needToNormalize)
+      return value;
+
+    return value.map(v => v.toString());
+  }
+
+  return value.toString();
+}
+
+export function normalizeOptions(value: any): IComboboxOption[] {
+  if (!value || !Array.isArray(value))
+    return value;
+
+  let needToNormalize = value.some(o => typeof o.value !== 'string');
+  if (!needToNormalize)
+    return value;
+
+  return value.map(v => {
+    return {
+      ...v,
+      value: normalizeValue(v.value)
+    }
+  });
 }

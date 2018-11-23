@@ -106,8 +106,8 @@
     function init() {
       for (let i = 1; i < 300; i++) {
         options.push({
-          value: 'Value' + i,
-          text: 'Text' + i,
+          value: i,
+          text: 'Text' + i.toString().padStart(3, '0'),
         })
       }
 
@@ -120,14 +120,14 @@
 
         if (combo.id == 'multiple') {
           combo.addEventListener('change', handleMultipleChange);
-          combo.value = ['Value1', 'Value5'];
+          combo.value = ['1', '5'];
 
           var multipleValue = document.getElementById('multiple-value');
           multipleValue.textContent = JSON.stringify(combo.value);
         }
         else if (combo.id == 'single') {
           combo.addEventListener('change', handleSingleChange);
-          combo.value = 'Value11';
+          combo.value = '1';
 
           var singleValue = document.getElementById('single-value');
           singleValue.textContent = combo.value;

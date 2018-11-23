@@ -1,6 +1,6 @@
 import { Component, Prop, Event, EventEmitter, State, Element, Watch } from '@stencil/core';
-import { ICombobox, IComboboxOption, isEmpty } from '../t-combobox/t-combobox-interface';
-import { deferEvent } from '../../utils/helpers';
+import { ICombobox, IComboboxOption, isEmpty, normalizeValue, normalizeOptions } from '../t-combobox/t-combobox-interface';
+import { deferEvent, debounce } from '../../utils/helpers';
 
 @Component({
   tag: 't-combobox-modal',
@@ -31,7 +31,7 @@ export class TComboboxModal implements ICombobox {
   /**
    * If `true`, the user cannot interact with the input. Defaults to `false`.
    */
-  @Prop({ reflectToAttr:true }) readonly: boolean = false;
+  @Prop({ reflectToAttr: true }) readonly: boolean = false;
 
   /**
    * If `true`, the user must fill in a value before submitting a form.
@@ -46,12 +46,12 @@ export class TComboboxModal implements ICombobox {
   /**
    * The value of the input.
    */
-  @Prop({ mutable: true }) value: any;
+  @Prop({ mutable: true }) value: string | string[] = '';
 
   /**
    * The visible options to select.
    */
-  @Prop({ mutable: true }) options: IComboboxOption[];
+  @Prop({ mutable: true }) options: IComboboxOption[] = [];
 
   /**
    * Trigger change event when value has changed
@@ -71,15 +71,16 @@ export class TComboboxModal implements ICombobox {
 
   async componentWillLoad() {
     this.change = deferEvent(this.change);
-    this.ionStyle = deferEvent(this.ionStyle);
+    this.emitStyle = debounce(this.emitStyle.bind(this));
+
+    this.valueChanged();
+    this.optionsChanged();
+    this.disabledChanged();
+    this.emitStyle();
   }
 
   componentDidLoad() {
     this.host.addEventListener('click', e => this.handleClick(e));
-
-    this.updateText();
-    this.disabledChanged();
-    this.emitStyle();
   }
 
   async presentModal() {
@@ -99,7 +100,32 @@ export class TComboboxModal implements ICombobox {
   }
 
   @Watch('options')
+  optionsChanged() {
+    let normalizedOptions = normalizeOptions(this.options);
+
+    if (this.options !== normalizedOptions) {
+      this.options = normalizedOptions;
+      return;
+    }
+
+    if ((!this.options || !this.options.length) && this.value !== '')
+      this.value = '';
+
+    this.updateText();
+  }
+
   @Watch('value')
+  valueChanged() {
+    let normalizedValue = normalizeValue(this.value);
+
+    if (this.value !== normalizedValue) {
+      this.value = normalizedValue;
+      return;
+    }
+
+    this.updateText();
+  }
+
   updateText() {
     if (!this.options) {
       this.text = '';
@@ -193,7 +219,7 @@ export class TComboboxModal implements ICombobox {
       return true;
 
     if (Array.isArray(this.value))
-      return this.value.includes(this.value);
+      return this.value.includes(option.value);
 
     return false;
   }
@@ -204,6 +230,9 @@ export class TComboboxModal implements ICombobox {
     e.stopPropagation();
 
     this.value = '';
+
+    this.change.emit();
+
     this.updateText();
     this.emitStyle();
   }
@@ -218,7 +247,7 @@ export class TComboboxModal implements ICombobox {
           <ion-button
             class="t-clear"
             type="button"
-            hidden={!this.text || this.disabled}
+            hidden={!this.text || this.disabled || this.readonly}
             size="small"
             fill="clear"
             color="medium"
