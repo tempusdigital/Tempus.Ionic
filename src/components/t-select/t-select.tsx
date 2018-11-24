@@ -72,7 +72,6 @@ export class TSelect {
   }
 
   private async loadOptions() {
-    console.log('foi');
     this.childOpts = await Promise.all(
       Array.from(this.host.querySelectorAll('t-select-option')).map(o => o.componentOnReady())
     );
@@ -82,6 +81,8 @@ export class TSelect {
     // iterate all options, updating the selected prop
     let canSelect = true;
     for (const selectOption of this.childOpts) {
+      selectOption.onDidUnload = this.loadOptions;
+
       const selected = canSelect && isOptionSelected(this.value, selectOption.value);
       selectOption.selected = selected;
 

@@ -351,12 +351,14 @@ export namespace Components {
   interface TSelectOption {
     'disabled': boolean;
     'hidden': boolean;
+    'onDidUnload': () => void;
     'selected': boolean;
     'value': string;
   }
   interface TSelectOptionAttributes extends StencilHTMLAttributes {
     'disabled'?: boolean;
     'hidden'?: boolean;
+    'onDidUnload'?: () => void;
     'onSelectOptionDidLoad'?: (event: CustomEvent<void>) => void;
     'onSelectOptionDidUnload'?: (event: CustomEvent<void>) => void;
     'selected'?: boolean;

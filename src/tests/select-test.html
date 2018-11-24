@@ -25,6 +25,7 @@
       </t-select>
     </ion-item>
     <ion-button onclick="changeOptions()">Change options</ion-button>
+    <ion-button onclick="removeOneOption()">Remove first option</ion-button>
 
     <ion-item>
       <ion-label position="stacked">Stacked Disabled</ion-label>
@@ -107,6 +108,10 @@
   </ion-list>
 
   <script>
+    function removeOneOption(){
+      stacked.querySelectorAll('t-select-option').item(0).remove();
+    }
+
     function changeOptions() {
       let stacked = document.getElementById('stacked');
 
