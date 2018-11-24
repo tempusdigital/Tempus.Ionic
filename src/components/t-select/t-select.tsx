@@ -1,5 +1,5 @@
-import { Component, Prop, Listen, State, Event, EventEmitter, Watch } from '@stencil/core';
-import { deferEvent } from '../../utils/helpers';
+import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element } from '@stencil/core';
+import { deferEvent, debounceAsync } from '../../utils/helpers';
 
 @Component({
   tag: 't-select',
@@ -9,50 +9,48 @@ export class TSelect {
   @Prop() name: string;
   @Prop() autofocus: boolean = false;
   @Prop() disabled: boolean = false;
-  @Prop({ reflectToAttr:true }) readonly: boolean = false;
+  @Prop({ reflectToAttr: true }) readonly: boolean = false;
   @Prop() placeholder: string;
   @Prop() required: boolean = false;
   @Prop() hidden: boolean = false;
   @Prop() multiple: boolean = false;
   @Prop({ mutable: true }) value: any;
-   
+
+  @Element() host!: HTMLElement;
+
   @Event() ionStyle!: EventEmitter;
 
   nativeElement: HTMLTSelectElement;
 
-  @State() options: {
-    value: string,
-    text: string,
-    disabled: boolean,
-    selected: boolean,
-    hidden: boolean
-  }[] = [];
+  didInit = false;
 
-  componentWillLoad(){
+  @State() childOpts: HTMLTSelectOptionElement[] = [];
+
+  componentWillLoad() {
     this.ionStyle = deferEvent(this.ionStyle);
-    this.emitStyle();
+    this.loadOptions = debounceAsync(this.loadOptions.bind(this));
   }
 
-  componentDidLoad() {
-    if (this.autofocus) {
-      this.nativeElement.focus();
-      this.onFocus();
-    }
+  async componentDidLoad() {
+    await this.loadOptions();
 
-    if (this.value !== '' && this.value !== null && this.value !== undefined)
-      this.setSelected();
-    else {
-      let opcaoSelecionada = this.options.find(o => o.selected);
-      if (opcaoSelecionada) {
-        this.value = opcaoSelecionada.value;
+    if (this.value === undefined) {
+      if (this.multiple) {
+        // there are no values set at this point
+        // so check to see who should be selected
+        const checked = this.childOpts.filter(o => o.selected);
+        this.value = checked.map(o => o.value);
+      } else {
+        const checked = this.childOpts.find(o => o.selected);
+        if (checked) {
+          this.value = checked.value;
+        }
       }
     }
-  }
 
-  setSelected() {
-    for (let opcao of this.options) {
-      opcao.selected = opcao.value == this.value;
-    }
+    this.updateOptions();
+    this.emitStyle();
+    this.didInit = true;
   }
 
   hasFocus() {
@@ -68,27 +66,31 @@ export class TSelect {
   }
 
   @Listen('selectOptionDidLoad')
-  optLoad(ev: CustomEvent) {
-    const selectOption = ev.target as HTMLTSelectOptionElement;
-
-    this.options = [...this.options, {
-      value: selectOption.value,
-      text: selectOption.innerText,
-      disabled: selectOption.disabled,
-      selected: selectOption.selected,
-      hidden: selectOption.hidden
-    }];
-
-    let opcoesCount = this.options.filter(op => op.value == selectOption.value).length;
-    if (opcoesCount > 1) {
-      console.warn('Não pode existir mais de um opção com o mesmo valor');
-    }
+  @Listen('selectOptionDidUnload')
+  async selectOptionChanged() {
+    await this.loadOptions();
   }
 
-  @Listen('selectOptionDidUnload')
-  optUnload(ev: CustomEvent) {
-    //ToDo: Criar função para selectOptionDidUnload, para remover o item e também remover as funções de adicionar/remover
-    console.log(ev);
+  private async loadOptions() {
+    console.log('foi');
+    this.childOpts = await Promise.all(
+      Array.from(this.host.querySelectorAll('t-select-option')).map(o => o.componentOnReady())
+    );
+  }
+
+  private updateOptions() {
+    // iterate all options, updating the selected prop
+    let canSelect = true;
+    for (const selectOption of this.childOpts) {
+      const selected = canSelect && isOptionSelected(this.value, selectOption.value);
+      selectOption.selected = selected;
+
+      // if current option is selected and select is single-option, we can't select
+      // any option more
+      if (selected && !this.multiple) {
+        canSelect = false;
+      }
+    }
   }
 
   @Watch('disabled')
@@ -98,8 +100,10 @@ export class TSelect {
 
   @Watch('value')
   valueChanged() {
-    this.setSelected();
-    this.emitStyle();
+    if (this.didInit) {
+      this.updateOptions();
+      this.emitStyle();
+    }
   }
 
   onFocus() {
@@ -130,16 +134,16 @@ export class TSelect {
 
   render() {
     if (this.readonly) {
-      let option = this.options.find(o => o.value == this.value);
+      let option = this.childOpts.find(o => o.value == this.value);
       return [
         <ion-input
           ref={e => this.nativeElement = e as any}
           readonly
-          value={option && option.text || ''}
+          value={option && option.innerText || ''}
           onFocus={this.onFocus.bind(this)}
           onBlur={this.onBlur.bind(this)}></ion-input>,
-        <input type="hidden" value={this.value}/>
-        ];
+        <input type="hidden" value={this.value} />
+      ];
     }
 
     return [
@@ -155,16 +159,28 @@ export class TSelect {
         onChange={this.handleChange.bind(this)}
       >
         <option value="" disabled={this.required} hidden={this.required} selected class="placeholder">{this.placeholder}</option>
-        {this.options.map(option =>
+        {this.childOpts.map(option =>
           <option
             hidden={option.hidden}
             disabled={option.disabled}
             selected={option.selected}
             value={option.value}>
-            {option.text}
+            {option.innerText}
           </option>)}
       </select>,
       <slot></slot>
     ];
+  }
+
+}
+
+function isOptionSelected(currentValue: any[] | any, optionValue: any) {
+  if (currentValue === undefined) {
+    return false;
+  }
+  if (Array.isArray(currentValue)) {
+    return currentValue.includes(optionValue);
+  } else {
+    return currentValue === optionValue;
   }
 }

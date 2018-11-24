@@ -1,7 +1,6 @@
-
-
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
@@ -14,77 +13,79 @@
   <script src="/build/tempusdigitalionic.js"></script>
 
 </head>
+
 <body>
   <ion-list>
     <ion-item>
       <ion-label position="stacked">Stacked</ion-label>
-      <t-select name="selectTeste">
-        <t-select-option value="1" >Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+      <t-select name="selectTeste" id="stacked">
+        <t-select-option value="1">One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
+    <ion-button onclick="changeOptions()">Change options</ion-button>
 
     <ion-item>
       <ion-label position="stacked">Stacked Disabled</ion-label>
       <t-select name="selectTeste" disabled>
-        <t-select-option value="1" selected>Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1" selected>One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Floating</ion-label>
       <t-select name="selectTeste">
-        <t-select-option value="1" selected>Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1" selected>One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Floating Disabled</ion-label>
       <t-select name="selectTeste" disabled>
-        <t-select-option value="1" selected>Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1" selected>One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Em branco, sem placeholder, opcional</ion-label>
       <t-select name="selectTeste">
-        <t-select-option value="1">Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1">One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Em branco, sem placeholder, obigatório</ion-label>
       <t-select name="selectTeste" required>
-        <t-select-option value="1">Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1">One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Em branco, com placeholder, opcional</ion-label>
       <t-select name="selectTeste" placeholder="selecione">
-        <t-select-option value="1">Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1">One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Em branco, com placeholder, obrigatório</ion-label>
       <t-select name="selectTeste" placeholder="selecione" required>
-        <t-select-option value="1">Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1">One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
     </ion-item>
 
@@ -97,14 +98,43 @@
     <ion-item>
       <ion-label position="floating">Com validacao</ion-label>
       <t-select name="selectTeste" placeholder="selecione" required>
-        <t-select-option value="1">Um</t-select-option>
-        <t-select-option value="2">Dois</t-select-option>
-        <t-select-option value="3">Três</t-select-option>
+        <t-select-option value="1">One</t-select-option>
+        <t-select-option value="2">Two</t-select-option>
+        <t-select-option value="3">Three</t-select-option>
       </t-select>
       <t-message validationMessage="Mensagem de validação"></t-message>
     </ion-item>
   </ion-list>
 
+  <script>
+    function changeOptions() {
+      let stacked = document.getElementById('stacked');
+
+      stacked.querySelectorAll('t-select-option').forEach(o => o.remove());
+
+      let four = document.createElement('t-select-option');
+      four.value = '4';
+      four.innerText = 'Four';
+      stacked.appendChild(four);
+
+      let five = document.createElement('t-select-option');
+      five.value = '5';
+      five.innerText = 'Five';
+      stacked.appendChild(five);
+
+      let six = document.createElement('t-select-option');
+      six.value = '6';
+      six.innerText = 'Six';
+      stacked.appendChild(six);
+
+      //   stacked.innerHTML = `
+      //   <t-select-option value="4">Four</t-select-option>
+      //   <t-select-option value="5">Five</t-select-option>
+      //   <t-select-option value="6">Six</t-select-option>
+      // `;
+    }
+  </script>
 
 </body>
+
 </html>
