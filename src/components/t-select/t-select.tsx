@@ -69,6 +69,12 @@ export class TSelect {
   @Listen('selectOptionDidUnload')
   async selectOptionChanged() {
     await this.loadOptions();
+    
+    if (this.didInit) {
+      this.updateOptions();
+    }
+
+    this.emitStyle();
   }
 
   private async loadOptions() {
