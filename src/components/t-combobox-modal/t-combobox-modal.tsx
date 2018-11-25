@@ -198,9 +198,12 @@ export class TComboboxModal implements ICombobox {
     this.ionStyle.emit({
       'interactive': true,
       'interactive-disabled': this.disabled,
+      'input': false, // Reset ion-input class if t-combobox changes the internal component
       'select': true,
       'has-value': this.hasValue() || this.isPlaceholderSelected(),
-      't-combobox-modal': true
+      'has-focus': false, // Reset ion-input class if t-combobox changes the internal component
+      't-combobox-modal': true,
+      't-combobox-choices': false // Reset ion-input class if t-combobox changes the internal component
     });
   }
 

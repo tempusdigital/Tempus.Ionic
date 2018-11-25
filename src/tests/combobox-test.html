@@ -116,8 +116,6 @@
       for (let i = 0; i < combos.length; i++) {
         var combo = combos.item(i);
 
-        combo.options = options;
-
         if (combo.id == 'multiple') {
           combo.addEventListener('change', handleMultipleChange);
           combo.value = ['1', '5'];
@@ -132,6 +130,9 @@
           var singleValue = document.getElementById('single-value');
           singleValue.textContent = combo.value;
         }
+
+setTimeout((ii)=>
+combos.item(ii).options = options, 0, i);
       }
     }
 

@@ -69,6 +69,11 @@ export class TComboboxChoices implements ICombobox {
   }
 
   async componentDidLoad() {
+    let startOptions = this.options;
+
+    let choices = this.mapOptionsAsChoices();
+    let items = choices.filter(c => c.selected);
+
     // Initialize ChoicesJs
     this.choices = new Choices(this.nativeSelect, {
       loadingText: ComboboxDefaultOptions.loadingText,
@@ -79,11 +84,16 @@ export class TComboboxChoices implements ICombobox {
       placeholderValue: this.placeholder,
       removeItemButton: true,
       duplicateItems: false,
-      silent: true
+      silent: true,
+      choices: choices,
+      items: items
     });
 
-    this.optionsChanged();
-    this.valueChanged();
+    // The options may be changed while the ChoicesJs was still being initialized
+    if (startOptions !== this.options)
+      this.syncChoicesOptions();
+    
+    this.valueChanged(); // The value may be changed while the ChoicesJs was still being initialized
     this.disabledChanged();
 
     this.choicesContainer = (this.choices as any).containerOuter;
@@ -238,17 +248,8 @@ export class TComboboxChoices implements ICombobox {
     this.choices.setValueByChoice(this.value);
   }
 
-  syncChoicesOptions() {
-    if (!this.choices)
-      return;
-
-    if (!this.options || !this.options.length) {
-      this.choices.clearStore();
-      return;
-    }
-
-    // Keep previous selection, bacause to update the options list is necessary to remove all options and add them again
-    let currentValue = this.getChoicesValue();
+  mapOptionsAsChoices() {
+    let currentValue = normalizeValue(this.value); // normalize the value because valueChanged may not be called yet
     let currentValueIsEmpty = isEmpty(currentValue);
     let currentValueIsArray = Array.isArray(currentValue);
 
@@ -262,8 +263,8 @@ export class TComboboxChoices implements ICombobox {
       return value === currentValue;
     };
 
-    let optionsWithPlaceholder = this.options.map(option => {
-      let normalizedValue = normalizeValue(option.value);
+    let result = (this.options || []).map(option => {
+      let normalizedValue = normalizeValue(option.value); // normalize the value because optionsChanged may not be called yet
 
       return {
         placeholder: false,
@@ -282,12 +283,21 @@ export class TComboboxChoices implements ICombobox {
         selected: isEmpty(this.value)
       };
 
-      optionsWithPlaceholder = [placeholder, ...optionsWithPlaceholder];
+      result = [placeholder, ...result];
     }
+
+    return result;
+  }
+
+  syncChoicesOptions() {
+    if (!this.choices)
+      return;
+
+    let choices = this.mapOptionsAsChoices();
 
     this.choices.clearStore(); // Clear options manually because cleaning by setChoices is not working
 
-    this.choices.setChoices(optionsWithPlaceholder, 'value', 'label', true);
+    this.choices.setChoices(choices, 'value', 'label', false);
   }
 
   emitStyle() {
@@ -295,8 +305,10 @@ export class TComboboxChoices implements ICombobox {
       'interactive': true,
       'interactive-disabled': this.disabled,
       'input': true,
+      'select': false, // Reset ion-input class if t-combobox changes the internal component
       'has-value': this.hasValue() || this.isPlaceholderSelected(),
       'has-focus': this.hasFocus(),
+      't-combobox-modal': false, // Reset ion-input class if t-combobox changes the internal component
       't-combobox-choices': true
     });
   }
