@@ -371,10 +371,9 @@ export namespace Components {
     'hidden': boolean;
     'multiple': boolean;
     'name': string;
-    'placeholder': string;
     'readonly': boolean;
     'required': boolean;
-    'value': any;
+    'value': string|string[];
   }
   interface TSelectAttributes extends StencilHTMLAttributes {
     'autofocus'?: boolean;
@@ -383,10 +382,9 @@ export namespace Components {
     'multiple'?: boolean;
     'name'?: string;
     'onIonStyle'?: (event: CustomEvent) => void;
-    'placeholder'?: string;
     'readonly'?: boolean;
     'required'?: boolean;
-    'value'?: any;
+    'value'?: string|string[];
   }
 
   interface TValidationController {

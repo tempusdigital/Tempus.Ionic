@@ -62,3 +62,28 @@ export function isTablet(win: Window) {
   return (width >= 768);
 }
 
+export function isEmptyValue(value: any) {
+  if (Array.isArray(value))
+    return value.length <= 0;
+
+  return value === null || value === undefined || value === '';
+}
+
+export function normalizeValue(value: any): string | string[] {
+  if (isEmptyValue(value))
+    return '';
+
+  if (typeof value === 'string')
+    return value;
+
+  if (Array.isArray(value)) {
+    let needToNormalize = value.some(v => typeof v !== 'string');
+
+    if (!needToNormalize)
+      return value;
+
+    return value.map(v => v.toString());
+  }
+
+  return value.toString();
+}

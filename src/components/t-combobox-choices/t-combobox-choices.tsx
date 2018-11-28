@@ -1,7 +1,7 @@
 import { Component, Prop, Event, EventEmitter, Watch, Method } from '@stencil/core';
 import Choices from 'choices.js';
-import { IComboboxOption, ICombobox, ComboboxDefaultOptions, isEmpty, normalizeValue } from '../t-combobox/t-combobox-interface';
-import { deferEvent, debounce } from '../../utils/helpers';
+import { IComboboxOption, ICombobox, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
+import { deferEvent, debounce, isEmptyValue, normalizeValue } from '../../utils/helpers';
 
 @Component({
   tag: 't-combobox-choices',
@@ -47,7 +47,7 @@ export class TComboboxChoices implements ICombobox {
    * The visible options to select.
    */
   @Prop({ mutable: true }) options: IComboboxOption[] = [];
-
+  
   /**
    * Trigger change event when value has changed
    */
@@ -179,7 +179,7 @@ export class TComboboxChoices implements ICombobox {
   }
 
   hasValue() {
-    return !isEmpty(this.value);
+    return !isEmptyValue(this.value);
   }
 
   @Watch('disabled')
@@ -228,7 +228,7 @@ export class TComboboxChoices implements ICombobox {
     if (this.value === currentValue)
       return;
 
-    if (isEmpty(this.value) || !this.options || !this.options.length) {
+    if (isEmptyValue(this.value) || !this.options || !this.options.length) {
       if (!this.multiple && this.placeholder)
         this.choices.setValueByChoice(this.placeholder);
       else
@@ -250,7 +250,7 @@ export class TComboboxChoices implements ICombobox {
 
   mapOptionsAsChoices() {
     let currentValue = normalizeValue(this.value); // normalize the value because valueChanged may not be called yet
-    let currentValueIsEmpty = isEmpty(currentValue);
+    let currentValueIsEmpty = isEmptyValue(currentValue);
     let currentValueIsArray = Array.isArray(currentValue);
 
     let isSelected = (value) => {
@@ -280,7 +280,7 @@ export class TComboboxChoices implements ICombobox {
         placeholder: true,
         value: this.placeholder,
         label: this.placeholder,
-        selected: isEmpty(this.value)
+        selected: isEmptyValue(this.value)
       };
 
       result = [placeholder, ...result];

@@ -1,5 +1,5 @@
 import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element } from '@stencil/core';
-import { deferEvent, debounceAsync } from '../../utils/helpers';
+import { deferEvent, debounceAsync, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
 @Component({
   tag: 't-select',
@@ -10,11 +10,11 @@ export class TSelect {
   @Prop() autofocus: boolean = false;
   @Prop() disabled: boolean = false;
   @Prop({ reflectToAttr: true }) readonly: boolean = false;
-  @Prop() placeholder: string;
   @Prop() required: boolean = false;
   @Prop() hidden: boolean = false;
   @Prop() multiple: boolean = false;
-  @Prop({ mutable: true }) value: any;
+
+  @Prop({ mutable: true }) value: string|string[];
 
   @Element() host!: HTMLElement;
 
@@ -28,29 +28,24 @@ export class TSelect {
 
   componentWillLoad() {
     this.ionStyle = deferEvent(this.ionStyle);
-    this.loadOptions = debounceAsync(this.loadOptions.bind(this));
+    this.selectOptionDidLoad = debounceAsync(this.selectOptionDidLoad.bind(this));
+    this.selectOptionDidUnload = debounceAsync(this.selectOptionDidUnload.bind(this));
   }
 
   async componentDidLoad() {
     await this.loadOptions();
 
     if (this.value === undefined) {
-      if (this.multiple) {
-        // there are no values set at this point
-        // so check to see who should be selected
-        const checked = this.childOpts.filter(o => o.selected);
-        this.value = checked.map(o => o.value);
-      } else {
-        const checked = this.childOpts.find(o => o.selected);
-        if (checked) {
-          this.value = checked.value;
-        }
-      }
+      this.updateValue();
     }
+    
+    this.valueChanged();
 
     this.updateOptions();
-    this.emitStyle();
+    
     this.didInit = true;
+
+    this.emitStyle();
   }
 
   hasFocus() {
@@ -58,23 +53,25 @@ export class TSelect {
   }
 
   hasValue() {
-    return (this.value !== '' && this.value !== undefined && this.value !== null);
-  }
-
-  hasPlaceholder() {
-    return !!this.placeholder;
+    return !isEmptyValue(this.value);
   }
 
   @Listen('selectOptionDidLoad')
-  @Listen('selectOptionDidUnload')
-  async selectOptionChanged() {
-    await this.loadOptions();
-    
+  async selectOptionDidLoad() {    
     if (this.didInit) {
+      await this.loadOptions();
       this.updateOptions();
+      this.emitStyle();
     }
+  }
 
-    this.emitStyle();
+  @Listen('selectOptionDidUnload')
+  async selectOptionDidUnload() {    
+    if (this.didInit) {
+      await this.loadOptions();
+      this.updateValue();
+      this.emitStyle();
+    }
   }
 
   private async loadOptions() {
@@ -83,11 +80,30 @@ export class TSelect {
     );
   }
 
+  private updateValue() {
+    if (this.multiple) {
+      // there are no values set at this point
+      // so check to see who should be selected
+      const checked = this.childOpts.filter(o => o.selected);
+      this.value = checked.map(o => o.value);
+    } else {
+      const checked = this.childOpts.find(o => o.selected);
+      if (checked) {
+        this.value = checked.value;
+      }
+      else {
+        this.value = '';
+      }
+    }
+  }
+
   private updateOptions() {
     // iterate all options, updating the selected prop
     let canSelect = true;
     for (const selectOption of this.childOpts) {
-      selectOption.onDidUnload = this.loadOptions;
+      // On Stencil 1.0.0-beta.16 the selectOptionDidUnload is not get fired,
+      // so for now use a property no notify when the option is unloaded
+      selectOption.onDidUnload = this.selectOptionDidUnload;
 
       const selected = canSelect && isOptionSelected(this.value, selectOption.value);
       selectOption.selected = selected;
@@ -107,6 +123,18 @@ export class TSelect {
 
   @Watch('value')
   valueChanged() {
+    let normalizedValue = normalizeValue(this.value);
+
+    if (this.value !== normalizedValue) {
+      this.value = normalizedValue;
+      return;
+    }
+
+    if (this.nativeElement && this.nativeElement.value !== this.value) {
+      // Force the select value since is not possible to set it by jsx
+      this.nativeElement.value = this.value;
+    }
+
     if (this.didInit) {
       this.updateOptions();
       this.emitStyle();
@@ -125,12 +153,10 @@ export class TSelect {
     this.ionStyle.emit({
       'interactive': true,
       'input': true,
-      'has-placeholder': this.hasPlaceholder(),
       'has-value': this.hasValue(),
       'has-focus': this.hasFocus(),
       'interactive-disabled': this.disabled,
-      't-select': true,
-      't-select-placeholder-selected': !this.hasValue() && this.hasPlaceholder(),
+      't-select': true
     });
   }
 
@@ -140,6 +166,7 @@ export class TSelect {
   }
 
   render() {
+    // As select does not support readonly, use a input intead
     if (this.readonly) {
       let option = this.childOpts.find(o => o.value == this.value);
       return [
@@ -165,7 +192,7 @@ export class TSelect {
         onBlur={this.onBlur.bind(this)}
         onChange={this.handleChange.bind(this)}
       >
-        <option value="" disabled={this.required} hidden={this.required} selected class="placeholder">{this.placeholder}</option>
+        <option value="" disabled={this.required} hidden={this.required} selected class="placeholder"></option>
         {this.childOpts.map(option =>
           <option
             hidden={option.hidden}

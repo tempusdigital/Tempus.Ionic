@@ -1,6 +1,6 @@
 import { Component, Prop, Event, EventEmitter, State, Element, Watch } from '@stencil/core';
-import { ICombobox, IComboboxOption, isEmpty, normalizeValue, normalizeOptions } from '../t-combobox/t-combobox-interface';
-import { deferEvent, debounce } from '../../utils/helpers';
+import { ICombobox, IComboboxOption } from '../t-combobox/t-combobox-interface';
+import { deferEvent, debounce, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
 @Component({
   tag: 't-combobox-modal',
@@ -187,7 +187,7 @@ export class TComboboxModal implements ICombobox {
   }
 
   hasValue() {
-    return !isEmpty(this.value);
+    return !isEmptyValue(this.value);
   }
 
   isPlaceholderSelected() {
@@ -259,6 +259,7 @@ export class TComboboxModal implements ICombobox {
           </ion-button>
         }
       </div>,
+
       <select
         hidden
         name={this.name}
@@ -267,6 +268,25 @@ export class TComboboxModal implements ICombobox {
         disabled={this.disabled}>
         {this.options && this.options.map(option =>
           <option value={option.value} selected={this.isSelected(option)}>{option.text}</option>)}
-      </select>];
+      </select>,
+    
+      false ? <t-combobox-modal-list></t-combobox-modal-list> : null  // Fixes a problem that causes the modal to not be rendered on apps developed with Stencil
+    ];
   }
+}
+
+function normalizeOptions(value: any): IComboboxOption[] {
+  if (!value || !Array.isArray(value))
+    return value;
+
+  let needToNormalize = value.some(o => typeof o.value !== 'string');
+  if (!needToNormalize)
+    return value;
+
+  return value.map(v => {
+    return {
+      ...v,
+      value: normalizeValue(v.value)
+    }
+  });
 }

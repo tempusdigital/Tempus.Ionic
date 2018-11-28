@@ -36,20 +36,6 @@ t-select {
     width: 100%;
     appearance: none;
   }
-
-  select:disabled,
-  select option:disabled,
-  select option.placeholder {
-    color: GrayText !important;
-  }
-}
-
-.item.item-t-select.item-t-select-placeholder-selected select {
-  color: GrayText !important;
-
-  option {
-    color: initial;
-  }
 }
 
 .item.item-t-select.item-has-focus {
