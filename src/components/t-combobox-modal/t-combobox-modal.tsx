@@ -269,8 +269,26 @@ export class TComboboxModal implements ICombobox {
         {this.options && this.options.map(option =>
           <option value={option.value} selected={this.isSelected(option)}>{option.text}</option>)}
       </select>,
-    
-      false ? <t-combobox-modal-list></t-combobox-modal-list> : null  // Fixes a problem that causes the modal to not be rendered on apps developed with Stencil
+
+      // Fix bundle of modal components on Stencil 1.0.0-beta.16
+      (window['Force bundle']) ?
+        <div>
+          <t-combobox-modal-list></t-combobox-modal-list>
+          <ion-searchbar></ion-searchbar>
+          <ion-buttons></ion-buttons>
+          <ion-button></ion-button>
+          <ion-toolbar></ion-toolbar>
+          <ion-header></ion-header>
+          <ion-content></ion-content>
+          <ion-list></ion-list>
+          <ion-virtual-scroll></ion-virtual-scroll>
+          <ion-item></ion-item>
+          <ion-label></ion-label>
+          <ion-radio></ion-radio>
+          <ion-checkbox></ion-checkbox>
+          <ion-radio-group></ion-radio-group>
+          <ion-icon></ion-icon>
+        </div> : null
     ];
   }
 }
