@@ -1,7 +1,7 @@
 {
   "name": "@tempusdigital/ionic",
   "private": false,
-  "version": "1.0.0-beta.2-7",
+  "version": "1.0.0-beta.2-8",
   "description": "Tempus Digital Custom Ionic Components",
   "module": "dist/esm/index.js",
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
     "@ionic/core": "*"
   },
   "devDependencies": {
-    "@stencil/core": "0.16.0-0",
+    "@stencil/core": "0.16.0",
     "@stencil/sass": "0.1.1",
     "choices.js": "3.0.4"
   },
