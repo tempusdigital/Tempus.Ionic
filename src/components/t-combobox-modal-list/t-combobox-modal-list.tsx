@@ -1,4 +1,4 @@
-import { Component, Prop, Element, State } from '@stencil/core';
+import { Component, Prop, Element, State, Watch } from '@stencil/core';
 import { IComboboxOption, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
 import { removeAccents } from '../../utils/helpers';
 
@@ -19,11 +19,29 @@ export class ComboboxModalListPage {
 
   @Prop() options: IComboboxOption[];
 
+  @Prop() messages: {
+    confirmText: string,
+    loadingText: string,
+    noResultsText: string,
+    noChoicesText: string,
+    selectOneItemText: string,
+    searchPlaceholderText: string,
+    selectOneOrMoreItemsText: string,
+  }
+
   @State() internalOptions: IComboboxOptionSelection[] = [];
 
   @State() visibleOptions: IComboboxOptionSelection[] = [];
 
   @Element() host: any;
+
+  @Watch('messages')
+  messagesChanged() {
+    if (this.messages)
+      this.messages = { ...ComboboxDefaultOptions, ...this.messages };
+    else
+      this.messages = ComboboxDefaultOptions;
+  }
 
   componentWillLoad() {
     this.initOptions();
@@ -90,7 +108,7 @@ export class ComboboxModalListPage {
   }
 
   renderEmpty() {
-    return (<ion-item><ion-label>{ComboboxDefaultOptions.noResultsText}</ion-label></ion-item>);
+    return (<ion-item><ion-label>{this.messages.noResultsText}</ion-label></ion-item>);
   }
 
   renderItem = (option: IComboboxOptionSelection) => {
@@ -140,7 +158,7 @@ export class ComboboxModalListPage {
           <ion-buttons slot="end">
             <ion-button onClick={() => this.confirm()}
               class="dismiss">
-              {ComboboxDefaultOptions.confirmText}
+              {this.messages.confirmText}
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
@@ -150,7 +168,7 @@ export class ComboboxModalListPage {
             onIonChange={e => this.handleSearch(e)}
             animated
             deboundce={ComboboxDefaultOptions.searchDebounce}
-            placeholder={ComboboxDefaultOptions.searchPlaceholderText}></ion-searchbar>
+            placeholder={this.messages.searchPlaceholderText}></ion-searchbar>
         </ion-toolbar>
       </ion-header>,
       <ion-content>

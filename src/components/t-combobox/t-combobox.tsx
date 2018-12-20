@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, Watch } from '@stencil/core';
 import { ICombobox, IComboboxOption, ComboboxDefaultOptions } from './t-combobox-interface'
 import { isTablet } from '../../utils/helpers';
 
@@ -64,9 +64,30 @@ export class TCombobox implements ICombobox {
   @Prop() options: IComboboxOption[];
 
   /**
+  * The messages that will be shown
+  */
+  @Prop() messages: {
+    confirmText: string,
+    loadingText: string,
+    noResultsText: string,
+    noChoicesText: string,
+    selectOneItemText: string,
+    searchPlaceholderText: string,
+    selectOneOrMoreItemsText: string,
+  }
+
+  /**
    * Trigger change event when value has changed
    */
-  @Event({ cancelable:false }) change: EventEmitter;
+  @Event({ cancelable: false }) change: EventEmitter;
+
+  @Watch('messages')
+  messagesChanged() {
+    if (this.messages)
+      this.messages = { ...ComboboxDefaultOptions, ...this.messages };
+    else
+      this.messages = ComboboxDefaultOptions;
+  }
 
   handleChange(e: UIEvent) {
     e.preventDefault();

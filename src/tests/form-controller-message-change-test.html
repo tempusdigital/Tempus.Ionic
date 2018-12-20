@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Form Validation</title>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/typography.css">
+  <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
+  <script src="/build/tempusdigitalionic.js"></script>
+
+</head>
+
+<body>
+  <ion-app>
+    <form action="GET" novalidate>
+      <ion-button type="submit">Submit</ion-button>
+      <t-message-summary></t-message-summary>
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Zero (optional)</ion-label>
+          <ion-input name="zero-0"></ion-input>
+          <t-message name="zero-0"></t-message>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Without t-message</ion-label>
+          <ion-input name="zero-1" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">One</ion-label>
+          <ion-input name="one" required maxlength="50"></ion-input>
+          <t-message name="one"></t-message>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Two</ion-label>
+          <ion-textarea name="two" required maxlength="50"></ion-textarea>
+          <t-message name="two"></t-message>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Three</ion-label>
+          <t-select name="three" required placeholder="select">
+            <t-select-option value="a">A</t-select-option>
+            <t-select-option value="b">B</t-select-option>
+            <t-select-option value="c">C</t-select-option>
+          </t-select>
+          <t-message name="three"></t-message>
+        </ion-item>
+      </ion-list>
+    </form>
+
+    <t-form-controller></t-form-controller>
+  </ion-app>
+
+  <script>
+    var form = document.querySelector('form');
+    var formController = document.querySelector('t-form-controller');
+
+    formController.messages = {
+      notFound: 'New message'
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>
