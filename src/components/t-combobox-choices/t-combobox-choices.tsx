@@ -51,7 +51,7 @@ export class TComboboxChoices implements ICombobox {
   /**
   * The messages that will be shown
   */
-  @Prop() messages: {
+  @Prop({ mutable: true }) messages: {
     confirmText: string,
     loadingText: string,
     noResultsText: string,
@@ -90,6 +90,8 @@ export class TComboboxChoices implements ICombobox {
   }
 
   async componentDidLoad() {
+    this.messagesChanged();
+
     let startOptions = this.options;
 
     let choices = this.mapOptionsAsChoices();

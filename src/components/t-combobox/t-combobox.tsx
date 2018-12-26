@@ -66,7 +66,7 @@ export class TCombobox implements ICombobox {
   /**
   * The messages that will be shown
   */
-  @Prop() messages: {
+  @Prop({ mutable: true }) messages: {
     confirmText: string,
     loadingText: string,
     noResultsText: string,
