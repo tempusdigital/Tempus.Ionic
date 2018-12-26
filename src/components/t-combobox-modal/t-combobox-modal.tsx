@@ -1,5 +1,5 @@
 import { Component, Prop, Event, EventEmitter, State, Element, Watch } from '@stencil/core';
-import { ICombobox, IComboboxOption } from '../t-combobox/t-combobox-interface';
+import { ICombobox, IComboboxOption, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
 import { deferEvent, debounce, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
 @Component({
@@ -53,6 +53,13 @@ export class TComboboxModal implements ICombobox {
    */
   @Prop({ mutable: true }) options: IComboboxOption[] = [];
 
+  private _internalMessages: IComboboxMessages;
+
+  /**
+  * The messages that will be shown
+  */
+  @Prop() messages: IComboboxMessages;
+
   /**
    * Trigger change event when value has changed
    */
@@ -80,7 +87,16 @@ export class TComboboxModal implements ICombobox {
   }
 
   componentDidLoad() {
+    this.messagesChanged();
     this.host.addEventListener('click', e => this.handleClick(e));
+  }
+
+  @Watch('messages')
+  messagesChanged() {
+    if (this.messages)
+      this._internalMessages = { ...ComboboxDefaultOptions.messages, ...this.messages };
+    else
+      this._internalMessages = { ...ComboboxDefaultOptions.messages };
   }
 
   async presentModal() {
@@ -92,7 +108,8 @@ export class TComboboxModal implements ICombobox {
         multiple: this.multiple,
         value: this.value,
         handleChange: this.handleChange.bind(this),
-        options: this.options
+        options: this.options,
+        messages: this._internalMessages
       }
     });
 

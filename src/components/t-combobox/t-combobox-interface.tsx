@@ -15,7 +15,9 @@ export interface ICombobox {
 
   options: IComboboxOption[];
 
-  change: any;
+  change: any; 
+  
+  messages: IComboboxMessages;
 }
 
 export interface IComboboxOption {
@@ -24,14 +26,21 @@ export interface IComboboxOption {
   icon?: { src?: string; name?: string; };
 }
 
-
 export const ComboboxDefaultOptions = {
   searchDebounce: 250,
-  loadingText: 'Carregando...',
-  noResultsText: 'Nenhum item encontrado',
-  noChoicesText: 'Nenhum item foi escolhido',
-  selectOneOrMoreItemsText: 'Selecione um ou mais itens da lista',
-  selectOneItemText: 'Selecione um item da lista',
-  searchPlaceholderText: 'Pesquisar',
-  confirmText: 'Confirmar'
+  messages: {
+    loadingText: 'Carregando...',
+    noResultsText: 'Nenhum item encontrado',
+    selectOneOrMoreItemsText: 'Selecione um ou mais itens da lista',
+    selectOneItemText: 'Selecione um item da lista',
+    searchPlaceholderText: 'Pesquisar',
+    confirmText: 'Confirmar'
+  }
+}
+
+export interface IComboboxMessages {
+  confirmText?: string,
+  loadingText?: string,
+  noResultsText?: string,
+  searchPlaceholderText?: string,
 }

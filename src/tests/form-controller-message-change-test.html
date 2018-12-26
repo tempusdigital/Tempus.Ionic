@@ -21,36 +21,9 @@
       <t-message-summary></t-message-summary>
       <ion-list>
         <ion-item>
-          <ion-label position="floating">Zero (optional)</ion-label>
-          <ion-input name="zero-0"></ion-input>
-          <t-message name="zero-0"></t-message>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="floating">Without t-message</ion-label>
-          <ion-input name="zero-1" required></ion-input>
-        </ion-item>
-
-        <ion-item>
           <ion-label position="floating">One</ion-label>
           <ion-input name="one" required maxlength="50"></ion-input>
           <t-message name="one"></t-message>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="floating">Two</ion-label>
-          <ion-textarea name="two" required maxlength="50"></ion-textarea>
-          <t-message name="two"></t-message>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="floating">Three</ion-label>
-          <t-select name="three" required placeholder="select">
-            <t-select-option value="a">A</t-select-option>
-            <t-select-option value="b">B</t-select-option>
-            <t-select-option value="c">C</t-select-option>
-          </t-select>
-          <t-message name="three"></t-message>
         </ion-item>
       </ion-list>
     </form>
@@ -62,12 +35,18 @@
     var form = document.querySelector('form');
     var formController = document.querySelector('t-form-controller');
 
-    formController.messages = {
-      notFound: 'New message'
-    }
+    formController.componentOnReady().then(() => {
+      formController.messages = {
+        badRequest: 'Custom message'
+      }
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      formController.processSubmit(form, () => {
+        return new Promise((r) => setTimeout(r, 2000));
+      });
     });
   </script>
 </body>

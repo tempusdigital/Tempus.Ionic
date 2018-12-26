@@ -1,6 +1,6 @@
 import { Component, Prop, Event, EventEmitter, Watch, Method } from '@stencil/core';
 import Choices from 'choices.js';
-import { IComboboxOption, ICombobox, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
+import { IComboboxOption, ICombobox, ComboboxDefaultOptions, IComboboxMessages } from '../t-combobox/t-combobox-interface';
 import { deferEvent, debounce, isEmptyValue, normalizeValue } from '../../utils/helpers';
 
 @Component({
@@ -48,18 +48,12 @@ export class TComboboxChoices implements ICombobox {
    */
   @Prop({ mutable: true }) options: IComboboxOption[] = [];
 
+  private _internalMessages: IComboboxMessages;
+
   /**
   * The messages that will be shown
   */
-  @Prop({ mutable: true }) messages: {
-    confirmText: string,
-    loadingText: string,
-    noResultsText: string,
-    noChoicesText: string,
-    selectOneItemText: string,
-    searchPlaceholderText: string,
-    selectOneOrMoreItemsText: string,
-  }
+  @Prop() messages: IComboboxMessages;
 
   /**
    * Trigger change event when value has changed
@@ -71,9 +65,9 @@ export class TComboboxChoices implements ICombobox {
   @Watch('messages')
   messagesChanged() {
     if (this.messages)
-      this.messages = { ...ComboboxDefaultOptions, ...this.messages };
+      this._internalMessages = { ...ComboboxDefaultOptions.messages, ...this.messages };
     else
-      this.messages = ComboboxDefaultOptions;
+      this._internalMessages = { ...ComboboxDefaultOptions.messages };
   }
 
   choices: Choices;
@@ -99,9 +93,9 @@ export class TComboboxChoices implements ICombobox {
 
     // Initialize ChoicesJs
     this.choices = new Choices(this.nativeSelect, {
-      loadingText: this.messages.loadingText,
-      noResultsText: this.messages.noResultsText,
-      noChoicesText: this.messages.noChoicesText,
+      loadingText: this._internalMessages.loadingText,
+      noResultsText: this._internalMessages.noResultsText,
+      noChoicesText: this._internalMessages.noResultsText,
       itemSelectText: '',
       placeholder: !!this.placeholder,
       placeholderValue: this.placeholder,
@@ -115,7 +109,7 @@ export class TComboboxChoices implements ICombobox {
     // The options may be changed while the ChoicesJs was still being initialized
     if (startOptions !== this.options)
       this.syncChoicesOptions();
-    
+
     this.valueChanged(); // The value may be changed while the ChoicesJs was still being initialized
     this.disabledChanged();
 

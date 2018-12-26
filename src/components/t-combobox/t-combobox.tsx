@@ -1,5 +1,5 @@
-import { Component, Prop, Event, EventEmitter, Watch } from '@stencil/core';
-import { ICombobox, IComboboxOption, ComboboxDefaultOptions } from './t-combobox-interface'
+import { Component, Prop, Event, EventEmitter } from '@stencil/core';
+import { ICombobox, IComboboxOption, ComboboxDefaultOptions, IComboboxMessages } from './t-combobox-interface'
 import { isTablet } from '../../utils/helpers';
 
 @Component({
@@ -30,7 +30,7 @@ export class TCombobox implements ICombobox {
 
   /**
    * Set the focus on component is loaded.
-   */ 
+   */
   @Prop() autofocus: boolean = false;
 
   /**
@@ -66,28 +66,12 @@ export class TCombobox implements ICombobox {
   /**
   * The messages that will be shown
   */
-  @Prop({ mutable: true }) messages: {
-    confirmText: string,
-    loadingText: string,
-    noResultsText: string,
-    noChoicesText: string,
-    selectOneItemText: string,
-    searchPlaceholderText: string,
-    selectOneOrMoreItemsText: string,
-  }
+  @Prop() messages: IComboboxMessages;
 
   /**
    * Trigger change event when value has changed
    */
   @Event({ cancelable: false }) change: EventEmitter;
-
-  @Watch('messages')
-  messagesChanged() {
-    if (this.messages)
-      this.messages = { ...ComboboxDefaultOptions, ...this.messages };
-    else
-      this.messages = ComboboxDefaultOptions;
-  }
 
   handleChange(e: UIEvent) {
     e.preventDefault();
@@ -118,6 +102,7 @@ export class TCombobox implements ICombobox {
         options={this.options}
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}
+        messages={this.messages}
       ></t-combobox-choices>
     ]
   }
@@ -135,6 +120,7 @@ export class TCombobox implements ICombobox {
         options={this.options}
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}
+        messages={this.messages}
       ></t-combobox-modal>
     ];
   }

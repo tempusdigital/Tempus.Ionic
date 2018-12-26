@@ -1,5 +1,5 @@
-import { Component, Prop, Element, State, Watch } from '@stencil/core';
-import { IComboboxOption, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
+import { Component, Prop, Element, State } from '@stencil/core';
+import { IComboboxOption, ComboboxDefaultOptions, IComboboxMessages } from '../t-combobox/t-combobox-interface';
 import { removeAccents } from '../../utils/helpers';
 
 interface IComboboxOptionSelection extends IComboboxOption {
@@ -19,29 +19,13 @@ export class ComboboxModalListPage {
 
   @Prop() options: IComboboxOption[];
 
-  @Prop() messages: {
-    confirmText: string,
-    loadingText: string,
-    noResultsText: string,
-    noChoicesText: string,
-    selectOneItemText: string,
-    searchPlaceholderText: string,
-    selectOneOrMoreItemsText: string,
-  }
+  @Prop() messages: IComboboxMessages;
 
   @State() internalOptions: IComboboxOptionSelection[] = [];
 
   @State() visibleOptions: IComboboxOptionSelection[] = [];
 
   @Element() host: any;
-
-  @Watch('messages')
-  messagesChanged() {
-    if (this.messages)
-      this.messages = { ...ComboboxDefaultOptions, ...this.messages };
-    else
-      this.messages = ComboboxDefaultOptions;
-  }
 
   componentWillLoad() {
     this.initOptions();
@@ -108,7 +92,7 @@ export class ComboboxModalListPage {
   }
 
   renderEmpty() {
-    return (<ion-item><ion-label>{this.messages.noResultsText}</ion-label></ion-item>);
+    return (<ion-item text-center><ion-label>{this.messages.noResultsText}</ion-label></ion-item>);
   }
 
   renderItem = (option: IComboboxOptionSelection) => {
@@ -173,7 +157,7 @@ export class ComboboxModalListPage {
       </ion-header>,
       <ion-content>
         <ion-list lines="none">
-          {this.internalOptions && this.internalOptions.length
+          {this.visibleOptions && this.visibleOptions.length
             ? this.renderList()
             : this.renderEmpty()
           }

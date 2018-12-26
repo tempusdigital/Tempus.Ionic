@@ -104,36 +104,39 @@
     var options = [];
 
     function init() {
-      for (let i = 1; i < 300; i++) {
-        options.push({
-          value: i,
-          text: 'Text' + i.toString().padStart(3, '0'),
-        })
-      }
-
-      var combos = document.getElementsByTagName('t-combobox');
-
-      for (let i = 0; i < combos.length; i++) {
-        var combo = combos.item(i);
-
-        if (combo.id == 'multiple') {
-          combo.addEventListener('change', handleMultipleChange);
-          combo.value = ['1', '5'];
-
-          var multipleValue = document.getElementById('multiple-value');
-          multipleValue.textContent = JSON.stringify(combo.value);
-        }
-        else if (combo.id == 'single') {
-          combo.addEventListener('change', handleSingleChange);
-          combo.value = '1';
-
-          var singleValue = document.getElementById('single-value');
-          singleValue.textContent = combo.value;
+      document.querySelector('t-combobox').componentOnReady().then(() => {
+        for (let i = 1; i < 300; i++) {
+          options.push({
+            value: i,
+            text: 'Text' + i.toString().padStart(3, '0'),
+          })
         }
 
-setTimeout((ii)=>
-combos.item(ii).options = options, 0, i);
-      }
+        var combos = document.getElementsByTagName('t-combobox');
+
+        for (let i = 0; i < combos.length; i++) {
+          var combo = combos.item(i);
+
+          if (combo.id == 'multiple') {
+            combo.addEventListener('change', handleMultipleChange);
+            combo.value = ['1', '5'];
+
+            var multipleValue = document.getElementById('multiple-value');
+            multipleValue.textContent = JSON.stringify(combo.value);
+          }
+          else if (combo.id == 'single') {
+            combo.addEventListener('change', handleSingleChange);
+            combo.value = '1';
+
+            var singleValue = document.getElementById('single-value');
+            singleValue.textContent = combo.value;
+          }
+
+          combo.options = options;
+
+          combo.messages = { noResultsText: 'Empty custom message!' };
+        }
+      });
     }
 
     function handleMultipleChange(e) {

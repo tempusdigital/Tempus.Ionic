@@ -1,15 +1,6 @@
 import { Component, Method, Prop, Watch } from "@stencil/core";
-import { ProcessSubmitOptions } from './t-form-controller-interface';
+import { ProcessSubmitOptions, IFormControllerMessages, FormControllerDefaultMessages } from './t-form-controller-interface';
 import { FormValidationMessages } from "../t-validation-controller/t-validation-controller-interface";
-
-const defaultMessages = {
-  sending: 'Enviando...',
-  timeout: 'O servidor demorou para responder, por favor, tente novamente',
-  notFound: 'Não encontramos o que você está procurando',
-  forbidden: 'Você não possui permissão para continuar',
-  badRequest: 'Corrija o preenchimento de todos os campos',
-  internalServerError: 'Ops! Erro interno do servidor'
-};
 
 @Component({
   tag: 't-form-controller',
@@ -17,14 +8,9 @@ const defaultMessages = {
 })
 export class TFormController {
 
-  @Prop({ mutable: true }) messages: {
-    sending: string,
-    timeout: string,
-    notFound: string,
-    forbidden: string,
-    badRequest: string,
-    internalServerError: string
-  }
+  private _internalMessages = { ...FormControllerDefaultMessages };
+
+  @Prop() messages: IFormControllerMessages;
 
   @Prop({ context: 'window' }) win!: Window;
 
@@ -41,9 +27,9 @@ export class TFormController {
   @Watch('messages')
   messagesChanged() {
     if (this.messages)
-      this.messages = { ...defaultMessages, ...this.messages };
+      this._internalMessages = { ...FormControllerDefaultMessages, ...this.messages };
     else
-      this.messages = defaultMessages;
+      this._internalMessages = { ...FormControllerDefaultMessages };
   }
 
   /**
@@ -67,7 +53,7 @@ export class TFormController {
     let valid = await await this.validationController.reportValidity(form);
 
     if (!valid) {
-      await this.showToast(this.messages.badRequest, toastPosition);
+      await this.showToast(this._internalMessages.badRequest, toastPosition);
       return false;
     }
 
@@ -95,7 +81,7 @@ export class TFormController {
       }
 
     this.validationController && this.validationController.reportValidity(form);
-    
+
     loading && loading.dismiss();
 
     return true;
@@ -112,7 +98,7 @@ export class TFormController {
     let loading = await this.loadingController.create({
       showBackdrop: true,
       translucent: true,
-      message: this.messages.sending
+      message: this._internalMessages.sending
     });
 
     await loading.present();
@@ -123,22 +109,22 @@ export class TFormController {
   private getToastMessage(e: Response) {
     switch (e && e.status) {
       case 400:
-        return this.messages.badRequest;
+        return this._internalMessages.badRequest;
 
       case 401:
       case 403:
-        return this.messages.forbidden;
+        return this._internalMessages.forbidden;
 
       case 404:
-        return this.messages.notFound;
+        return this._internalMessages.notFound;
 
       case 408:
       case 502:
       case 504:
-        return this.messages.timeout;
+        return this._internalMessages.timeout;
 
       default:
-        return this.messages.internalServerError;
+        return this._internalMessages.internalServerError;
     }
   }
 
@@ -152,7 +138,7 @@ export class TFormController {
 
     await this.validationController.reportValidity(form);
 
-    await this.showToast(this.messages.badRequest);
+    await this.showToast(this._internalMessages.badRequest);
   }
 
   private async showToast(message: string, position: 'top' | 'bottom' | 'middle' = 'bottom') {

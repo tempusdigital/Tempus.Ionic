@@ -9,9 +9,11 @@ import '@stencil/core';
 
 
 import {
+  IComboboxMessages,
   IComboboxOption,
 } from './components/t-combobox/t-combobox-interface';
 import {
+  IFormControllerMessages,
   ProcessSubmitOptions,
 } from './components/t-form-controller/t-form-controller-interface';
 import {
@@ -39,6 +41,10 @@ export namespace Components {
     * Return ChoicesJs instance
     */
     'getChoicesInstance': () => Promise<any>;
+    /**
+    * The messages that will be shown
+    */
+    'messages': IComboboxMessages;
     /**
     * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
     */
@@ -74,6 +80,10 @@ export namespace Components {
     */
     'disabled'?: boolean;
     /**
+    * The messages that will be shown
+    */
+    'messages'?: IComboboxMessages;
+    /**
     * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
     */
     'multiple'?: boolean;
@@ -106,12 +116,14 @@ export namespace Components {
 
   interface TComboboxModalList {
     'handleChange': (selectedOption: IComboboxOption[]) => void;
+    'messages': IComboboxMessages;
     'multiple': boolean;
     'options': IComboboxOption[];
     'value': any | any[];
   }
   interface TComboboxModalListAttributes extends StencilHTMLAttributes {
     'handleChange'?: (selectedOption: IComboboxOption[]) => void;
+    'messages'?: IComboboxMessages;
     'multiple'?: boolean;
     'options'?: IComboboxOption[];
     'value'?: any | any[];
@@ -126,6 +138,10 @@ export namespace Components {
     * If `true`, the user cannot interact with the input. Defaults to `false`.
     */
     'disabled': boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages': IComboboxMessages;
     /**
     * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
     */
@@ -164,6 +180,10 @@ export namespace Components {
     * If `true`, the user cannot interact with the input. Defaults to `false`.
     */
     'disabled'?: boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages'?: IComboboxMessages;
     /**
     * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
     */
@@ -208,6 +228,10 @@ export namespace Components {
     * If `true`, the user cannot interact with the input. Defaults to `false`.
     */
     'disabled': boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages': IComboboxMessages;
     /**
     * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
     */
@@ -254,6 +278,10 @@ export namespace Components {
     * If `true`, the user cannot interact with the input. Defaults to `false`.
     */
     'disabled'?: boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages'?: IComboboxMessages;
     /**
     * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
     */
@@ -305,12 +333,15 @@ export namespace Components {
 
   interface TFormController {
     'getValidationController': () => Promise<any>;
+    'messages': IFormControllerMessages;
     /**
     * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
     */
     'processSubmit': (form: HTMLFormElement, action?: () => any, options?: ProcessSubmitOptions) => Promise<boolean>;
   }
-  interface TFormControllerAttributes extends StencilHTMLAttributes {}
+  interface TFormControllerAttributes extends StencilHTMLAttributes {
+    'messages'?: IFormControllerMessages;
+  }
 
   interface TMessageSummary {
     'validationMessages': string[];
