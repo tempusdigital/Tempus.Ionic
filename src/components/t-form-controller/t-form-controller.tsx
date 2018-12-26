@@ -1,20 +1,30 @@
-import { Component, Method, Prop } from "@stencil/core";
+import { Component, Method, Prop, Watch } from "@stencil/core";
 import { ProcessSubmitOptions } from './t-form-controller-interface';
 import { FormValidationMessages } from "../t-validation-controller/t-validation-controller-interface";
+
+const defaultMessages = {
+  sending: 'Enviando...',
+  timeout: 'O servidor demorou para responder, por favor, tente novamente',
+  notFound: 'Não encontramos o que você está procurando',
+  forbidden: 'Você não possui permissão para continuar',
+  badRequest: 'Corrija o preenchimento de todos os campos',
+  internalServerError: 'Ops! Erro interno do servidor'
+};
 
 @Component({
   tag: 't-form-controller',
   styleUrl: 't-form-controller.scss'
 })
 export class TFormController {
-  private messages = {
-    badRequest: 'Corrija o preenchimento de todos os campos',
-    forbidden: 'Você não possui permissão para continuar',
-    notFound: 'Não encontramos o que você está procurando',
-    timeout: 'O servidor demorou para responder, por favor, tente novamente',
-    internalServerError: 'Ops! Erro interno do servidor',
-    sending: 'Enviando...'
-  };
+
+  @Prop({ mutable: true }) messages: {
+    sending: string,
+    timeout: string,
+    notFound: string,
+    forbidden: string,
+    badRequest: string,
+    internalServerError: string
+  }
 
   @Prop({ context: 'window' }) win!: Window;
 
@@ -23,6 +33,18 @@ export class TFormController {
   @Prop({ connect: 'ion-loading-controller' }) loadingController: any;
 
   validationController: any;
+
+  componentWillLoad() {
+    this.messagesChanged();
+  }
+
+  @Watch('messages')
+  messagesChanged() {
+    if (this.messages)
+      this.messages = { ...defaultMessages, ...this.messages };
+    else
+      this.messages = defaultMessages;
+  }
 
   /**
    * Processa as mensagens pra execução do submit de um formulário:

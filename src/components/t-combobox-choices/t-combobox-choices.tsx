@@ -47,13 +47,34 @@ export class TComboboxChoices implements ICombobox {
    * The visible options to select.
    */
   @Prop({ mutable: true }) options: IComboboxOption[] = [];
-  
+
+  /**
+  * The messages that will be shown
+  */
+  @Prop({ mutable: true }) messages: {
+    confirmText: string,
+    loadingText: string,
+    noResultsText: string,
+    noChoicesText: string,
+    selectOneItemText: string,
+    searchPlaceholderText: string,
+    selectOneOrMoreItemsText: string,
+  }
+
   /**
    * Trigger change event when value has changed
    */
   @Event({ cancelable: false }) change: EventEmitter;
 
   @Event() ionStyle!: EventEmitter;
+
+  @Watch('messages')
+  messagesChanged() {
+    if (this.messages)
+      this.messages = { ...ComboboxDefaultOptions, ...this.messages };
+    else
+      this.messages = ComboboxDefaultOptions;
+  }
 
   choices: Choices;
 
@@ -69,6 +90,8 @@ export class TComboboxChoices implements ICombobox {
   }
 
   async componentDidLoad() {
+    this.messagesChanged();
+
     let startOptions = this.options;
 
     let choices = this.mapOptionsAsChoices();
@@ -76,9 +99,9 @@ export class TComboboxChoices implements ICombobox {
 
     // Initialize ChoicesJs
     this.choices = new Choices(this.nativeSelect, {
-      loadingText: ComboboxDefaultOptions.loadingText,
-      noResultsText: ComboboxDefaultOptions.noResultsText,
-      noChoicesText: ComboboxDefaultOptions.noChoicesText,
+      loadingText: this.messages.loadingText,
+      noResultsText: this.messages.noResultsText,
+      noChoicesText: this.messages.noChoicesText,
       itemSelectText: '',
       placeholder: !!this.placeholder,
       placeholderValue: this.placeholder,
