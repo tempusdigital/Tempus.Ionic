@@ -21,7 +21,7 @@
     "@ionic/core": "*"
   },
   "devDependencies": {
-    "@stencil/core": "0.16.1",
+    "@stencil/core": "0.16.2",
     "@stencil/sass": "0.1.1",
     "choices.js": "3.0.4"
   },
