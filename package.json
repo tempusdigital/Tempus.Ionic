@@ -12,16 +12,16 @@
   ],
   "scripts": {
     "build": "stencil build",
-    "start": "stencil build --dev --watch --serve --es5",
+    "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
   "peerDependencies": {
     "choices.js": "~3.0.4",
-    "@ionic/core": "*"
+    "@ionic/core": "^4.0.0"
   },
   "devDependencies": {
-    "@stencil/core": "0.16.1",
+    "@stencil/core": "0.17.1-0",
     "@stencil/sass": "0.1.1",
     "choices.js": "3.0.4"
   },
