@@ -3,7 +3,8 @@ import { deferEvent, debounceAsync, normalizeValue, isEmptyValue } from '../../u
 
 @Component({
   tag: 't-select',
-  styleUrl: 't-select.scss'
+  styleUrl: 't-select.scss',
+  shadow: true
 })
 export class TSelect {
   @Prop() name: string;
@@ -16,7 +17,7 @@ export class TSelect {
 
   @Prop({ mutable: true }) value: string|string[];
 
-  @Element() host!: HTMLElement;
+  @Element() host!: any;
 
   @Event() ionStyle!: EventEmitter;
 
@@ -46,6 +47,7 @@ export class TSelect {
     this.didInit = true;
 
     this.emitStyle();
+    this.host.forceUpdate();
   }
 
   hasFocus() {
@@ -76,7 +78,7 @@ export class TSelect {
 
   private async loadOptions() {
     this.childOpts = await Promise.all(
-      Array.from(this.host.querySelectorAll('t-select-option')).map(o => o.componentOnReady())
+      Array.from(this.host.querySelectorAll('t-select-option')).map((o: any) => o.componentOnReady())
     );
   }
 
@@ -150,6 +152,15 @@ export class TSelect {
   }
 
   emitStyle() {
+    console.log(JSON.stringify({
+      'interactive': true,
+      'input': true,
+      'has-value': this.hasValue(),
+      'has-focus': this.hasFocus(),
+      'interactive-disabled': this.disabled,
+      't-select': true
+    }));
+
     this.ionStyle.emit({
       'interactive': true,
       'input': true,
