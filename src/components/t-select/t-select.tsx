@@ -4,7 +4,7 @@ import { deferEvent, debounceAsync, normalizeValue, isEmptyValue } from '../../u
 @Component({
   tag: 't-select',
   styleUrl: 't-select.scss',
-  shadow: true
+  shadow: false
 })
 export class TSelect {
   @Prop() name: string;
@@ -46,8 +46,11 @@ export class TSelect {
     
     this.didInit = true;
 
-    this.emitStyle();
-    this.host.forceUpdate();
+    // Fix floating label when input starts with value
+    setTimeout(() => {
+      this.emitStyle();
+      this.host.forceUpdate();
+    }, 10);
   }
 
   hasFocus() {
