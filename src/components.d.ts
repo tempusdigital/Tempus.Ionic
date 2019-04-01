@@ -9,13 +9,13 @@ import '@stencil/core';
 
 
 import {
+  IActionControllerMessages,
+  ProcessOptions,
+} from './components/t-action-controller/t-action-controller-interface';
+import {
   IComboboxMessages,
   IComboboxOption,
 } from './components/t-combobox/t-combobox-interface';
-import {
-  IFormControllerMessages,
-  ProcessSubmitOptions,
-} from './components/t-form-controller/t-form-controller-interface';
 import {
   PopupMenuButton,
   PopupMenuOptions,
@@ -27,6 +27,22 @@ import {
 
 
 export namespace Components {
+
+  interface TActionController {
+    'getValidationController': () => Promise<any>;
+    'messages': IActionControllerMessages;
+    /**
+    * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
+    */
+    'processAction': (action?: () => any, options?: ProcessOptions) => Promise<boolean>;
+    /**
+    * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
+    */
+    'processSubmit': (form: HTMLFormElement, action?: () => any, options?: ProcessOptions) => Promise<boolean>;
+  }
+  interface TActionControllerAttributes extends StencilHTMLAttributes {
+    'messages'?: IActionControllerMessages;
+  }
 
   interface TComboboxChoices {
     /**
@@ -331,18 +347,6 @@ export namespace Components {
     'fluid'?: boolean;
   }
 
-  interface TFormController {
-    'getValidationController': () => Promise<any>;
-    'messages': IFormControllerMessages;
-    /**
-    * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
-    */
-    'processSubmit': (form: HTMLFormElement, action?: () => any, options?: ProcessSubmitOptions) => Promise<boolean>;
-  }
-  interface TFormControllerAttributes extends StencilHTMLAttributes {
-    'messages'?: IFormControllerMessages;
-  }
-
   interface TMessageSummary {
     'validationMessages': string[];
   }
@@ -446,12 +450,12 @@ export namespace Components {
 
 declare global {
   interface StencilElementInterfaces {
+    'TActionController': Components.TActionController;
     'TComboboxChoices': Components.TComboboxChoices;
     'TComboboxModalList': Components.TComboboxModalList;
     'TComboboxModal': Components.TComboboxModal;
     'TCombobox': Components.TCombobox;
     'TContainer': Components.TContainer;
-    'TFormController': Components.TFormController;
     'TMessageSummary': Components.TMessageSummary;
     'TMessage': Components.TMessage;
     'TPopupMenuController': Components.TPopupMenuController;
@@ -462,12 +466,12 @@ declare global {
   }
 
   interface StencilIntrinsicElements {
+    't-action-controller': Components.TActionControllerAttributes;
     't-combobox-choices': Components.TComboboxChoicesAttributes;
     't-combobox-modal-list': Components.TComboboxModalListAttributes;
     't-combobox-modal': Components.TComboboxModalAttributes;
     't-combobox': Components.TComboboxAttributes;
     't-container': Components.TContainerAttributes;
-    't-form-controller': Components.TFormControllerAttributes;
     't-message-summary': Components.TMessageSummaryAttributes;
     't-message': Components.TMessageAttributes;
     't-popup-menu-controller': Components.TPopupMenuControllerAttributes;
@@ -477,6 +481,12 @@ declare global {
     't-validation-controller': Components.TValidationControllerAttributes;
   }
 
+
+  interface HTMLTActionControllerElement extends Components.TActionController, HTMLStencilElement {}
+  var HTMLTActionControllerElement: {
+    prototype: HTMLTActionControllerElement;
+    new (): HTMLTActionControllerElement;
+  };
 
   interface HTMLTComboboxChoicesElement extends Components.TComboboxChoices, HTMLStencilElement {}
   var HTMLTComboboxChoicesElement: {
@@ -506,12 +516,6 @@ declare global {
   var HTMLTContainerElement: {
     prototype: HTMLTContainerElement;
     new (): HTMLTContainerElement;
-  };
-
-  interface HTMLTFormControllerElement extends Components.TFormController, HTMLStencilElement {}
-  var HTMLTFormControllerElement: {
-    prototype: HTMLTFormControllerElement;
-    new (): HTMLTFormControllerElement;
   };
 
   interface HTMLTMessageSummaryElement extends Components.TMessageSummary, HTMLStencilElement {}
@@ -557,12 +561,12 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
+    't-action-controller': HTMLTActionControllerElement
     't-combobox-choices': HTMLTComboboxChoicesElement
     't-combobox-modal-list': HTMLTComboboxModalListElement
     't-combobox-modal': HTMLTComboboxModalElement
     't-combobox': HTMLTComboboxElement
     't-container': HTMLTContainerElement
-    't-form-controller': HTMLTFormControllerElement
     't-message-summary': HTMLTMessageSummaryElement
     't-message': HTMLTMessageElement
     't-popup-menu-controller': HTMLTPopupMenuControllerElement
@@ -573,12 +577,12 @@ declare global {
   }
 
   interface ElementTagNameMap {
+    't-action-controller': HTMLTActionControllerElement;
     't-combobox-choices': HTMLTComboboxChoicesElement;
     't-combobox-modal-list': HTMLTComboboxModalListElement;
     't-combobox-modal': HTMLTComboboxModalElement;
     't-combobox': HTMLTComboboxElement;
     't-container': HTMLTContainerElement;
-    't-form-controller': HTMLTFormControllerElement;
     't-message-summary': HTMLTMessageSummaryElement;
     't-message': HTMLTMessageElement;
     't-popup-menu-controller': HTMLTPopupMenuControllerElement;

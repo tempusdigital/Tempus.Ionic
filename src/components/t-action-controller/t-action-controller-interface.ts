@@ -1,8 +1,9 @@
-export interface ProcessSubmitOptions {
+export interface ProcessOptions {
   toastPosition: 'top' | 'bottom' | 'middle';
+  showLoading: boolean;
 }
 
-export interface IFormControllerMessages {
+export interface IActionControllerMessages {
   sending?: string,
   timeout?: string,
   notFound?: string,
@@ -11,7 +12,7 @@ export interface IFormControllerMessages {
   internalServerError?: string
 }
 
-export const FormControllerDefaultMessages: IFormControllerMessages = {
+export const ActionControllerDefaultMessages: IActionControllerMessages = {
   sending: 'Enviando...',
   timeout: 'O servidor demorou para responder, por favor, tente novamente',
   notFound: 'Não encontramos o que você está procurando',

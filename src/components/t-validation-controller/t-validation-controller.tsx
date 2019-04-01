@@ -177,8 +177,12 @@ export class TValidationController {
       let messageElement = this.getMessageElement(form, element);
 
       if (!messageElement) {
-        if (element.validationMessage)
-          globalMessages.push(this.normalizeLabel(element.name) + ': ' + element.validationMessage);
+        if (element.validationMessage) {
+          if (element.name != 'global' && element.name != 'Global')
+            globalMessages.push(this.normalizeLabel(element.name) + ': ' + element.validationMessage);
+          else
+            globalMessages.push(element.validationMessage);
+        }
       }
       else
         messageElement.validationMessage = element.validationMessage;
