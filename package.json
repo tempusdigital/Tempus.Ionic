@@ -18,10 +18,10 @@
   },
   "peerDependencies": {
     "choices.js": "~3.0.4",
-    "@ionic/core": "^4.0.1"
+    "@ionic/core": "^4.2.0"
   },
   "devDependencies": {
-    "@stencil/core": "0.17.3-0",
+    "@stencil/core": "0.18.1",
     "@stencil/sass": "0.1.1",
     "choices.js": "3.0.4"
   },

@@ -4,7 +4,7 @@ t-select {
   flex: 1;
   width: 100%;
   margin-left: 0;
-  padding-right: 8px;
+  padding-right: 0;
 
   ion-input {
     --padding-top: 8px;
@@ -18,17 +18,17 @@ t-select {
     height: 0;
     width: 0;
     border-style: solid;
-    border-color: #999999 transparent transparent transparent;
+    border-color: rgb(171,171,171) transparent transparent transparent;
     border-width: 5px;
     position: absolute;
-    right: 13px;
+    right: 27px;
     bottom: 10px;
     margin-top: -2.5px;
     pointer-events: none;
   }
 
   select {
-    height: 34px;
+    height: 38px;
     background-color: transparent;
     display: block;
     border: 0;
