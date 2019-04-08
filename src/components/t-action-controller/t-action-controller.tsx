@@ -1,16 +1,16 @@
 import { Component, Method, Prop, Watch } from "@stencil/core";
-import { ProcessSubmitOptions, IFormControllerMessages, FormControllerDefaultMessages } from './t-form-controller-interface';
+import { IActionControllerMessages, ActionControllerDefaultMessages as ActionControllerDefaultMessages, ProcessOptions } from './t-action-controller-interface';
 import { FormValidationMessages } from "../t-validation-controller/t-validation-controller-interface";
 
 @Component({
-  tag: 't-form-controller',
-  styleUrl: 't-form-controller.scss'
+  tag: 't-action-controller',
+  styleUrl: 't-action-controller.scss'
 })
-export class TFormController {
+export class TActionController {
 
-  private _internalMessages = { ...FormControllerDefaultMessages };
+  private _internalMessages = { ...ActionControllerDefaultMessages };
 
-  @Prop() messages: IFormControllerMessages;
+  @Prop() messages: IActionControllerMessages;
 
   @Prop({ context: 'window' }) win!: Window;
 
@@ -27,9 +27,9 @@ export class TFormController {
   @Watch('messages')
   messagesChanged() {
     if (this.messages)
-      this._internalMessages = { ...FormControllerDefaultMessages, ...this.messages };
+      this._internalMessages = { ...ActionControllerDefaultMessages, ...this.messages };
     else
-      this._internalMessages = { ...FormControllerDefaultMessages };
+      this._internalMessages = { ...ActionControllerDefaultMessages };
   }
 
   /**
@@ -43,7 +43,8 @@ export class TFormController {
    * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
    */
   @Method()
-  async processSubmit(form: HTMLFormElement, action?: () => any, options?: ProcessSubmitOptions): Promise<boolean> {
+  async processSubmit(form: HTMLFormElement, action?: () => any, options?: ProcessOptions): Promise<boolean> {
+    let showLoading = !options || options.showLoading === true;
     let toastPosition = options && options.toastPosition || 'bottom';
 
     this.validationController.componentOnReady();
@@ -61,7 +62,7 @@ export class TFormController {
 
     if (action)
       try {
-        loading = await this.showLoading();
+        loading = showLoading && await this.showLoading();
 
         let actionResult = action();
 
@@ -70,17 +71,68 @@ export class TFormController {
       }
       catch (e) {
         if (e && e.status == 400 && e.json)
-          this.processStatus400(form, await e.json());
+          this.processFormStatus400(form, await e.json());
 
-        loading.dismiss();
+        loading && loading.dismiss();
 
         let toastMessage = this.getToastMessage(e);
         this.showToast(toastMessage, toastPosition);
 
         return false;
       }
+      finally {
+        loading && loading.dismiss();
+      }
 
     this.validationController && this.validationController.reportValidity(form);
+
+    loading && loading.dismiss();
+
+    return true;
+  }
+
+  /**
+ * Processa as mensagens pra execução do submit de um formulário:
+ * - Exibe mensagem de "Carregando..." 
+ * - Impede alterações dos campos e reenvio do formulário até terminar o submit
+ * - Exibe validações locais
+ * - Exibe validações do servidor (retornadas com o status 400)
+ * - Exibe avisos de erros de servidor
+ * @param form Formulário
+ * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
+ */
+  @Method()
+  async processAction(action?: () => any, options?: ProcessOptions): Promise<boolean> {
+    let showLoading = !options || options.showLoading === true;
+    let toastPosition = options && options.toastPosition || 'bottom';
+
+    let loading = null;
+
+    if (action)
+      try {
+        loading = showLoading && await this.showLoading();
+
+        let actionResult = action();
+
+        if (actionResult && 'then' in actionResult)
+          await actionResult;
+      }
+      catch (e) {
+        loading && loading.dismiss();
+
+        if (e && e.status == 400 && e.json) {
+          this.processActionStatus400(await e.json());
+          return;
+        }
+
+        let toastMessage = this.getToastMessage(e);
+        this.showToast(toastMessage, toastPosition);
+
+        return false;
+      }
+      finally {
+        loading && loading.dismiss();
+      }
 
     loading && loading.dismiss();
 
@@ -128,7 +180,7 @@ export class TFormController {
     }
   }
 
-  private async processStatus400(form: HTMLFormElement, data: any) {
+  private async processFormStatus400(form: HTMLFormElement, data: any) {
     this.validationController.clearCustomValidity(form);
 
     let messages = await this.getServerValidationMessages(data);
@@ -137,6 +189,25 @@ export class TFormController {
       this.validationController.setCustomValidity(form, messages);
 
     await this.validationController.reportValidity(form);
+
+    await this.showToast(this._internalMessages.badRequest);
+  }
+
+  private async processActionStatus400(data: any) {
+    let messages = await this.getServerValidationMessages(data);
+
+    if (messages && messages.length)
+      for (let field in messages) {
+        let fieldMessages = messages[field];
+        if (fieldMessages && fieldMessages.length) {
+          if (field != 'global' && field != 'Global')
+            await this.showToast(field + ': ' + fieldMessages[0]);
+          else
+            await this.showToast(fieldMessages[0]);
+
+          return;
+        }
+      }
 
     await this.showToast(this._internalMessages.badRequest);
   }

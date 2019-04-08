@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -17,7 +18,7 @@
 <body>
   <ion-app>
     <form action="GET" novalidate>
-      <ion-button type="submit">Submit</ion-button>
+      <h2>Form Test</h2>
       <t-message-summary></t-message-summary>
       <ion-list>
         <ion-item>
@@ -26,25 +27,39 @@
           <t-message name="one"></t-message>
         </ion-item>
       </ion-list>
+      <ion-button type="submit">Submit</ion-button>
     </form>
 
-    <t-form-controller></t-form-controller>
+    <div>
+      <h2>Custom Action Test</h2>
+      <ion-button id="custom-buttton">Execute Custom</ion-button>
+    </div>
+
+    <t-action-controller></t-action-controller>
   </ion-app>
 
   <script>
     var form = document.querySelector('form');
-    var formController = document.querySelector('t-form-controller');
+    var actionController = document.querySelector('t-action-controller');
 
-    formController.componentOnReady().then(() => {
-      formController.messages = {
+    actionController.componentOnReady().then(() => {
+      actionController.messages = {
         badRequest: 'Custom message'
       }
     });
-
+    
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      formController.processSubmit(form, () => {
+      actionController.processSubmit(form, () => {
+        return new Promise((r) => setTimeout(r, 2000));
+      });
+    });
+
+    var customButton = document.getElementById('custom-buttton');
+
+    customButton.addEventListener('click', () => {
+      actionController.processAction(form, () => {
         return new Promise((r) => setTimeout(r, 2000));
       });
     });

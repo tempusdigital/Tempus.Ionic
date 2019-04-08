@@ -7,23 +7,32 @@ $choices-selector: 'choices';
 
 @import 'node_modules/choices.js/assets/styles/scss/choices.scss';
 
-.#{ $choices-selector }[data-type*="select-one"] {
-  .#{ $choices-selector }__button {
-    background-image: url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"><g fill="#000" fill-rule="evenodd"><path d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/><path d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/></g></svg>');
-  }
-}
-
-.#{ $choices-selector }[data-type*="select-multiple"],
-.#{ $choices-selector }[data-type*="text"]  {
-  .#{ $choices-selector }__button {
-    background-image: url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"><g fill="#FFF" fill-rule="evenodd"><path d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/><path d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/></g></svg>');
-  }
-}
-
 t-combobox-choices {
+
   display: block;
   width: 100%;
   overflow: visible;
+
+  --combobox-remove-icon: url("data:image/svg+xml;utf8,<svg width='21' height='21' viewBox='0 0 21 21' xmlns='http://www.w3.org/2000/svg'><g fill='%23FFF' fill-rule='evenodd'><path d='M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z'/><path d='M0 18.364L18.364 0l2.548 2.548L2.548 20.912z'/></g></svg>");
+
+  .#{ $choices-selector }[data-type*="select-one"] {
+    .#{ $choices-selector }__button {
+      background-image: var(--combobox-remove-icon);
+    }
+  }
+  
+  .#{ $choices-selector }[data-type*="select-multiple"],
+  .#{ $choices-selector }[data-type*="text"]  {
+    .#{ $choices-selector }__button {
+      background-image: var(--combobox-remove-icon);
+    }
+  }
+
+  .choices[data-type*="select-one"]:after {
+    border-color: rgb(171,171,171) transparent transparent transparent;
+    top: auto !important;
+    bottom: 7px;
+  }
 
   .choices[data-type*="select-one"] .choices__inner {
     padding-bottom: 3px;
@@ -36,7 +45,7 @@ t-combobox-choices {
     min-height: 35px;
 
     .choices__list--single {
-      padding-top: 6px;
+      padding-top: 2px;
       padding-left: 0;
       padding-bottom: 0;
       font-size: 16px;
