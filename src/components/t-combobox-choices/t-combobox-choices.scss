@@ -32,6 +32,7 @@ t-combobox-choices {
     border-color: rgb(171,171,171) transparent transparent transparent;
     top: auto !important;
     bottom: 7px;
+    right: 5px;
   }
 
   .choices[data-type*="select-one"] .choices__inner {

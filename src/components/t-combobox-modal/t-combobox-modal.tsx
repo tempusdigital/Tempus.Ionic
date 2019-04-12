@@ -263,7 +263,7 @@ export class TComboboxModal implements ICombobox {
         {this.text ? this.text : <span class="t-placeholder">{this.placeholder}</span>}
         &nbsp;
         {
-          !this.readonly &&
+          !this.readonly && !this.required &&
           <ion-button
             class="t-clear"
             type="button"

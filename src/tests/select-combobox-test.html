@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Select</title>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/typography.css">
+  <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
+  <script src="/build/tempusdigitalionic.js"></script>
+
+</head>
+
+<body>
+  <ion-app>
+    <ion-content>
+      <form novalidate>
+          <ion-list-header>Stacked</ion-list-header>
+
+          <ion-item>
+            <ion-label position="stacked">Stacked Combobox</ion-label>
+            <t-combobox> </t-combobox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Stacked Select</ion-label>
+            <t-select name="selectTeste" id="stacked" placeholder="Placeholder">
+              <t-select-option value="1" selected>Text 001</t-select-option>
+              <t-select-option value="2">Text 002</t-select-option>
+              <t-select-option value="3">Text 003</t-select-option>
+              <t-select-option value="4">Text 004</t-select-option>
+              <t-select-option value="5">Text 005</t-select-option>
+            </t-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Stacked Ion-Select</ion-label>
+            <ion-select name="selectTeste" id="stacked" placeholder="Placeholder">
+              <ion-select-option value="1" selected>Text 001</ion-select-option>
+              <ion-select-option value="2">Text 002</ion-select-option>
+              <ion-select-option value="3">Text 003</ion-select-option>
+              <ion-select-option value="4">Text 004</ion-select-option>
+              <ion-select-option value="5">Text 005</ion-select-option>
+            </ion-select>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="stacked">Stacked Input</ion-label>
+            <ion-input value="Text 001"></ion-input>
+          </ion-item>
+
+          <ion-list-header>Floating</ion-list-header>
+
+          <ion-item>
+            <ion-label position="floating">Floating Combobox</ion-label>
+            <t-combobox> </t-combobox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Floating Select</ion-label>
+            <t-select name="selectTeste" id="stacked" placeholder="Placeholder">
+              <t-select-option value="1" selected>Text 001</t-select-option>
+              <t-select-option value="2">Text 002</t-select-option>
+              <t-select-option value="3">Text 003</t-select-option>
+              <t-select-option value="4">Text 004</t-select-option>
+              <t-select-option value="5">Text 005</t-select-option>
+            </t-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Floating Ion-Select</ion-label>
+            <ion-select name="selectTeste" id="stacked" placeholder="Placeholder">
+              <ion-select-option value="1" selected>Text 001</ion-select-option>
+              <ion-select-option value="2">Text 002</ion-select-option>
+              <ion-select-option value="3">Text 003</ion-select-option>
+              <ion-select-option value="4">Text 004</ion-select-option>
+              <ion-select-option value="5">Text 005</ion-select-option>
+            </ion-select>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label position="floating">Floating Input</ion-label>
+            <ion-input value="Text 001"></ion-input>
+          </ion-item>
+
+          <ion-list-header>Default</ion-list-header>
+
+          <ion-item>
+            <ion-label>Default Combobox</ion-label>
+            <t-combobox> </t-combobox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Default Select</ion-label>
+            <t-select name="selectTeste" id="stacked" placeholder="Placeholder">
+              <t-select-option value="1" selected>Text 001</t-select-option>
+              <t-select-option value="2">Text 002</t-select-option>
+              <t-select-option value="3">Text 003</t-select-option>
+              <t-select-option value="4">Text 004</t-select-option>
+              <t-select-option value="5">Text 005</t-select-option>
+            </t-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Default Ion-Select</ion-label>
+            <ion-select name="selectTeste" id="stacked" placeholder="Placeholder">
+              <ion-select-option value="1" selected>Text 001</ion-select-option>
+              <ion-select-option value="2">Text 002</ion-select-option>
+              <ion-select-option value="3">Text 003</ion-select-option>
+              <ion-select-option value="4">Text 004</ion-select-option>
+              <ion-select-option value="5">Text 005</ion-select-option>
+            </ion-select>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label>Default Input</ion-label>
+            <ion-input value="Text 001"></ion-input>
+          </ion-item>
+
+      </form>
+    </ion-content>
+  </ion-app>
+
+  <script>
+    var options = [];
+
+    function init() {
+      document.querySelector('t-combobox').componentOnReady().then(() => {
+        for (let i = 1; i < 5; i++) {
+          options.push({
+            value: i,
+            text: 'Text' + i.toString().padStart(3, '0'),
+          })
+        }
+
+        var combos = document.getElementsByTagName('t-combobox');
+
+        for (let i = 0; i < combos.length; i++) {
+          var combo = combos.item(i);
+
+          combo.value = '1';
+
+          combo.options = options;
+        }
+      });
+    }
+
+    init();
+  </script>
+
+</body>
+
+</html>

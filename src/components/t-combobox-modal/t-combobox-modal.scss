@@ -1,6 +1,21 @@
 t-combobox-modal {
+  position: relative;
   display: block;
   width: 100%;
+
+  &:not([readonly])::after {
+    content: "";
+    height: 0;
+    width: 0;
+    border-style: solid;
+    border-color: rgb(171,171,171) transparent transparent transparent;
+    border-width: 5px;
+    position: absolute;
+    right: 5px;
+    bottom: 10px;
+    margin-top: -2.5px;
+    pointer-events: none;
+  }
 
   &:not(.t-disabled):not([readonly]) {
     cursor: pointer;
@@ -20,8 +35,9 @@ t-combobox-modal {
 
   .t-clear {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 16px;
+    bottom: 4px;
+    margin: 0;
   }
 }
 
