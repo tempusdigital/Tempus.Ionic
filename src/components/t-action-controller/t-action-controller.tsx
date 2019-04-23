@@ -47,9 +47,9 @@ export class TActionController {
     let showLoading = !options || options.showLoading === true;
     let toastPosition = options && options.toastPosition || 'bottom';
 
-    this.validationController.componentOnReady();
+    await this.validationController.componentOnReady();
 
-    this.validationController.clearCustomValidity(form);
+    await this.validationController.clearCustomValidity(form);
 
     let valid = await await this.validationController.reportValidity(form);
 
