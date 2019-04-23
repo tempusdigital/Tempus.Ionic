@@ -51,7 +51,7 @@ export class TActionController {
 
     await this.validationController.clearCustomValidity(form);
 
-    let valid = await await this.validationController.reportValidity(form);
+    let valid = await this.validationController.reportValidity(form);
 
     if (!valid) {
       await this.showToast(this._internalMessages.badRequest, toastPosition);
