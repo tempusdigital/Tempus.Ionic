@@ -32,6 +32,16 @@ export class TActionController {
       this._internalMessages = { ...ActionControllerDefaultMessages };
   }
 
+  async validate(form: HTMLFormElement) {
+    await this.validationController.componentOnReady();
+
+    await this.validationController.clearCustomValidity(form);
+
+    let valid = await this.validationController.reportValidity(form);
+
+    return valid;
+  }
+
   /**
    * Processa as mensagens pra execução do submit de um formulário:
    * - Exibe mensagem de "Carregando..." 
@@ -47,11 +57,7 @@ export class TActionController {
     let showLoading = !options || options.showLoading === true;
     let toastPosition = options && options.toastPosition || 'bottom';
 
-    await this.validationController.componentOnReady();
-
-    await this.validationController.clearCustomValidity(form);
-
-    let valid = await this.validationController.reportValidity(form);
+    let valid = await this.validate(form);
 
     if (!valid) {
       await this.showToast(this._internalMessages.badRequest, toastPosition);
