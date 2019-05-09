@@ -14,9 +14,9 @@ export class TActionController {
 
   @Prop({ context: 'window' }) win!: Window;
 
-  @Prop({ connect: 'ion-toast-controller' }) toastController: any;
+  toastController: any;
 
-  @Prop({ connect: 'ion-loading-controller' }) loadingController: any;
+  loadingController: any;
 
   validationController: any;
 
@@ -280,6 +280,10 @@ export class TActionController {
   }
 
   render() {
-    return (<t-validation-controller ref={e => this.validationController = e as any}></t-validation-controller>);
+    return [
+      <ion-toast-controller ref={e => this.toastController = e as any}></ion-toast-controller>,
+      <ion-loading-controller ref={e => this.loadingController = e as any}></ion-loading-controller>,
+      <t-validation-controller ref={e => this.validationController = e as any}></t-validation-controller>
+    ];
   }
 }
