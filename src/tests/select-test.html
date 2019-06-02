@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Select</title>
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/core.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/normalize.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/structure.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@latest/css/typography.css">
-  <script src="https://unpkg.com/@ionic/core@latest/dist/ionic.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/typography.css">
+  <script src="https://unpkg.com/@ionic/core@4.2.0/dist/ionic.js"></script>
   <script src="/build/tempusdigitalionic.js"></script>
 
 </head>
@@ -70,15 +70,28 @@
       </t-select>
     </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Com validacao</ion-label>
-      <t-select name="selectTeste" required>
-        <t-select-option value="1">One</t-select-option>
-        <t-select-option value="2">Two</t-select-option>
-        <t-select-option value="3">Three</t-select-option>
-      </t-select>
-      <t-message validationMessage="Mensagem de validação"></t-message>
-    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Com validacao</ion-label>
+            <t-select name="selectTeste" required>
+              <t-select-option value="1">One</t-select-option>
+              <t-select-option value="2">Two</t-select-option>
+              <t-select-option value="3">Three</t-select-option>
+            </t-select>
+            <t-message validationMessage="Mensagem de validação"></t-message>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Com validacao (input)</ion-label>
+            <ion-input></ion-input>
+            <t-message validationMessage="Mensagem de validação"></t-message>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-list>
 
   <script>
