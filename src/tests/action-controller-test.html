@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -31,8 +30,18 @@
     </form>
 
     <div>
-      <h2>Custom Action Test</h2>
-      <ion-button id="custom-buttton">Execute Custom</ion-button>
+      <h2>Custom Action Success</h2>
+      <ion-button id="custom-button">Execute Custom With Success</ion-button>
+    </div>
+
+    <div>
+      <h2>Custom Action Server Failure</h2>
+      <ion-button id="custom-fail-button">Execute Custom Server Failure</ion-button>
+    </div>
+
+    <div>
+      <h2>Custom Action Returning Server Validation</h2>
+      <ion-button id="custom-validation-button">Execute Custom Server Validation</ion-button>
     </div>
 
     <t-action-controller></t-action-controller>
@@ -47,7 +56,7 @@
         badRequest: 'Custom message'
       }
     });
-    
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -56,11 +65,32 @@
       });
     });
 
-    var customButton = document.getElementById('custom-buttton');
+    var customButton = document.getElementById('custom-button');
 
     customButton.addEventListener('click', () => {
-      actionController.processAction(form, () => {
+      actionController.processAction(() => {
         return new Promise((r) => setTimeout(r, 2000));
+      });
+    });
+
+    var customButtonFail = document.getElementById('custom-fail-button');
+
+    customButtonFail.addEventListener('click', () => {
+      actionController.processAction(() => {
+        throw 'Server error';
+      });
+    });
+
+    var customButtonValidation = document.getElementById('custom-validation-button');
+
+    customButtonValidation.addEventListener('click', () => {
+      actionController.processAction(() => {
+        throw {
+          status: 400,
+          json: function () {
+            return { "errors": { "firstError": [{ "type": "invalid", "text": "Server validation message" }] } }
+          }
+        }
       });
     });
   </script>

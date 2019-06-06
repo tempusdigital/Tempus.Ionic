@@ -202,7 +202,7 @@ export class TActionController {
   private async processActionStatus400(data: any) {
     let messages = await this.getServerValidationMessages(data);
 
-    if (messages && messages.length)
+    if (messages)
       for (let field in messages) {
         let fieldMessages = messages[field];
         if (fieldMessages && fieldMessages.length) {

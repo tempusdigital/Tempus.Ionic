@@ -17,7 +17,7 @@ t-message {
   }
 
   .t-message-validation {
-    color: var(--highlight-color-invalid);
+    color: var(--highlight-color-invalid, var(--ion-color-danger,  #f04141));
   }
 }
 
