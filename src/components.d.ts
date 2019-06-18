@@ -396,6 +396,7 @@ export namespace Components {
     'onDidUnload'?: () => void;
     'onSelectOptionDidLoad'?: (event: CustomEvent<void>) => void;
     'onSelectOptionDidUnload'?: (event: CustomEvent<void>) => void;
+    'onSelectOptionDidUpdate'?: (event: CustomEvent<void>) => void;
     'selected'?: boolean;
     'value': string;
   }

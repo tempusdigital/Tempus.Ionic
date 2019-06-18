@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Prop, Element } from '@stencil/core';
+import { Component, Event, EventEmitter, Prop, Element, Watch } from '@stencil/core';
 import { normalizeValue } from '../../utils/helpers';
 
 @Component({
@@ -9,6 +9,7 @@ import { normalizeValue } from '../../utils/helpers';
 export class TSelectOption {
 
   @Event() selectOptionDidLoad!: EventEmitter<void>;
+  @Event() selectOptionDidUpdate!: EventEmitter<void>;
   @Event() selectOptionDidUnload!: EventEmitter<void>;
   @Prop({ mutable: true }) value!: string;
   @Prop() selected = false;
@@ -26,6 +27,11 @@ export class TSelectOption {
 
     if (normalizedValue !== this.value)
       this.value = normalizedValue;
+  }
+
+  @Watch('value')
+  valueChanged() {
+    this.selectOptionDidUpdate.emit();
   }
 
   componentDidLoad() {

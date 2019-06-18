@@ -1,7 +1,7 @@
 {
   "name": "@tempusdigital/ionic",
   "private": false,
-  "version": "1.0.0-beta.3-9",
+  "version": "1.0.0-beta.3-10",
   "description": "Tempus Digital Custom Ionic Components",
   "module": "dist/esm/index.js",
   "main": "dist/index.js",

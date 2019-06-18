@@ -31,6 +31,7 @@ export class TSelect {
     this.ionStyle = deferEvent(this.ionStyle);
     this.selectOptionDidLoad = debounceAsync(this.selectOptionDidLoad.bind(this));
     this.selectOptionDidUnload = debounceAsync(this.selectOptionDidUnload.bind(this));
+    this.selectOptionDidUpdate = debounceAsync(this.selectOptionDidUpdate.bind(this));
   }
 
   async componentDidLoad() {
@@ -70,10 +71,21 @@ export class TSelect {
     }
   }
 
+  @Listen('selectOptionDidUpdate')
+  async selectOptionDidUpdate() {    
+    if (this.didInit) {   
+      await this.loadOptions();
+      this.updateOptions();
+      this.updateValue();
+      this.emitStyle();
+    }
+  }
+
   @Listen('selectOptionDidUnload')
   async selectOptionDidUnload() {    
     if (this.didInit) {
       await this.loadOptions();
+      this.updateOptions();
       this.updateValue();
       this.emitStyle();
     }

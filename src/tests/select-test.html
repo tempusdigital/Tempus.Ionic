@@ -25,6 +25,7 @@
       </t-select>
     </ion-item>
     <ion-button onclick="addMoreOptions()">Add more options</ion-button>
+    <ion-button onclick="replaceOptions()">Replace options</ion-button>
     <ion-button onclick="changeOptions()">Change options</ion-button>
     <ion-button onclick="removeOneOption()">Remove first option</ion-button>
 
@@ -116,14 +117,30 @@
       six.value = '6';
       six.innerText = 'Six';
       stacked.appendChild(six);
+    }    
+    
+    function replaceOptions() {
+      let stacked = document.getElementById('stacked');
+
+      stacked.querySelectorAll('t-select-option').forEach(o => o.remove());
+
+      stacked.value = "6";
+
+      addMoreOptions();
     }
 
     function changeOptions() {
       let stacked = document.getElementById('stacked');
 
-      stacked.querySelectorAll('t-select-option').forEach(o => o.remove());
+      stacked.value = "-2";
 
-      addMoreOptions();
+      let i = 0;
+
+      stacked.querySelectorAll('t-select-option').forEach(o => {
+        i--;
+        o.value = i;
+        o.textContent = 'Option ' + i;
+      });
     }
 
     document.getElementById('floating').value = 2;
