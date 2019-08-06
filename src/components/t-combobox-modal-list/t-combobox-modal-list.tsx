@@ -1,4 +1,4 @@
-import { Component, Prop, Element, State } from '@stencil/core';
+import { Component, Prop, Element, State, h } from '@stencil/core';
 import { IComboboxOption, ComboboxDefaultOptions, IComboboxMessages } from '../t-combobox/t-combobox-interface';
 import { removeAccents } from '../../utils/helpers';
 

@@ -1,4 +1,4 @@
-import { Component, Method, Prop, Watch } from "@stencil/core";
+import { Component, Method, Prop, Watch, h } from "@stencil/core";
 import { IActionControllerMessages, ActionControllerDefaultMessages as ActionControllerDefaultMessages, ProcessOptions } from './t-action-controller-interface';
 import { FormValidationMessages } from "../t-validation-controller/t-validation-controller-interface";
 

@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, State, Element, Watch } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, State, Element, Watch, h } from '@stencil/core';
 import { ICombobox, IComboboxOption, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
 import { deferEvent, debounce, normalizeValue, isEmptyValue } from '../../utils/helpers';
 

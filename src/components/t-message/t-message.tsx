@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, Watch, Element } from "@stencil/core";
+import { Component, Prop, Event, EventEmitter, Watch, Element, h } from "@stencil/core";
 import { deferEvent } from "../../utils/helpers";
 
 @Component({

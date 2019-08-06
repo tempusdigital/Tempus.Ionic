@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, Watch, Method } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, Watch, Method, h } from '@stencil/core';
 import Choices from 'choices.js';
 import { IComboboxOption, ICombobox, ComboboxDefaultOptions, IComboboxMessages } from '../t-combobox/t-combobox-interface';
 import { deferEvent, debounce, isEmptyValue, normalizeValue } from '../../utils/helpers';

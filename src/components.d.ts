@@ -5,9 +5,7 @@
  */
 
 
-import '@stencil/core';
-
-
+import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 import {
   IActionControllerMessages,
   ProcessOptions,
@@ -25,216 +23,23 @@ import {
   FormValidationMessages,
 } from './components/t-validation-controller/t-validation-controller-interface';
 
-
 export namespace Components {
-
   interface TActionController {
     'getValidationController': () => Promise<any>;
     'messages': IActionControllerMessages;
     /**
     * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
+    * @param form Formulário
+    * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
     */
     'processAction': (action?: () => any, options?: ProcessOptions) => Promise<boolean>;
     /**
     * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
+    * @param form Formulário
+    * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
     */
     'processSubmit': (form: HTMLFormElement, action?: () => any, options?: ProcessOptions) => Promise<boolean>;
   }
-  interface TActionControllerAttributes extends StencilHTMLAttributes {
-    'messages'?: IActionControllerMessages;
-  }
-
-  interface TComboboxChoices {
-    /**
-    * Set the focus on component is loaded.
-    */
-    'autofocus': boolean;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
-    'disabled': boolean;
-    /**
-    * Return ChoicesJs instance
-    */
-    'getChoicesInstance': () => Promise<any>;
-    /**
-    * The messages that will be shown
-    */
-    'messages': IComboboxMessages;
-    /**
-    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-    */
-    'multiple': boolean;
-    /**
-    * Native select name attribute
-    */
-    'name': string;
-    /**
-    * The visible options to select.
-    */
-    'options': IComboboxOption[];
-    /**
-    * Set the input's placeholder when no option is selected.
-    */
-    'placeholder': string;
-    /**
-    * If `true`, the user must fill in a value before submitting a form.
-    */
-    'required': boolean;
-    /**
-    * The value of the input.
-    */
-    'value': string | string[];
-  }
-  interface TComboboxChoicesAttributes extends StencilHTMLAttributes {
-    /**
-    * Set the focus on component is loaded.
-    */
-    'autofocus'?: boolean;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
-    'disabled'?: boolean;
-    /**
-    * The messages that will be shown
-    */
-    'messages'?: IComboboxMessages;
-    /**
-    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-    */
-    'multiple'?: boolean;
-    /**
-    * Native select name attribute
-    */
-    'name'?: string;
-    /**
-    * Trigger change event when value has changed
-    */
-    'onChange'?: (event: CustomEvent) => void;
-    'onIonStyle'?: (event: CustomEvent) => void;
-    /**
-    * The visible options to select.
-    */
-    'options'?: IComboboxOption[];
-    /**
-    * Set the input's placeholder when no option is selected.
-    */
-    'placeholder'?: string;
-    /**
-    * If `true`, the user must fill in a value before submitting a form.
-    */
-    'required'?: boolean;
-    /**
-    * The value of the input.
-    */
-    'value'?: string | string[];
-  }
-
-  interface TComboboxModalList {
-    'handleChange': (selectedOption: IComboboxOption[]) => void;
-    'messages': IComboboxMessages;
-    'multiple': boolean;
-    'options': IComboboxOption[];
-    'value': any | any[];
-  }
-  interface TComboboxModalListAttributes extends StencilHTMLAttributes {
-    'handleChange'?: (selectedOption: IComboboxOption[]) => void;
-    'messages'?: IComboboxMessages;
-    'multiple'?: boolean;
-    'options'?: IComboboxOption[];
-    'value'?: any | any[];
-  }
-
-  interface TComboboxModal {
-    /**
-    * Set the focus on component is loaded.
-    */
-    'autofocus': boolean;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
-    'disabled': boolean;
-    /**
-    * The messages that will be shown
-    */
-    'messages': IComboboxMessages;
-    /**
-    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-    */
-    'multiple': boolean;
-    /**
-    * Native select name attribute
-    */
-    'name': string;
-    /**
-    * The visible options to select.
-    */
-    'options': IComboboxOption[];
-    /**
-    * Set the input's placeholder when no option is selected.
-    */
-    'placeholder': string;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
-    'readonly': boolean;
-    /**
-    * If `true`, the user must fill in a value before submitting a form.
-    */
-    'required': boolean;
-    /**
-    * The value of the input.
-    */
-    'value': string | string[];
-  }
-  interface TComboboxModalAttributes extends StencilHTMLAttributes {
-    /**
-    * Set the focus on component is loaded.
-    */
-    'autofocus'?: boolean;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
-    'disabled'?: boolean;
-    /**
-    * The messages that will be shown
-    */
-    'messages'?: IComboboxMessages;
-    /**
-    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-    */
-    'multiple'?: boolean;
-    /**
-    * Native select name attribute
-    */
-    'name'?: string;
-    /**
-    * Trigger change event when value has changed
-    */
-    'onChange'?: (event: CustomEvent) => void;
-    'onIonStyle'?: (event: CustomEvent) => void;
-    /**
-    * The visible options to select.
-    */
-    'options'?: IComboboxOption[];
-    /**
-    * Set the input's placeholder when no option is selected.
-    */
-    'placeholder'?: string;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
-    'readonly'?: boolean;
-    /**
-    * If `true`, the user must fill in a value before submitting a form.
-    */
-    'required'?: boolean;
-    /**
-    * The value of the input.
-    */
-    'value'?: string | string[];
-  }
-
   interface TCombobox {
     /**
     * Set the focus on component is loaded.
@@ -285,7 +90,268 @@ export namespace Components {
     */
     'value': any;
   }
-  interface TComboboxAttributes extends StencilHTMLAttributes {
+  interface TComboboxChoices {
+    /**
+    * Set the focus on component is loaded.
+    */
+    'autofocus': boolean;
+    /**
+    * If `true`, the user cannot interact with the input. Defaults to `false`.
+    */
+    'disabled': boolean;
+    /**
+    * Return ChoicesJs instance
+    */
+    'getChoicesInstance': () => Promise<any>;
+    /**
+    * The messages that will be shown
+    */
+    'messages': IComboboxMessages;
+    /**
+    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
+    */
+    'multiple': boolean;
+    /**
+    * Native select name attribute
+    */
+    'name': string;
+    /**
+    * The visible options to select.
+    */
+    'options': IComboboxOption[];
+    /**
+    * Set the input's placeholder when no option is selected.
+    */
+    'placeholder': string;
+    /**
+    * If `true`, the user must fill in a value before submitting a form.
+    */
+    'required': boolean;
+    /**
+    * The value of the input.
+    */
+    'value': string | string[];
+  }
+  interface TComboboxModal {
+    /**
+    * Set the focus on component is loaded.
+    */
+    'autofocus': boolean;
+    /**
+    * If `true`, the user cannot interact with the input. Defaults to `false`.
+    */
+    'disabled': boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages': IComboboxMessages;
+    /**
+    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
+    */
+    'multiple': boolean;
+    /**
+    * Native select name attribute
+    */
+    'name': string;
+    /**
+    * The visible options to select.
+    */
+    'options': IComboboxOption[];
+    /**
+    * Set the input's placeholder when no option is selected.
+    */
+    'placeholder': string;
+    /**
+    * If `true`, the user cannot interact with the input. Defaults to `false`.
+    */
+    'readonly': boolean;
+    /**
+    * If `true`, the user must fill in a value before submitting a form.
+    */
+    'required': boolean;
+    /**
+    * The value of the input.
+    */
+    'value': string | string[];
+  }
+  interface TComboboxModalList {
+    'handleChange': (selectedOption: IComboboxOption[]) => void;
+    'messages': IComboboxMessages;
+    'multiple': boolean;
+    'options': IComboboxOption[];
+    'value': any | any[];
+  }
+  interface TContainer {
+    'fluid': boolean;
+  }
+  interface TMessage {
+    'helperMessage': string;
+    'name': string;
+    'validationMessage': string;
+  }
+  interface TMessageSummary {
+    'validationMessages': string[];
+  }
+  interface TPopupMenuController {
+    'create': (options: PopupMenuOptions) => Promise<any>;
+  }
+  interface TPopupMenuPopover {
+    'buttons': PopupMenuButton[];
+    'dismiss': () => Promise<void>;
+    'header': string;
+    'popoverController': any;
+  }
+  interface TSelect {
+    'autofocus': boolean;
+    'disabled': boolean;
+    'hidden': boolean;
+    'multiple': boolean;
+    'name': string;
+    'readonly': boolean;
+    'required': boolean;
+    'value': string|string[];
+  }
+  interface TSelectOption {
+    'disabled': boolean;
+    'hidden': boolean;
+    'onDidUnload': () => void;
+    'selected': boolean;
+    'value': string;
+  }
+  interface TValidationController {
+    /**
+    * Clear the custom messages of all field on the form. The messages are remove removed from the field data, but to update the screen you must use reportValidity.
+    * @param form Form element
+    */
+    'clearCustomValidity': (form: HTMLFormElement) => Promise<void>;
+    /**
+    * Returns current global custom validity of a Form Element.
+    * @param form Form element
+    */
+    'getGlobalCustomValidity': (form: HTMLFormElement) => Promise<string>;
+    /**
+    * Update the form validaiton messages on the screen.
+    * @param form
+    */
+    'reportValidity': (form: HTMLFormElement) => Promise<boolean>;
+    /**
+    * Add custom validation to fields of the form.
+    * @param form FormElement
+    * @param formValidationMessages Validation messages to each field
+    */
+    'setCustomValidity': (form: HTMLFormElement, formValidationMessages: FormValidationMessages) => Promise<void>;
+    'setCustomerValidationForField': (form: HTMLFormElement, fieldName: string, validations: string[]) => Promise<void>;
+    /**
+    * Add custom validation at a form level. The validation won't be connected to a specific field.
+    * @param form Form element
+    * @param message Validation message
+    */
+    'setGlobalCustomValidity': (form: HTMLFormElement, message: string) => Promise<void>;
+  }
+}
+
+declare global {
+
+
+  interface HTMLTActionControllerElement extends Components.TActionController, HTMLStencilElement {}
+  var HTMLTActionControllerElement: {
+    prototype: HTMLTActionControllerElement;
+    new (): HTMLTActionControllerElement;
+  };
+
+  interface HTMLTComboboxElement extends Components.TCombobox, HTMLStencilElement {}
+  var HTMLTComboboxElement: {
+    prototype: HTMLTComboboxElement;
+    new (): HTMLTComboboxElement;
+  };
+
+  interface HTMLTComboboxChoicesElement extends Components.TComboboxChoices, HTMLStencilElement {}
+  var HTMLTComboboxChoicesElement: {
+    prototype: HTMLTComboboxChoicesElement;
+    new (): HTMLTComboboxChoicesElement;
+  };
+
+  interface HTMLTComboboxModalElement extends Components.TComboboxModal, HTMLStencilElement {}
+  var HTMLTComboboxModalElement: {
+    prototype: HTMLTComboboxModalElement;
+    new (): HTMLTComboboxModalElement;
+  };
+
+  interface HTMLTComboboxModalListElement extends Components.TComboboxModalList, HTMLStencilElement {}
+  var HTMLTComboboxModalListElement: {
+    prototype: HTMLTComboboxModalListElement;
+    new (): HTMLTComboboxModalListElement;
+  };
+
+  interface HTMLTContainerElement extends Components.TContainer, HTMLStencilElement {}
+  var HTMLTContainerElement: {
+    prototype: HTMLTContainerElement;
+    new (): HTMLTContainerElement;
+  };
+
+  interface HTMLTMessageElement extends Components.TMessage, HTMLStencilElement {}
+  var HTMLTMessageElement: {
+    prototype: HTMLTMessageElement;
+    new (): HTMLTMessageElement;
+  };
+
+  interface HTMLTMessageSummaryElement extends Components.TMessageSummary, HTMLStencilElement {}
+  var HTMLTMessageSummaryElement: {
+    prototype: HTMLTMessageSummaryElement;
+    new (): HTMLTMessageSummaryElement;
+  };
+
+  interface HTMLTPopupMenuControllerElement extends Components.TPopupMenuController, HTMLStencilElement {}
+  var HTMLTPopupMenuControllerElement: {
+    prototype: HTMLTPopupMenuControllerElement;
+    new (): HTMLTPopupMenuControllerElement;
+  };
+
+  interface HTMLTPopupMenuPopoverElement extends Components.TPopupMenuPopover, HTMLStencilElement {}
+  var HTMLTPopupMenuPopoverElement: {
+    prototype: HTMLTPopupMenuPopoverElement;
+    new (): HTMLTPopupMenuPopoverElement;
+  };
+
+  interface HTMLTSelectElement extends Components.TSelect, HTMLStencilElement {}
+  var HTMLTSelectElement: {
+    prototype: HTMLTSelectElement;
+    new (): HTMLTSelectElement;
+  };
+
+  interface HTMLTSelectOptionElement extends Components.TSelectOption, HTMLStencilElement {}
+  var HTMLTSelectOptionElement: {
+    prototype: HTMLTSelectOptionElement;
+    new (): HTMLTSelectOptionElement;
+  };
+
+  interface HTMLTValidationControllerElement extends Components.TValidationController, HTMLStencilElement {}
+  var HTMLTValidationControllerElement: {
+    prototype: HTMLTValidationControllerElement;
+    new (): HTMLTValidationControllerElement;
+  };
+  interface HTMLElementTagNameMap {
+    't-action-controller': HTMLTActionControllerElement;
+    't-combobox': HTMLTComboboxElement;
+    't-combobox-choices': HTMLTComboboxChoicesElement;
+    't-combobox-modal': HTMLTComboboxModalElement;
+    't-combobox-modal-list': HTMLTComboboxModalListElement;
+    't-container': HTMLTContainerElement;
+    't-message': HTMLTMessageElement;
+    't-message-summary': HTMLTMessageSummaryElement;
+    't-popup-menu-controller': HTMLTPopupMenuControllerElement;
+    't-popup-menu-popover': HTMLTPopupMenuPopoverElement;
+    't-select': HTMLTSelectElement;
+    't-select-option': HTMLTSelectOptionElement;
+    't-validation-controller': HTMLTValidationControllerElement;
+  }
+}
+
+declare namespace LocalJSX {
+  interface TActionController extends JSXBase.HTMLAttributes<HTMLTActionControllerElement> {
+    'messages'?: IActionControllerMessages;
+  }
+  interface TCombobox extends JSXBase.HTMLAttributes<HTMLTComboboxElement> {
     /**
     * Set the focus on component is loaded.
     */
@@ -309,7 +375,7 @@ export namespace Components {
     /**
     * Trigger change event when value has changed
     */
-    'onChange'?: (event: CustomEvent) => void;
+    'onChange'?: (event: CustomEvent<any>) => void;
     /**
     * The visible options to select.
     */
@@ -339,58 +405,133 @@ export namespace Components {
     */
     'value'?: any;
   }
-
-  interface TContainer {
-    'fluid': boolean;
+  interface TComboboxChoices extends JSXBase.HTMLAttributes<HTMLTComboboxChoicesElement> {
+    /**
+    * Set the focus on component is loaded.
+    */
+    'autofocus'?: boolean;
+    /**
+    * If `true`, the user cannot interact with the input. Defaults to `false`.
+    */
+    'disabled'?: boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages'?: IComboboxMessages;
+    /**
+    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
+    */
+    'multiple'?: boolean;
+    /**
+    * Native select name attribute
+    */
+    'name'?: string;
+    /**
+    * Trigger change event when value has changed
+    */
+    'onChange'?: (event: CustomEvent<any>) => void;
+    'onIonStyle'?: (event: CustomEvent<any>) => void;
+    /**
+    * The visible options to select.
+    */
+    'options'?: IComboboxOption[];
+    /**
+    * Set the input's placeholder when no option is selected.
+    */
+    'placeholder'?: string;
+    /**
+    * If `true`, the user must fill in a value before submitting a form.
+    */
+    'required'?: boolean;
+    /**
+    * The value of the input.
+    */
+    'value'?: string | string[];
   }
-  interface TContainerAttributes extends StencilHTMLAttributes {
+  interface TComboboxModal extends JSXBase.HTMLAttributes<HTMLTComboboxModalElement> {
+    /**
+    * Set the focus on component is loaded.
+    */
+    'autofocus'?: boolean;
+    /**
+    * If `true`, the user cannot interact with the input. Defaults to `false`.
+    */
+    'disabled'?: boolean;
+    /**
+    * The messages that will be shown
+    */
+    'messages'?: IComboboxMessages;
+    /**
+    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
+    */
+    'multiple'?: boolean;
+    /**
+    * Native select name attribute
+    */
+    'name'?: string;
+    /**
+    * Trigger change event when value has changed
+    */
+    'onChange'?: (event: CustomEvent<any>) => void;
+    'onIonStyle'?: (event: CustomEvent<any>) => void;
+    /**
+    * The visible options to select.
+    */
+    'options'?: IComboboxOption[];
+    /**
+    * Set the input's placeholder when no option is selected.
+    */
+    'placeholder'?: string;
+    /**
+    * If `true`, the user cannot interact with the input. Defaults to `false`.
+    */
+    'readonly'?: boolean;
+    /**
+    * If `true`, the user must fill in a value before submitting a form.
+    */
+    'required'?: boolean;
+    /**
+    * The value of the input.
+    */
+    'value'?: string | string[];
+  }
+  interface TComboboxModalList extends JSXBase.HTMLAttributes<HTMLTComboboxModalListElement> {
+    'handleChange'?: (selectedOption: IComboboxOption[]) => void;
+    'messages'?: IComboboxMessages;
+    'multiple'?: boolean;
+    'options'?: IComboboxOption[];
+    'value'?: any | any[];
+  }
+  interface TContainer extends JSXBase.HTMLAttributes<HTMLTContainerElement> {
     'fluid'?: boolean;
   }
-
-  interface TMessageSummary {
-    'validationMessages': string[];
-  }
-  interface TMessageSummaryAttributes extends StencilHTMLAttributes {
-    'validationMessages'?: string[];
-  }
-
-  interface TMessage {
-    'helperMessage': string;
-    'name': string;
-    'validationMessage': string;
-  }
-  interface TMessageAttributes extends StencilHTMLAttributes {
+  interface TMessage extends JSXBase.HTMLAttributes<HTMLTMessageElement> {
     'helperMessage'?: string;
     'name'?: string;
-    'onIonStyle'?: (event: CustomEvent) => void;
+    'onIonStyle'?: (event: CustomEvent<any>) => void;
     'validationMessage'?: string;
   }
-
-  interface TPopupMenuController {
-    'create': (options: PopupMenuOptions) => Promise<any>;
+  interface TMessageSummary extends JSXBase.HTMLAttributes<HTMLTMessageSummaryElement> {
+    'validationMessages'?: string[];
   }
-  interface TPopupMenuControllerAttributes extends StencilHTMLAttributes {}
-
-  interface TPopupMenuPopover {
-    'buttons': PopupMenuButton[];
-    'dismiss': () => Promise<void>;
-    'header': string;
-    'popoverController': any;
-  }
-  interface TPopupMenuPopoverAttributes extends StencilHTMLAttributes {
+  interface TPopupMenuController extends JSXBase.HTMLAttributes<HTMLTPopupMenuControllerElement> {}
+  interface TPopupMenuPopover extends JSXBase.HTMLAttributes<HTMLTPopupMenuPopoverElement> {
     'buttons'?: PopupMenuButton[];
     'header'?: string;
     'popoverController'?: any;
   }
-
-  interface TSelectOption {
-    'disabled': boolean;
-    'hidden': boolean;
-    'onDidUnload': () => void;
-    'selected': boolean;
-    'value': string;
+  interface TSelect extends JSXBase.HTMLAttributes<HTMLTSelectElement> {
+    'autofocus'?: boolean;
+    'disabled'?: boolean;
+    'hidden'?: boolean;
+    'multiple'?: boolean;
+    'name'?: string;
+    'onIonStyle'?: (event: CustomEvent<any>) => void;
+    'readonly'?: boolean;
+    'required'?: boolean;
+    'value'?: string|string[];
   }
-  interface TSelectOptionAttributes extends StencilHTMLAttributes {
+  interface TSelectOption extends JSXBase.HTMLAttributes<HTMLTSelectOptionElement> {
     'disabled'?: boolean;
     'hidden'?: boolean;
     'onDidUnload'?: () => void;
@@ -400,206 +541,32 @@ export namespace Components {
     'selected'?: boolean;
     'value': string;
   }
+  interface TValidationController extends JSXBase.HTMLAttributes<HTMLTValidationControllerElement> {}
 
-  interface TSelect {
-    'autofocus': boolean;
-    'disabled': boolean;
-    'hidden': boolean;
-    'multiple': boolean;
-    'name': string;
-    'readonly': boolean;
-    'required': boolean;
-    'value': string|string[];
+  interface IntrinsicElements {
+    't-action-controller': TActionController;
+    't-combobox': TCombobox;
+    't-combobox-choices': TComboboxChoices;
+    't-combobox-modal': TComboboxModal;
+    't-combobox-modal-list': TComboboxModalList;
+    't-container': TContainer;
+    't-message': TMessage;
+    't-message-summary': TMessageSummary;
+    't-popup-menu-controller': TPopupMenuController;
+    't-popup-menu-popover': TPopupMenuPopover;
+    't-select': TSelect;
+    't-select-option': TSelectOption;
+    't-validation-controller': TValidationController;
   }
-  interface TSelectAttributes extends StencilHTMLAttributes {
-    'autofocus'?: boolean;
-    'disabled'?: boolean;
-    'hidden'?: boolean;
-    'multiple'?: boolean;
-    'name'?: string;
-    'onIonStyle'?: (event: CustomEvent) => void;
-    'readonly'?: boolean;
-    'required'?: boolean;
-    'value'?: string|string[];
-  }
-
-  interface TValidationController {
-    /**
-    * Clear the custom messages of all field on the form. The messages are remove removed from the field data, but to update the screen you must use reportValidity.
-    */
-    'clearCustomValidity': (form: HTMLFormElement) => void;
-    /**
-    * Returns current global custom validity of a Form Element.
-    */
-    'getGlobalCustomValidity': (form: HTMLFormElement) => Promise<string>;
-    /**
-    * Update the form validaiton messages on the screen.
-    */
-    'reportValidity': (form: HTMLFormElement) => Promise<boolean>;
-    /**
-    * Add custom validation to fields of the form.
-    */
-    'setCustomValidity': (form: HTMLFormElement, formValidationMessages: FormValidationMessages) => void;
-    'setCustomerValidationForField': (form: HTMLFormElement, fieldName: string, validations: string[]) => void;
-    /**
-    * Add custom validation at a form level. The validation won't be connected to a specific field.
-    */
-    'setGlobalCustomValidity': (form: HTMLFormElement, message: string) => void;
-  }
-  interface TValidationControllerAttributes extends StencilHTMLAttributes {}
 }
 
-declare global {
-  interface StencilElementInterfaces {
-    'TActionController': Components.TActionController;
-    'TComboboxChoices': Components.TComboboxChoices;
-    'TComboboxModalList': Components.TComboboxModalList;
-    'TComboboxModal': Components.TComboboxModal;
-    'TCombobox': Components.TCombobox;
-    'TContainer': Components.TContainer;
-    'TMessageSummary': Components.TMessageSummary;
-    'TMessage': Components.TMessage;
-    'TPopupMenuController': Components.TPopupMenuController;
-    'TPopupMenuPopover': Components.TPopupMenuPopover;
-    'TSelectOption': Components.TSelectOption;
-    'TSelect': Components.TSelect;
-    'TValidationController': Components.TValidationController;
-  }
-
-  interface StencilIntrinsicElements {
-    't-action-controller': Components.TActionControllerAttributes;
-    't-combobox-choices': Components.TComboboxChoicesAttributes;
-    't-combobox-modal-list': Components.TComboboxModalListAttributes;
-    't-combobox-modal': Components.TComboboxModalAttributes;
-    't-combobox': Components.TComboboxAttributes;
-    't-container': Components.TContainerAttributes;
-    't-message-summary': Components.TMessageSummaryAttributes;
-    't-message': Components.TMessageAttributes;
-    't-popup-menu-controller': Components.TPopupMenuControllerAttributes;
-    't-popup-menu-popover': Components.TPopupMenuPopoverAttributes;
-    't-select-option': Components.TSelectOptionAttributes;
-    't-select': Components.TSelectAttributes;
-    't-validation-controller': Components.TValidationControllerAttributes;
-  }
+export { LocalJSX as JSX };
 
 
-  interface HTMLTActionControllerElement extends Components.TActionController, HTMLStencilElement {}
-  var HTMLTActionControllerElement: {
-    prototype: HTMLTActionControllerElement;
-    new (): HTMLTActionControllerElement;
-  };
-
-  interface HTMLTComboboxChoicesElement extends Components.TComboboxChoices, HTMLStencilElement {}
-  var HTMLTComboboxChoicesElement: {
-    prototype: HTMLTComboboxChoicesElement;
-    new (): HTMLTComboboxChoicesElement;
-  };
-
-  interface HTMLTComboboxModalListElement extends Components.TComboboxModalList, HTMLStencilElement {}
-  var HTMLTComboboxModalListElement: {
-    prototype: HTMLTComboboxModalListElement;
-    new (): HTMLTComboboxModalListElement;
-  };
-
-  interface HTMLTComboboxModalElement extends Components.TComboboxModal, HTMLStencilElement {}
-  var HTMLTComboboxModalElement: {
-    prototype: HTMLTComboboxModalElement;
-    new (): HTMLTComboboxModalElement;
-  };
-
-  interface HTMLTComboboxElement extends Components.TCombobox, HTMLStencilElement {}
-  var HTMLTComboboxElement: {
-    prototype: HTMLTComboboxElement;
-    new (): HTMLTComboboxElement;
-  };
-
-  interface HTMLTContainerElement extends Components.TContainer, HTMLStencilElement {}
-  var HTMLTContainerElement: {
-    prototype: HTMLTContainerElement;
-    new (): HTMLTContainerElement;
-  };
-
-  interface HTMLTMessageSummaryElement extends Components.TMessageSummary, HTMLStencilElement {}
-  var HTMLTMessageSummaryElement: {
-    prototype: HTMLTMessageSummaryElement;
-    new (): HTMLTMessageSummaryElement;
-  };
-
-  interface HTMLTMessageElement extends Components.TMessage, HTMLStencilElement {}
-  var HTMLTMessageElement: {
-    prototype: HTMLTMessageElement;
-    new (): HTMLTMessageElement;
-  };
-
-  interface HTMLTPopupMenuControllerElement extends Components.TPopupMenuController, HTMLStencilElement {}
-  var HTMLTPopupMenuControllerElement: {
-    prototype: HTMLTPopupMenuControllerElement;
-    new (): HTMLTPopupMenuControllerElement;
-  };
-
-  interface HTMLTPopupMenuPopoverElement extends Components.TPopupMenuPopover, HTMLStencilElement {}
-  var HTMLTPopupMenuPopoverElement: {
-    prototype: HTMLTPopupMenuPopoverElement;
-    new (): HTMLTPopupMenuPopoverElement;
-  };
-
-  interface HTMLTSelectOptionElement extends Components.TSelectOption, HTMLStencilElement {}
-  var HTMLTSelectOptionElement: {
-    prototype: HTMLTSelectOptionElement;
-    new (): HTMLTSelectOptionElement;
-  };
-
-  interface HTMLTSelectElement extends Components.TSelect, HTMLStencilElement {}
-  var HTMLTSelectElement: {
-    prototype: HTMLTSelectElement;
-    new (): HTMLTSelectElement;
-  };
-
-  interface HTMLTValidationControllerElement extends Components.TValidationController, HTMLStencilElement {}
-  var HTMLTValidationControllerElement: {
-    prototype: HTMLTValidationControllerElement;
-    new (): HTMLTValidationControllerElement;
-  };
-
-  interface HTMLElementTagNameMap {
-    't-action-controller': HTMLTActionControllerElement
-    't-combobox-choices': HTMLTComboboxChoicesElement
-    't-combobox-modal-list': HTMLTComboboxModalListElement
-    't-combobox-modal': HTMLTComboboxModalElement
-    't-combobox': HTMLTComboboxElement
-    't-container': HTMLTContainerElement
-    't-message-summary': HTMLTMessageSummaryElement
-    't-message': HTMLTMessageElement
-    't-popup-menu-controller': HTMLTPopupMenuControllerElement
-    't-popup-menu-popover': HTMLTPopupMenuPopoverElement
-    't-select-option': HTMLTSelectOptionElement
-    't-select': HTMLTSelectElement
-    't-validation-controller': HTMLTValidationControllerElement
-  }
-
-  interface ElementTagNameMap {
-    't-action-controller': HTMLTActionControllerElement;
-    't-combobox-choices': HTMLTComboboxChoicesElement;
-    't-combobox-modal-list': HTMLTComboboxModalListElement;
-    't-combobox-modal': HTMLTComboboxModalElement;
-    't-combobox': HTMLTComboboxElement;
-    't-container': HTMLTContainerElement;
-    't-message-summary': HTMLTMessageSummaryElement;
-    't-message': HTMLTMessageElement;
-    't-popup-menu-controller': HTMLTPopupMenuControllerElement;
-    't-popup-menu-popover': HTMLTPopupMenuPopoverElement;
-    't-select-option': HTMLTSelectOptionElement;
-    't-select': HTMLTSelectElement;
-    't-validation-controller': HTMLTValidationControllerElement;
-  }
-
-
+declare module "@stencil/core" {
   export namespace JSX {
-    export interface Element {}
-    export interface IntrinsicElements extends StencilIntrinsicElements {
-      [tagName: string]: any;
-    }
+    interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
   }
-  export interface HTMLAttributes extends StencilHTMLAttributes {}
-
 }
+
+

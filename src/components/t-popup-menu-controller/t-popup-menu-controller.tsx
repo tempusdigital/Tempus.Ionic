@@ -1,4 +1,4 @@
-import { Component, Method, Prop } from "@stencil/core";
+import { Component, Method, Prop, h } from "@stencil/core";
 import { PopupMenuOptions } from "./t-popup-menu-controller-interface";
 
 @Component({

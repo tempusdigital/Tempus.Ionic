@@ -1,4 +1,4 @@
-import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element } from '@stencil/core';
+import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element, h } from '@stencil/core';
 import { deferEvent, debounceAsync, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
 @Component({
