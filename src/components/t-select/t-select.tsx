@@ -167,15 +167,6 @@ export class TSelect {
   }
 
   emitStyle() {
-    console.log(JSON.stringify({
-      'interactive': true,
-      'input': true,
-      'has-value': this.hasValue(),
-      'has-focus': this.hasFocus(),
-      'interactive-disabled': this.disabled,
-      't-select': true
-    }));
-
     this.ionStyle.emit({
       'interactive': true,
       'input': true,

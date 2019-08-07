@@ -9,41 +9,44 @@
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/normalize.css">
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/structure.css">
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/typography.css">
-  <script src="https://unpkg.com/@ionic/core@4.7.1/dist/ionic.js"></script>
-    <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
+  <script type="module" src="https://unpkg.com/@ionic/core@4.7.1/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@4.7.1/dist/ionic/ionic.js"></script>
+  <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
 
 </head>
 
 <body>
   <ion-app>
-    <form action="GET" novalidate>
-      <h2>Form Test</h2>
-      <t-message-summary></t-message-summary>
-      <ion-list>
-        <ion-item>
-          <ion-label position="floating">One</ion-label>
-          <ion-input name="one" required maxlength="50"></ion-input>
-          <t-message name="one"></t-message>
-        </ion-item>
-      </ion-list>
-      <ion-button type="submit">Submit</ion-button>
-    </form>
+    <ion-content>
+      <form action="GET" novalidate>
+        <h2>Form Test</h2>
+        <t-message-summary></t-message-summary>
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">One</ion-label>
+            <ion-input name="one" required maxlength="50"></ion-input>
+            <t-message name="one"></t-message>
+          </ion-item>
+        </ion-list>
+        <ion-button type="submit">Submit</ion-button>
+      </form>
 
-    <div>
-      <h2>Custom Action Success</h2>
-      <ion-button id="custom-button">Execute Custom With Success</ion-button>
-    </div>
+      <div>
+        <h2>Custom Action Success</h2>
+        <ion-button id="custom-button">Execute Custom With Success</ion-button>
+      </div>
 
-    <div>
-      <h2>Custom Action Server Failure</h2>
-      <ion-button id="custom-fail-button">Execute Custom Server Failure</ion-button>
-    </div>
+      <div>
+        <h2>Custom Action Server Failure</h2>
+        <ion-button id="custom-fail-button">Execute Custom Server Failure</ion-button>
+      </div>
 
-    <div>
-      <h2>Custom Action Returning Server Validation</h2>
-      <ion-button id="custom-validation-button">Execute Custom Server Validation</ion-button>
-    </div>
+      <div>
+        <h2>Custom Action Returning Server Validation</h2>
+        <ion-button id="custom-validation-button">Execute Custom Server Validation</ion-button>
+      </div>
+    </ion-content>
 
     <t-action-controller></t-action-controller>
   </ion-app>
@@ -52,14 +55,14 @@
     var form = document.querySelector('form');
     var actionController = document.querySelector('t-action-controller');
 
-    actionController.componentOnReady().then(() => {
-      actionController.messages = {
-        badRequest: 'Custom message'
-      }
-    });
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      actionController.componentOnReady().then(() => {
+        actionController.messages = {
+          badRequest: 'Custom message'
+        }
+      });
 
       actionController.processSubmit(form, () => {
         return new Promise((r) => setTimeout(r, 2000));
