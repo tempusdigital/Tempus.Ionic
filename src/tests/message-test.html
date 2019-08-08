@@ -1,76 +1,79 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Message</title>
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/core.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/normalize.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/structure.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.1/css/typography.css">
-  <script type="module" src="https://unpkg.com/@ionic/core@4.7.1/dist/ionic/ionic.esm.js"></script>
-<script nomodule="" src="https://unpkg.com/@ionic/core@4.7.1/dist/ionic/ionic.js"></script>
-    <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/typography.css">
+  <script type="module" src="https://unpkg.com/@ionic/core@4.7.4/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@4.7.4/dist/ionic/ionic.js"></script>
+  <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
 
 </head>
+
 <body>
-        <p padding>Out of a ion-list</p>
-        <ion-item>
-          <ion-label>Empty - Fixed Label</ion-label>
-          <ion-input></ion-input>
-          <t-message></t-message>
-        </ion-item>
+  <p padding>Out of a ion-list</p>
+  <ion-item>
+    <ion-label>Empty - Fixed Label</ion-label>
+    <ion-input></ion-input>
+    <t-message></t-message>
+  </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Validation - Floating Label</ion-label>
-          <ion-input></ion-input>
-          <t-message validation-message="Validation message here"></t-message>
-        </ion-item>
+  <ion-item>
+    <ion-label position="floating">Validation - Floating Label</ion-label>
+    <ion-input></ion-input>
+    <t-message validation-message="Validation message here"></t-message>
+  </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Helper - Stacked Label</ion-label>
-          <ion-input></ion-input>
-          <t-message helper-message="Helper message here"></t-message>
-        </ion-item>
-<br>
-        <p padding>Inside a ion-list</p>
-        <ion-list>
-          <ion-item>
-            <ion-label>Empty - Fixed Label</ion-label>
-            <ion-input></ion-input>
-            <t-message></t-message>
-          </ion-item>
+  <ion-item>
+    <ion-label position="stacked">Helper - Stacked Label</ion-label>
+    <ion-input></ion-input>
+    <t-message helper-message="Helper message here"></t-message>
+  </ion-item>
+  <br>
+  <p padding>Inside a ion-list</p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Empty - Fixed Label</ion-label>
+      <ion-input></ion-input>
+      <t-message></t-message>
+    </ion-item>
 
-          <ion-item>
-            <ion-label position="floating">Validation - Floating Label</ion-label>
-            <ion-input></ion-input>
-            <t-message validation-message="Validation message here"></t-message>
-          </ion-item>
+    <ion-item>
+      <ion-label position="floating">Validation - Floating Label</ion-label>
+      <ion-input></ion-input>
+      <t-message validation-message="Validation message here"></t-message>
+    </ion-item>
 
-          <ion-item>
-            <ion-label position="stacked">Helper - Stacked Label</ion-label>
-            <ion-input></ion-input>
-            <t-message helper-message="Helper message here"></t-message>
-          </ion-item>
-          
-          <ion-item>
-            <ion-label position="stacked">Date</ion-label>
-            <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
-            <t-message validation-message="Validation message here"></t-message>
-          </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Helper - Stacked Label</ion-label>
+      <ion-input></ion-input>
+      <t-message helper-message="Helper message here"></t-message>
+    </ion-item>
 
-          <ion-item>
-            <ion-label position="stacked">Select</ion-label>
-            <ion-select value="brown" ok-text="Okay" cancel-text="Dismiss">
-              <ion-select-option value="brown">Brown</ion-select-option>
-              <ion-select-option value="blonde">Blonde</ion-select-option>
-              <ion-select-option value="black">Black</ion-select-option>
-              <ion-select-option value="red">Red</ion-select-option>
-            </ion-select>
-            <t-message validation-message="Validation message here"></t-message>
-          </ion-item>
-        </ion-list>
+    <ion-item>
+      <ion-label position="stacked">Date</ion-label>
+      <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
+      <t-message validation-message="Validation message here"></t-message>
+    </ion-item>
 
-      </body>
-  </html>
+    <ion-item>
+      <ion-label position="stacked">Select</ion-label>
+      <ion-select value="brown" ok-text="Okay" cancel-text="Dismiss">
+        <ion-select-option value="brown">Brown</ion-select-option>
+        <ion-select-option value="blonde">Blonde</ion-select-option>
+        <ion-select-option value="black">Black</ion-select-option>
+        <ion-select-option value="red">Red</ion-select-option>
+      </ion-select>
+      <t-message validation-message="Validation message here"></t-message>
+    </ion-item>
+  </ion-list>
+
+</body>
+
+</html>

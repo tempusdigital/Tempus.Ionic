@@ -21,7 +21,8 @@ export const config: Config = {
   namespace: 'TempusDigitalIonic',
   outputTargets:[
     {
-      type: 'dist'
+      type: 'dist',
+      esmLoaderPath: '../loader'
     },
     {
       type: 'www',

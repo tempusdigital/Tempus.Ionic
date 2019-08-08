@@ -1,4 +1,4 @@
-import { Component,  Prop } from "@stencil/core";
+import { Component, Prop, Host, h } from "@stencil/core";
 
 @Component({
   tag: 't-container',
@@ -7,11 +7,14 @@ import { Component,  Prop } from "@stencil/core";
 export class TContainer {
   @Prop() fluid: boolean;
 
-  hostData() {
-    return {
-      class: {
-        fluid: this.fluid
-      }
-    }
+  render() {
+    return (
+      <Host
+        class={{
+          fluid: this.fluid
+        }}>
+        <slot></slot>
+      </Host>
+    );
   }
 }

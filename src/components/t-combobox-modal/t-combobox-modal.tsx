@@ -2,6 +2,7 @@ import { Component, Prop, Event, EventEmitter, State, Element, Watch, h } from '
 import { ICombobox, IComboboxOption, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
 import { deferEvent, debounce, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
+
 @Component({
   tag: 't-combobox-modal',
   styleUrl: 't-combobox-modal.scss'
@@ -55,6 +56,8 @@ export class TComboboxModal implements ICombobox {
 
   private _internalMessages: IComboboxMessages;
 
+  private presentingModal: boolean = false;
+
   /**
   * The messages that will be shown
   */
@@ -100,20 +103,32 @@ export class TComboboxModal implements ICombobox {
   }
 
   async presentModal() {
-    await this.modalController.componentOnReady();
+    if (this.presentingModal)
+      return;
 
-    const modalElement = await this.modalController.create({
-      component: 't-combobox-modal-list',
-      componentProps: {
-        multiple: this.multiple,
-        value: this.value,
-        handleChange: this.handleChange.bind(this),
-        options: this.options,
-        messages: this._internalMessages
-      }
-    });
+    try {
+      this.presentingModal = true;
 
-    await modalElement.present();
+      await this.modalController.componentOnReady();
+
+      const modalElement = await this.modalController.create({
+        component: 't-combobox-modal-list',
+        componentProps: {
+          multiple: this.multiple,
+          value: this.value,
+          handleChange: this.handleChange.bind(this),
+          options: this.options,
+          messages: this._internalMessages
+        }
+      });
+
+      await modalElement.present();
+
+      await modalElement.didDismiss;
+    }
+    finally {
+      this.presentingModal = false;
+    }
   }
 
   @Watch('options')
@@ -165,11 +180,8 @@ export class TComboboxModal implements ICombobox {
     if (!selectedOptions || !selectedOptions.length) {
       this.value = '';
     }
-    else if (selectedOptions.length > 1) {
-      this.value = selectedOptions.map(v => v.value);
-    }
     else {
-      this.value = selectedOptions[0].value;
+      this.value = selectedOptions.map(v => v.value);
     }
 
     if (!this.options) {

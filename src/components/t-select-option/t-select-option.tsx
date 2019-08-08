@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Prop, Element, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, Prop, Element, Watch, Host, h } from '@stencil/core';
 import { normalizeValue } from '../../utils/helpers';
 
 @Component({
@@ -43,9 +43,7 @@ export class TSelectOption {
     this.onDidUnload && this.onDidUnload();
   }
 
-  hostData() {
-    return {
-      'role': 'option'
-    };
+  render() {
+    return (<Host role='option'></Host>);
   }
 }

@@ -100,7 +100,7 @@ export class TComboboxChoices implements ICombobox {
       placeholder: !!this.placeholder,
       placeholderValue: this.placeholder,
       removeItemButton: true,
-      duplicateItems: false,
+      duplicateItemsAllowed: false,
       silent: true,
       choices: choices,
       items: items
@@ -113,7 +113,7 @@ export class TComboboxChoices implements ICombobox {
     this.valueChanged(); // The value may be changed while the ChoicesJs was still being initialized
     this.disabledChanged();
 
-    this.choicesContainer = (this.choices as any).containerOuter;
+    this.choicesContainer = this.nativeSelect;
     this.choicesContainer.addEventListener('change', e => this.handleChange(e as any));
     this.choicesContainer.addEventListener('focus', () => this.emitStyle());
     this.choicesContainer.addEventListener('blur', () => this.emitStyle());
@@ -241,9 +241,9 @@ export class TComboboxChoices implements ICombobox {
 
     if (isEmptyValue(this.value) || !this.options || !this.options.length) {
       if (!this.multiple && this.placeholder)
-        this.choices.setValueByChoice(this.placeholder);
+        this.choices.setChoiceByValue(this.placeholder);
       else
-        this.choices.removeActiveItems();
+        this.choices.removeHighlightedItems();
 
       return;
     }
@@ -255,8 +255,8 @@ export class TComboboxChoices implements ICombobox {
         return;
     }
 
-    this.choices.removeActiveItems(); // Without this command,  when multiple is enabled and options are removed from the selection the ChoicesJs does not deselect the options
-    this.choices.setValueByChoice(this.value);
+    this.choices.removeHighlightedItems(); // Without this command,  when multiple is enabled and options are removed from the selection the ChoicesJs does not deselect the options
+    this.choices.setChoiceByValue(this.value);
   }
 
   mapOptionsAsChoices() {
