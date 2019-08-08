@@ -139,8 +139,6 @@ export class ComboboxModalListPage {
   }
 
   renderVirtualScroll() {
-    //return this.visibleOptions.map(this.renderItem);
-
     return (<ion-virtual-scroll items={this.visibleOptions} nodeRender={this.nodeRender} approxItemHeight={48}></ion-virtual-scroll>);
   }
 

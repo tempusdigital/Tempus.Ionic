@@ -103,7 +103,7 @@ export class TComboboxModal implements ICombobox {
   }
 
   async presentModal() {
-    if (this.presentingModal)
+    if (this.presentingModal) // Prevened open the modal more then one time while it is still loading
       return;
 
     try {
