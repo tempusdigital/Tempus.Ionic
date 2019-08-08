@@ -1,14 +1,15 @@
-import { Component, Prop, Element, State } from '@stencil/core';
+import { Component, Prop, Element, State, h } from '@stencil/core';
 import { IComboboxOption, ComboboxDefaultOptions, IComboboxMessages } from '../t-combobox/t-combobox-interface';
 import { removeAccents } from '../../utils/helpers';
 
 interface IComboboxOptionSelection extends IComboboxOption {
-  selected: boolean;
+  checked: boolean;
   searchToken: string;
 }
 
 @Component({
-  tag: 't-combobox-modal-list'
+  tag: 't-combobox-modal-list',
+  styleUrl: 't-combobox-modal-list.scss'
 })
 export class ComboboxModalListPage {
   @Prop() handleChange: (selectedOption: IComboboxOption[]) => void;
@@ -27,12 +28,24 @@ export class ComboboxModalListPage {
 
   @Element() host: any;
 
+  inputType: string;
+  inputSlot: string;
+
   componentWillLoad() {
+    if (!this.multiple) {
+      this.inputType = 'ion-radio';
+      this.inputSlot = "start";
+    }
+    else {
+      this.inputType = 'ion-checkbox';
+      this.inputSlot = "end";
+    }
+
     this.initOptions();
   }
 
   initOptions() {
-    let isSelected = (option: IComboboxOption) => {
+    let isChecked = (option: IComboboxOption) => {
       if (Array.isArray(this.value))
         return this.value.includes(option.value);
 
@@ -42,7 +55,7 @@ export class ComboboxModalListPage {
     if (this.options)
       this.internalOptions = this.options.map(option => ({
         ...option,
-        selected: isSelected(option),
+        checked: isChecked(option),
         searchToken: this.generateSearchToken(option.text)
       }));
 
@@ -59,7 +72,7 @@ export class ComboboxModalListPage {
   confirm() {
     this.close();
 
-    let selectedOptions = this.internalOptions.filter(i => i.selected);
+    let selectedOptions = this.internalOptions.filter(i => i.checked);
 
     this.handleChange && this.handleChange(selectedOptions);
   }
@@ -76,10 +89,10 @@ export class ComboboxModalListPage {
       let option = this.internalOptions.find(option => option.value === value);
 
       if (option)
-        option.selected = checked;
+        option.checked = checked;
     } else {
       for (let option of this.internalOptions) {
-        option.selected = option.value === value;
+        option.checked = option.value === value;
       }
     }
   }
@@ -95,31 +108,44 @@ export class ComboboxModalListPage {
     return (<ion-item text-center><ion-label>{this.messages.noResultsText}</ion-label></ion-item>);
   }
 
-  renderItem = (option: IComboboxOptionSelection) => {
-    if (!this.multiple)
-      return (
-        <ion-item>
-          <ion-radio slot="start" value={option.value} checked={option.selected}></ion-radio>
-          <ion-label>{option.text}</ion-label>
-        </ion-item>
-      );
+  nodeRender = (el: HTMLElement, cell: any) => {
+    if (cell.type === 'item') return this.renderItem(el, cell.value);
+  }
 
-    return (
-      <ion-item>
-        <ion-checkbox slot="end" value={option.value} checked={option.selected} onIonChange={this.handleSelectOptionChange} ></ion-checkbox>
-        <ion-label>{option.text}</ion-label>
-      </ion-item>
-    );
+  renderItem(el: HTMLElement, data: IComboboxOptionSelection) {
+    let item: HTMLElement;
+    let input: HTMLInputElement;
+    let label: HTMLElement;
+
+    if (!el) {
+      item = el = document.createElement('ion-item');
+      label = document.createElement('ion-label');
+
+      input = document.createElement(this.inputType) as any;
+      input.slot = this.inputSlot;
+
+      item.append(input, label);
+    } else {
+      item = el;
+      label = el.querySelector('ion-label');
+      input = el.querySelector(this.inputType);
+    }
+
+    label.textContent = data.text;
+    input.value = data.value;
+    input.checked = data.checked;
+
+    return el;
   }
 
   renderVirtualScroll() {
-    return (<ion-virtual-scroll items={this.visibleOptions} renderItem={this.renderItem}></ion-virtual-scroll>);
+    return (<ion-virtual-scroll items={this.visibleOptions} nodeRender={this.nodeRender} approxItemHeight={48}></ion-virtual-scroll>);
   }
 
   renderList() {
     if (!this.multiple)
       return [
-        <ion-radio-group onIonChange={this.handleSelectOptionChange} value={this.value}>
+        <ion-radio-group value={this.value}>
           {
             this.renderVirtualScroll()
           }
@@ -156,7 +182,7 @@ export class ComboboxModalListPage {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        <ion-list lines="none">
+        <ion-list lines="none" onIonChange={this.handleSelectOptionChange}>
           {this.visibleOptions && this.visibleOptions.length
             ? this.renderList()
             : this.renderEmpty()

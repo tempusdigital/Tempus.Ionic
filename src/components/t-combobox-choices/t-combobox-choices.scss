@@ -5,7 +5,7 @@ $choices-primary-color: #a0a0a0;
 $choices-button-icon-path: '';
 $choices-selector: 'choices';
 
-@import 'node_modules/choices.js/assets/styles/scss/choices.scss';
+@import 'node_modules/choices.js/src/styles/choices.scss';
 
 t-combobox-choices {
 
@@ -71,4 +71,8 @@ t-combobox-choices {
     pointer-events: none;
     color: lightgray;
   }
+}
+
+.item.item-t-combobox-choices{
+  overflow: visible;
 }

@@ -1,4 +1,4 @@
-import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element } from '@stencil/core';
+import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element, h } from '@stencil/core';
 import { deferEvent, debounceAsync, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
 @Component({
@@ -167,15 +167,6 @@ export class TSelect {
   }
 
   emitStyle() {
-    console.log(JSON.stringify({
-      'interactive': true,
-      'input': true,
-      'has-value': this.hasValue(),
-      'has-focus': this.hasFocus(),
-      'interactive-disabled': this.disabled,
-      't-select': true
-    }));
-
     this.ionStyle.emit({
       'interactive': true,
       'input': true,

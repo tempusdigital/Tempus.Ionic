@@ -57,7 +57,7 @@ export function removeAccents(str: string) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-export function isTablet(win: Window) {
+export function isCore(win: Window) {
   const width = win.innerWidth;
   return (width >= 768);
 }

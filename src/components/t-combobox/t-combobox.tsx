@@ -1,6 +1,6 @@
-import { Component, Prop, Event, EventEmitter } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
 import { ICombobox, IComboboxOption, ComboboxDefaultOptions, IComboboxMessages } from './t-combobox-interface'
-import { isTablet } from '../../utils/helpers';
+import { isCore } from '../../utils/helpers';
 
 @Component({
   tag: 't-combobox',
@@ -73,6 +73,12 @@ export class TCombobox implements ICombobox {
    */
   @Event({ cancelable: false }) change: EventEmitter;
 
+  private isCore: boolean;
+
+  componentWillLoad() {
+    this.isCore = isCore(window);
+  }
+
   handleChange(e: UIEvent) {
     e.preventDefault();
     e.stopPropagation();
@@ -84,7 +90,7 @@ export class TCombobox implements ICombobox {
   }
 
   render() {
-    if (isTablet(window) && !this.readonly)
+    if (this.isCore && !this.readonly)
       return this.renderCore();
     else
       return this.renderMobile();

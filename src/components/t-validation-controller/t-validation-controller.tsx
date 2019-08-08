@@ -24,7 +24,7 @@ export class TValidationController {
    * @param formValidationMessages Validation messages to each field
    */
   @Method()
-  setCustomValidity(form: HTMLFormElement, formValidationMessages: FormValidationMessages): void {
+  async setCustomValidity(form: HTMLFormElement, formValidationMessages: FormValidationMessages) {
     let globalMessages: string[] = [];
 
     for (let elementName in formValidationMessages) {
@@ -48,7 +48,7 @@ export class TValidationController {
   }
 
   @Method()
-  setCustomerValidationForField(form: HTMLFormElement, fieldName: string, validations: string[]): void {
+  async setCustomerValidationForField(form: HTMLFormElement, fieldName: string, validations: string[]) {
     let data: FormValidationMessages = {};
     data[fieldName] = validations;
     this.setCustomValidity(form, data);
@@ -108,7 +108,7 @@ export class TValidationController {
    * @param message Validation message
    */
   @Method()
-  setGlobalCustomValidity(form: HTMLFormElement, message: string): void {
+  async setGlobalCustomValidity(form: HTMLFormElement, message: string) {
     let element = this.getOrCreateGlobalCustomValidityElement(form);
     element.setCustomValidity(message);
   }
@@ -145,7 +145,7 @@ export class TValidationController {
    * @param form Form element
    */
   @Method()
-  clearCustomValidity(form: HTMLFormElement): void {
+  async clearCustomValidity(form: HTMLFormElement) {
     for (let element of this.getAllFormInputs(form))
       element.setCustomValidity('')
   }

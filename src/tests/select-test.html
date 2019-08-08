@@ -5,12 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Select</title>
-<link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/core.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/normalize.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/structure.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.2.0/css/typography.css">
-  <script src="https://unpkg.com/@ionic/core@4.2.0/dist/ionic.js"></script>
-  <script src="/build/tempusdigitalionic.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.7.4/css/typography.css">
+  <script type="module" src="https://unpkg.com/@ionic/core@4.7.4/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@4.7.4/dist/ionic/ionic.js"></script>
+  <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
+  <script nomodule src="/build/tempusdigitalionic.js"></script>
 
 </head>
 
@@ -81,21 +83,21 @@
               <t-select-option value="2">Two</t-select-option>
               <t-select-option value="3">Three</t-select-option>
             </t-select>
-            <t-message validationMessage="Mensagem de validação"></t-message>
+            <t-message validation-message="Mensagem de validação"></t-message>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Com validacao (input)</ion-label>
             <ion-input></ion-input>
-            <t-message validationMessage="Mensagem de validação"></t-message>
+            <t-message validation-message="Mensagem de validação"></t-message>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-list>
 
-  <script>
+<script>
     function removeOneOption() {
       stacked.querySelectorAll('t-select-option').item(0).remove();
     }
@@ -117,14 +119,12 @@
       six.value = '6';
       six.innerText = 'Six';
       stacked.appendChild(six);
-    }    
-    
+    }
+
     function replaceOptions() {
       let stacked = document.getElementById('stacked');
 
       stacked.querySelectorAll('t-select-option').forEach(o => o.remove());
-
-      stacked.value = "6";
 
       addMoreOptions();
     }
@@ -138,7 +138,7 @@
 
       stacked.querySelectorAll('t-select-option').forEach(o => {
         i--;
-        o.value = i;
+        o.value = i + 'a';
         o.textContent = 'Option ' + i;
       });
     }

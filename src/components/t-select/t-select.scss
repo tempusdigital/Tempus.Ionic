@@ -6,20 +6,6 @@ t-select {
   margin-left: 0;
   padding-right: 0;
 
-  &:not([readonly])::after {
-    content: "";
-    height: 0;
-    width: 0;
-    border-style: solid;
-    border-color: rgb(171,171,171) transparent transparent transparent;
-    border-width: 5px;
-    position: absolute;
-    right: 5px;
-    bottom: 10px;
-    margin-top: -2.5px;
-    pointer-events: none;
-  }
-
   select {
     padding-left: unset;
     padding-right: unset;
@@ -28,13 +14,18 @@ t-select {
     -webkit-padding-end: var(--padding-end);
     padding-inline-end: var(--padding-end);
 
-    height: 38px;
+    height: 36px;
     background-color: transparent;
     display: block;
     border: 0;
     outline: none;
     width: 100%;
     appearance: none;
+  }
+
+  select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
   }
 }
 

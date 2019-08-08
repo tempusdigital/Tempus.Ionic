@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, Watch, Element } from "@stencil/core";
+import { Component, Prop, Event, EventEmitter, Watch, Element, h } from "@stencil/core";
 import { deferEvent } from "../../utils/helpers";
 
 @Component({
@@ -31,33 +31,6 @@ export class TMessage {
   componentWillLoad() {
     this.ionStyle = deferEvent(this.ionStyle);
     this.emitStyles();
-    this.initializeLayout();
-  }
-
-  /** Add styles to make the message visible inside a ion-item */
-  async initializeLayout() {
-    if (this._initializedLayout)
-      return;
-
-    let item = this.host.closest('ion-item') as any;
-
-    if (!item)
-      return;
-
-    this._initializedLayout = true;
-
-    await item.componentOnReady();
-
-    let host = item.shadowRoot || item;
-
-    let itemNative = host.querySelector('.item-native') as HTMLDivElement;
-    itemNative.style.overflow = 'visible';
-
-    let itemInner = host.querySelector('.item-inner') as HTMLDivElement;
-    itemInner.style.overflow = 'visible';
-
-    let itemWrapper = host.querySelector('.input-wrapper') as HTMLDivElement;
-    itemWrapper.style.overflow = 'visible';
   }
 
   hasValidation() {
