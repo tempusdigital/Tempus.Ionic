@@ -126,8 +126,6 @@
 
       stacked.querySelectorAll('t-select-option').forEach(o => o.remove());
 
-      stacked.value = "6";
-
       addMoreOptions();
     }
 
@@ -140,7 +138,7 @@
 
       stacked.querySelectorAll('t-select-option').forEach(o => {
         i--;
-        o.value = i;
+        o.value = i + 'a';
         o.textContent = 'Option ' + i;
       });
     }

@@ -13,10 +13,33 @@
   <script nomodule="" src="https://unpkg.com/@ionic/core@4.7.1/dist/ionic/ionic.js"></script>
   <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
-
+  <script>
+      var options = [];
+  
+      function init() {
+        document.querySelector('t-combobox').componentOnReady().then(() => {
+          for (let i = 1; i < 5; i++) {
+            options.push({
+              value: i,
+              text: 'Text' + i.toString().padStart(3, '0'),
+            })
+          }
+  
+          var combos = document.getElementsByTagName('t-combobox');
+  
+          for (let i = 0; i < combos.length; i++) {
+            var combo = combos.item(i);
+  
+            combo.value = '1';
+  
+            combo.options = options;
+          }
+        });
+      }
+    </script>
 </head>
 
-<body>
+<body onload="init()">
   <ion-app>
     <ion-content>
       <form novalidate>
@@ -126,32 +149,7 @@
     </ion-content>
   </ion-app>
 
-  <script>
-    var options = [];
 
-    function init() {
-      document.querySelector('t-combobox').componentOnReady().then(() => {
-        for (let i = 1; i < 5; i++) {
-          options.push({
-            value: i,
-            text: 'Text' + i.toString().padStart(3, '0'),
-          })
-        }
-
-        var combos = document.getElementsByTagName('t-combobox');
-
-        for (let i = 0; i < combos.length; i++) {
-          var combo = combos.item(i);
-
-          combo.value = '1';
-
-          combo.options = options;
-        }
-      });
-    }
-
-    init();
-  </script>
 
 </body>
 

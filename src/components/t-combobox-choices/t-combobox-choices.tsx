@@ -153,12 +153,6 @@ export class TComboboxChoices implements ICombobox {
 
     let host = item.shadowRoot || item;
 
-    let itemNative = host.querySelector('.item-native') as HTMLDivElement;
-    itemNative.style.overflow = 'visible';
-
-    let itemInner = host.querySelector('.item-inner') as HTMLDivElement;
-    itemInner.style.overflow = 'visible';
-
     let itemWrapper = host.querySelector('.input-wrapper') as HTMLDivElement;
     itemWrapper.style.overflow = 'visible';
   }
