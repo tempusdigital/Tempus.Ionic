@@ -181,7 +181,7 @@ export class TComboboxChoices implements ICombobox {
   }
 
   isPlaceholderSelected() {
-    if (!this.choices)
+    if (!this.choices || this.placeholder === undefined)
       return false;
 
     let value = this.choices.getValue() as any;
@@ -285,12 +285,13 @@ export class TComboboxChoices implements ICombobox {
       };
     });
 
-    if (this.placeholder && !this.multiple) {
+    if (!this.multiple) {
       // Add placeholder as one of ChoicesJs options
       let placeholder = {
         placeholder: true,
-        value: this.placeholder,
-        label: this.placeholder,
+        disabled: this.placeholder === undefined,
+        value: this.placeholder === undefined ? '' : this.placeholder,
+        label: this.placeholder === undefined ? '' : this.placeholder,
         selected: isEmptyValue(this.value)
       };
 
