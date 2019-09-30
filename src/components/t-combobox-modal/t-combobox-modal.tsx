@@ -140,9 +140,6 @@ export class TComboboxModal implements ICombobox {
       return;
     }
 
-    if ((!this.options || !this.options.length) && this.value !== '')
-      this.value = '';
-
     this.updateText();
   }
 
@@ -181,7 +178,10 @@ export class TComboboxModal implements ICombobox {
       this.value = '';
     }
     else {
-      this.value = selectedOptions.map(v => v.value);
+      if (this.multiple)
+        this.value = selectedOptions.map(v => v.value);
+      else
+        this.value = selectedOptions[0].value;
     }
 
     if (!this.options) {

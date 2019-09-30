@@ -207,9 +207,6 @@ export class TComboboxChoices implements ICombobox {
 
   @Watch('options')
   optionsChanged() {
-    if ((!this.options || !this.options.length) && this.value !== '')
-      this.value = '';
-
     this.syncChoicesOptions();
 
     this.emitStyle();
