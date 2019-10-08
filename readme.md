@@ -2,19 +2,11 @@
 
 # Tempus Digital Custom Components for Ionic v4
 
-Custom components for Ionic v4.
+Custom components for Ionic v4. Developed with StencilJs.
 
 ## Getting Started
 
-To start building a new web component using Stencil, clone this repo to a new directory:
-
-```bash
-git clone https://github.com/ionic-team/stencil-component-starter.git my-component
-cd my-component
-git remote rm origin
-```
-
-and run:
+To run:
 
 ```bash
 npm install
@@ -26,14 +18,6 @@ To build the component for production, run:
 ```bash
 npm run build
 ```
-
-To run the unit tests for the components, run:
-
-```bash
-npm test
-```
-
-Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-component).
 
 ## Using this component
 
@@ -60,11 +44,6 @@ Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-compone
 - Update readme
 
 ### t-combobox
-- Use ion-virtual-scroll fpr mobile
-- Fix z-index when used close to ion-input
-- Add css variables for chips
-- Use Ionic css variable for placeholder color
-- Use has-placeholder on emitStyles
 - Add documentation
 - Add tests
 
@@ -94,7 +73,6 @@ Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-compone
 
 ### t-select 
 - Implement event selectOptionDidUnload
-- Use Ionic css variable for placeholder color
 - Add documentation
 - Add tests
 
