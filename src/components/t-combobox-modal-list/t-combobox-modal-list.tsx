@@ -177,12 +177,12 @@ export class ComboboxModalListPage {
           <ion-searchbar
             onIonChange={e => this.handleSearch(e)}
             animated
-            deboundce={ComboboxDefaultOptions.searchDebounce}
+            debounce={ComboboxDefaultOptions.searchDebounce}
             placeholder={this.messages.searchPlaceholderText}></ion-searchbar>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        <ion-list lines="none" onIonChange={this.handleSelectOptionChange}>
+        <ion-list lines="none">
           {this.visibleOptions && this.visibleOptions.length
             ? this.renderList()
             : this.renderEmpty()

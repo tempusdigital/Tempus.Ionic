@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/normalize.css">
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/structure.css">
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/typography.css">
-  <script type="module" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.esm.js"></script>
-  <script nomodule="" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.js"></script>
+  <script type="module" src="/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="/@ionic/core/dist/ionic/ionic.js"></script>
   <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
 
@@ -23,7 +23,7 @@
       var options = [];
   
       function init() {
-        document.querySelector('t-combobox').componentOnReady().then(() => {
+        document.querySelector('t-combobox2').componentOnReady().then(() => {
           for (let i = 1; i < 300; i++) {
             options.push({
               value: i,
@@ -31,7 +31,7 @@
             })
           }
   
-          var combos = document.querySelectorAll('t-combobox:not(.empty)');
+          var combos = document.querySelectorAll('t-combobox2:not(.empty)');
   
           for (let i = 0; i < combos.length; i++) {
             var combo = combos.item(i);
@@ -61,7 +61,7 @@
       function handleMultipleChange(e) {
         multiple = e.target.value;
   
-        var combos = document.getElementsByTagName('t-combobox');
+        var combos = document.getElementsByTagName('t-combobox2');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -77,7 +77,7 @@
       function handleSingleChange(e) {
         single = e.target.value;
   
-        var combos = document.getElementsByTagName('t-combobox');
+        var combos = document.getElementsByTagName('t-combobox2');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -86,7 +86,7 @@
             combo.value = single;
         }
   
-        var singleValue = document.querySelectorAll('t-combobox:not(.empty)');
+        var singleValue = document.querySelectorAll('t-combobox2:not(.empty)');
         singleValue.textContent = JSON.stringify(single);
       }
   
@@ -98,7 +98,7 @@
           text: 'Text' + i,
         }];
   
-        var combos = document.querySelectorAll('t-combobox:not(.empty)');
+        var combos = document.querySelectorAll('t-combobox2:not(.empty)');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -120,20 +120,20 @@
 
           <ion-item>
             <ion-label position="stacked">Stacked (with change event)</ion-label>
-            <t-combobox id="single"> </t-combobox>
+            <t-combobox2 id="single"> </t-combobox2>
           </ion-item>
           <pre>Single: <span id="single-value"></span></pre>
 
           <ion-item>
             <ion-label position="stacked">Stacked Multiple (with change event)</ion-label>
-            <t-combobox multiple id="multiple"> </t-combobox>
+            <t-combobox2 multiple id="multiple"> </t-combobox2>
           </ion-item>
           <pre>Multiple: <span id="multiple-value"></span></pre>
 
           <ion-list-header>Others</ion-list-header>
           <ion-item>
             <ion-label position="stacked">Multiple (with placeholder)</ion-label>
-            <t-combobox multiple placeholder="This is a placeholder"> </t-combobox>
+            <t-combobox2 multiple placeholder="This is a placeholder"> </t-combobox2>
           </ion-item>
 
           <ion-item>
@@ -143,49 +143,49 @@
 
           <ion-item>
             <ion-label position="stacked">Single (with placeholder)</ion-label>
-            <t-combobox placeholder="This is a placeholder"> </t-combobox>
+            <t-combobox2 placeholder="This is a placeholder"> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="stacked">Stacked Disabled</ion-label>
-            <t-combobox disabled> </t-combobox>
+            <t-combobox2 disabled> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Floating</ion-label>
-            <t-combobox> </t-combobox>
+            <t-combobox2> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Floating Disabled</ion-label>
-            <t-combobox disabled> </t-combobox>
+            <t-combobox2 disabled> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Em branco, opcional</ion-label>
-            <t-combobox> </t-combobox>
+            <t-combobox2> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Em branco, obrigatório</ion-label>
-            <t-combobox required> </t-combobox>
+            <t-combobox2 required> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Em branco, sem placeholder, obrigatório</ion-label>
-            <t-combobox required multiple> </t-combobox>
+            <t-combobox2 required multiple> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Sem opções</ion-label>
-            <t-combobox required class="empty"> </t-combobox>
+            <t-combobox2 required class="empty"> </t-combobox2>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Com validacao</ion-label>
-            <t-combobox name="selectTeste" required> </t-combobox>
+            <t-combobox2 name="selectTeste" required> </t-combobox2>
             <t-message validation-message="Mensagem de validação"></t-message>
-          </ion-item>
+          </ion-item> 
         </ion-list>
       </form>
     </ion-content>

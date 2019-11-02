@@ -23,13 +23,13 @@
   },
   "peerDependencies": {
     "choices.js": "~7.0.0",
-    "@ionic/core": "^4.7.4"
+    "@ionic/core": "^4.11.3"
   },
   "devDependencies": {
-    "@stencil/core": "1.2.4",
+    "@stencil/core": "1.7.5",
     "@stencil/sass": "1.0.1",
     "choices.js": "7.0.0",
-    "@ionic/core": "^4.7.4"
+    "@ionic/core": "^4.11.3"
   },
   "repository": {
     "type": "git",

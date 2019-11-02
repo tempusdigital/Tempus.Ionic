@@ -4,6 +4,7 @@ import { sass } from '@stencil/sass';
 export const config: Config = {
   bundles: [
     { components: ['t-combobox'] },
+    { components: ['t-combobox2', 't-combobox-list2'] },
     { components: ['t-combobox-choices'] },
     { components: ['t-combobox-modal', 't-combobox-modal-list'] },
     { components: ['t-container'] },
@@ -16,7 +17,8 @@ export const config: Config = {
     sass()
   ],
   copy: [
-    { src: 'tests' }
+    { src: 'tests' },
+    { src: '..\\node_modules\\@ionic', dest: '@ionic' }
   ],
   namespace: 'TempusDigitalIonic',
   outputTargets:[
