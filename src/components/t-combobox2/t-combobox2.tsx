@@ -1,20 +1,40 @@
-import { Component, h, Prop, State, Element, writeTask, readTask } from '@stencil/core';
+import { Component, h, Prop, State, Element, Watch } from '@stencil/core';
 import { IComboboxOption } from '../../interface';
 import { debounceAsync } from '../../utils/helpers';
+import { ICombobox, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
+import { EventEmitter } from 'events';
 
 @Component({
   tag: 't-combobox2',
   styleUrl: 't-combobox2.scss'
 })
-export class Combobox2 {
+export class Combobox2 implements ICombobox {
 
-  @Prop() debounce: number = 300;
+  placeholder: string;
+
+  @Prop() name: string;
+
+  @Prop() autofocus: boolean;
+
+  @Prop() disabled: boolean;
+
+  @Prop() required: boolean;
+
+  multiple: boolean;
+
+  value: string | string[];
+
+  @Prop() options: IComboboxOption[];
+
+  change: EventEmitter;
+
+  @Prop() messages: IComboboxMessages = ComboboxDefaultOptions.messages;
+
+  debounce: number = ComboboxDefaultOptions.searchDebounce;
 
   @Element() host: HTMLElement;
 
   private popover: HTMLTComboboxList2Element = null;
-
-  @Prop() options: IComboboxOption[] = [];
 
   private visibleOptions: IComboboxOption[] = [];
 
@@ -30,6 +50,14 @@ export class Combobox2 {
 
   componentDidUnload() {
     this.closePopover();
+  }
+
+  @Watch('options')
+  optionsChanged() {
+    if (this.isPopoverOpened) {
+      this.search();
+      this.syncPopover();
+    }
   }
 
   private getOffset(el: HTMLElement) {
@@ -68,9 +96,22 @@ export class Combobox2 {
 
       popover.classList.add('t-combobox-popover');
 
+      popover.value = this.value;
       popover.options = this.options;
-      popover.messages = {
-        noResultsText: 'Nenhum item encontrado'
+      popover.messages = this.messages;
+      popover.onselect = () => {        
+        this.value = popover.value;
+
+        this.closePopover();
+
+        let item = this.options.find(o => o.value == this.value);
+
+        if (item)
+          this.inputText = item.text;
+        else {
+          this.inputText = '';
+          this.value = null;
+        }
       };
 
       let container = this.getContainer();
@@ -107,11 +148,11 @@ export class Combobox2 {
     }
   }
 
-  private async search(term: string) {
-    if (!term)
+  private async search() {
+    if (!this.inputText)
       this.visibleOptions = this.options;
     else
-      this.visibleOptions = this.options.filter(p => p.text.indexOf(term) >= 0);
+      this.visibleOptions = this.options.filter(p => p.text.indexOf(this.inputText) >= 0);
 
     await this.syncPopover();
   }
@@ -137,16 +178,16 @@ export class Combobox2 {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    //this.closePopover();
+    this.closePopover();
   }
 
   private handleInputChange = (e: any) => {
     this.inputText = e.target.value && e.target.value.trim();
 
-    this.search(this.inputText);
+    this.search();
   }
 
-  private handleKeyDown=(e: KeyboardEvent)=> {
+  private handleKeyDown = (e: KeyboardEvent) => {
     if (e.key == 'ArrowDown')
       this.popover && this.popover.focusNext();
     else if (e.key == 'ArrowUp')
@@ -156,6 +197,11 @@ export class Combobox2 {
   render() {
     return [
       <ion-input
+        type="text"
+        name={this.name}
+        autofocus={this.autofocus}
+        disabled={this.disabled}
+        required={this.required}
         onIonFocus={this.handleInputFocus}
         onClick={this.handleInputFocus}
         onIonBlur={this.handleInputBlur}

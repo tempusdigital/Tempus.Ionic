@@ -142,6 +142,7 @@ export namespace Components {
     'focusPrevious': () => Promise<void>;
     'messages': IComboboxMessages;
     'options': IComboboxOption[];
+    'value': string | string[];
   }
   interface TComboboxModal {
     /**
@@ -193,8 +194,12 @@ export namespace Components {
     'value': any | any[];
   }
   interface TCombobox2 {
-    'debounce': number;
+    'autofocus': boolean;
+    'disabled': boolean;
+    'messages': IComboboxMessages;
+    'name': string;
     'options': IComboboxOption[];
+    'required': boolean;
   }
   interface TContainer {
     'fluid': boolean;
@@ -479,7 +484,9 @@ declare namespace LocalJSX {
   }
   interface TComboboxList2 {
     'messages'?: IComboboxMessages;
+    'onSelect'?: (event: CustomEvent<any>) => void;
     'options'?: IComboboxOption[];
+    'value'?: string | string[];
   }
   interface TComboboxModal {
     /**
@@ -536,8 +543,12 @@ declare namespace LocalJSX {
     'value'?: any | any[];
   }
   interface TCombobox2 {
-    'debounce'?: number;
+    'autofocus'?: boolean;
+    'disabled'?: boolean;
+    'messages'?: IComboboxMessages;
+    'name'?: string;
     'options'?: IComboboxOption[];
+    'required'?: boolean;
   }
   interface TContainer {
     'fluid'?: boolean;
