@@ -17,6 +17,7 @@ import {
 } from './components/t-combobox/t-combobox-interface';
 import {
   IComboboxMessages as IComboboxMessages1,
+  IComboboxOption as IComboboxOption1,
 } from './interface';
 import {
   PopupMenuButton,
@@ -137,6 +138,8 @@ export namespace Components {
     'value': string | string[];
   }
   interface TComboboxList2 {
+    'focusNext': () => Promise<void>;
+    'focusPrevious': () => Promise<void>;
     'messages': IComboboxMessages;
     'options': IComboboxOption[];
   }
@@ -191,6 +194,7 @@ export namespace Components {
   }
   interface TCombobox2 {
     'debounce': number;
+    'options': IComboboxOption[];
   }
   interface TContainer {
     'fluid': boolean;
@@ -533,6 +537,7 @@ declare namespace LocalJSX {
   }
   interface TCombobox2 {
     'debounce'?: number;
+    'options'?: IComboboxOption[];
   }
   interface TContainer {
     'fluid'?: boolean;
