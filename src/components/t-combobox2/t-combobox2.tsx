@@ -1,8 +1,7 @@
-import { Component, h, Prop, State, Element, Watch } from '@stencil/core';
+import { Component, h, Prop, State, Element, Watch, Event, EventEmitter } from '@stencil/core';
 import { IComboboxOption } from '../../interface';
 import { debounceAsync } from '../../utils/helpers';
 import { ICombobox, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
-import { EventEmitter } from 'events';
 
 @Component({
   tag: 't-combobox2',
@@ -10,7 +9,7 @@ import { EventEmitter } from 'events';
 })
 export class Combobox2 implements ICombobox {
 
-  placeholder: string;
+  @Prop() placeholder: string;
 
   @Prop() name: string;
 
@@ -22,21 +21,25 @@ export class Combobox2 implements ICombobox {
 
   multiple: boolean;
 
-  value: string | string[];
+  @Prop() value: string | string[];
 
   @Prop() options: IComboboxOption[];
 
-  change: EventEmitter;
+  @Event({ cancelable: false }) change: EventEmitter;
 
   @Prop() messages: IComboboxMessages = ComboboxDefaultOptions.messages;
 
-  debounce: number = ComboboxDefaultOptions.searchDebounce;
+  @Prop() debounce: number = ComboboxDefaultOptions.searchDebounce;
 
   @Element() host: HTMLElement;
 
   private popover: HTMLTComboboxList2Element = null;
 
   private visibleOptions: IComboboxOption[] = [];
+
+  get isSearching() {
+    return this.visibleOptions && this.options != this.visibleOptions;
+  }
 
   private isPopoverOpened: boolean = false;
 
@@ -55,9 +58,32 @@ export class Combobox2 implements ICombobox {
   @Watch('options')
   optionsChanged() {
     if (this.isPopoverOpened) {
-      this.search();
+      this.search(this.inputText);
       this.syncPopover();
     }
+    else {
+      this.updateText();
+    }
+  }
+
+  @Watch('value')
+  valueChanged() {
+    this.updateText();
+  }
+
+  private setValue(value: string | string[]) {
+    this.value = value;
+    this.change.emit();
+    this.visibleOptions = null;
+  }
+
+  private updateText() {
+    let item = this.options.find(o => o.value == this.value);
+
+    if (item)
+      this.inputText = item.text;
+    else
+      this.inputText = '';
   }
 
   private getOffset(el: HTMLElement) {
@@ -71,16 +97,17 @@ export class Combobox2 implements ICombobox {
     return { top: _y, left: _x };
   }
 
-  private async openPopover(e: UIEvent) {
+  private async openPopover() {
     if (this.isPopoverOpened)
       return;
 
     this.isPopoverOpened = true;
 
     try {
-      this.visibleOptions = this.options;
+      if (!this.visibleOptions)
+        this.visibleOptions = this.options;
 
-      let target = e.target as HTMLElement;
+      let target = this.host;
 
       let offset = this.getOffset(target);
 
@@ -97,21 +124,14 @@ export class Combobox2 implements ICombobox {
       popover.classList.add('t-combobox-popover');
 
       popover.value = this.value;
-      popover.options = this.options;
+      popover.options = this.visibleOptions;
       popover.messages = this.messages;
-      popover.onselect = () => {        
-        this.value = popover.value;
-
+      popover.onselect = () => {
         this.closePopover();
 
-        let item = this.options.find(o => o.value == this.value);
+        this.setValue(popover.value);
 
-        if (item)
-          this.inputText = item.text;
-        else {
-          this.inputText = '';
-          this.value = null;
-        }
+        this.updateText();
       };
 
       let container = this.getContainer();
@@ -148,13 +168,18 @@ export class Combobox2 implements ICombobox {
     }
   }
 
-  private async search() {
+  private async search(term: string) {
+    this.inputText = term.trim();
+
     if (!this.inputText)
       this.visibleOptions = this.options;
     else
       this.visibleOptions = this.options.filter(p => p.text.indexOf(this.inputText) >= 0);
 
-    await this.syncPopover();
+    if (this.isPopoverOpened)
+      await this.syncPopover();
+    else
+      await this.openPopover();
   }
 
   private async syncPopover() {
@@ -170,28 +195,63 @@ export class Combobox2 implements ICombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    this.openPopover(e);
+    this.openPopover();
   }
 
-  private handleInputBlur = (e: Event) => {
+  private handleInputBlur = (e) => {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
 
     this.closePopover();
+
+    let inputText = e.target.value;
+
+    if (!inputText)
+      this.setValue('');
+    else if (this.options && this.options.length) {
+      let same = this.options.find(f => f.text == inputText);
+
+      if (same.text == inputText && same.value != this.value)
+        this.setValue(same.value);
+    }
+
+    this.updateText();
+
+    this.visibleOptions = null;
   }
 
-  private handleInputChange = (e: any) => {
-    this.inputText = e.target.value && e.target.value.trim();
+  private handleInputChange = async (e: any) => {
+    let { value } = e.target;
 
-    this.search();
+    if (!value || !value.trim() || this.inputText == value.trim())
+      return;
+
+    if (!this.isPopoverOpened)
+      this.search(value);
   }
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key == 'ArrowDown')
-      this.popover && this.popover.focusNext();
-    else if (e.key == 'ArrowUp')
-      this.popover && this.popover.focusPrevious();
+    switch (e.key) {
+      case 'ArrowDown':
+        if (this.isPopoverOpened)
+          this.popover && this.popover.focusNext();
+        else
+          this.openPopover();
+        break;
+
+      case 'ArrowUp':
+        this.popover && this.popover.focusPrevious();
+        break;
+
+      case 'Enter':
+        this.popover && this.popover.selectFocused();
+        break;
+
+      case 'Escape':
+        this.popover && this.closePopover();
+        break;
+    }
   }
 
   render() {
@@ -209,7 +269,8 @@ export class Combobox2 implements ICombobox {
         onKeyDown={this.handleKeyDown}
         debounce={this.debounce}
         clearInput={true}
-        value={this.inputText}></ion-input>
+        value={this.inputText}
+        placeholder={this.placeholder}></ion-input>
     ];
   }
 }

@@ -1,7 +1,6 @@
-import { Component, h, Prop, State, Element, Method, Watch, writeTask, Event } from '@stencil/core';
+import { Component, h, Prop, State, Element, Method, Watch, writeTask, Event, EventEmitter } from '@stencil/core';
 import { IComboboxMessages } from '../../interface';
 import { IComboboxOption } from '../t-combobox/t-combobox-interface';
-import { EventEmitter } from 'events';
 
 const isScrolledIntoView = (el: HTMLElement, parent: HTMLElement, direction: Scroll = Scroll.Down) => {
   if (!el) {
@@ -41,53 +40,53 @@ export class ComboboxList2 {
 
   @State() focusedItemIndex: number;
 
-  @Event() select: EventEmitter;
-
   @Prop({ mutable: true }) value: string | string[];
+
+  @Event({ cancelable: false }) select: EventEmitter;
 
   focusedElement: HTMLElement;
 
-  scrollFocusedIntoView: Scroll = Scroll.None;
+  scrollFocusedDirection: Scroll = Scroll.None;
 
   componentWillLoad() {
     if (!this.options)
       return;
 
     this.focusedItemIndex = this.options.findIndex(o => o.value == this.value);
-    this.scrollFocusedIntoView = Scroll.Down;
+    this.scrollFocusedDirection = Scroll.Down;
   }
 
   componentDidLoad() {
-    this.processScrollFocused();
+    this.executeScroll();
   }
 
   componentDidUpdate() {
-    this.processScrollFocused();
+    this.executeScroll();
   }
 
-  processScrollFocused() {
-    if (this.scrollFocusedIntoView) {
-      if (this.focusedElement) {
-        let isVisible = isScrolledIntoView(this.focusedElement, this.host, this.scrollFocusedIntoView);
-        
-        if (!isVisible)
-        writeTask(() => {
-            this.scrollToChoice(this.focusedElement, this.scrollFocusedIntoView);
-        });
-      }
+  private executeScroll() {
+    if (this.scrollFocusedDirection != Scroll.None && this.focusedElement) {
+      let isVisible = isScrolledIntoView(this.focusedElement, this.host, this.scrollFocusedDirection);
 
-      this.scrollFocusedIntoView = Scroll.None;
+      if (!isVisible)
+        writeTask(() => {
+          this.scrollToChoice(this.focusedElement, this.scrollFocusedDirection);
+        });
+
+      this.scrollFocusedDirection = Scroll.None;
     }
   }
 
   @Watch('options')
   optionsChanged() {
-    this.focusedItemIndex = null;
-    this.focusedElement = null;
-    this.scrollFocusedIntoView = Scroll.None;
+    if (!this.options || this.options.length-1 < this.focusedItemIndex) {
+      this.focusedItemIndex = null;
+      this.focusedElement = null;
+      this.scrollFocusedDirection = Scroll.None;
+    }
   }
 
-  scrollToChoice(choice, direction: Scroll) {
+  private scrollToChoice(choice, direction: Scroll) {
     if (!choice) {
       return;
     }
@@ -132,16 +131,28 @@ export class ComboboxList2 {
   @Method()
   async focusNext() {
     this.focusStep(+1);
-    this.scrollFocusedIntoView = Scroll.Down;
+    this.scrollFocusedDirection = Scroll.Down;
   }
 
   @Method()
   async focusPrevious() {
     this.focusStep(-1);
-    this.scrollFocusedIntoView = Scroll.Up;
+    this.scrollFocusedDirection = Scroll.Up;
   }
 
-  handleMouseOver = (e: MouseEvent) => {
+  @Method()
+  async selectFocused() {
+    if (this.options
+      && this.focusedItemIndex >= 0
+      && this.focusedItemIndex < this.options.length) {
+      let option = this.options[this.focusedItemIndex];
+
+      if (option)
+        this.setValue(option.value);
+    }
+  }
+
+  private handleMouseOver = (e: MouseEvent) => {
     let target = e.target as HTMLElement;
 
     if (target.dataset.index === undefined)
@@ -150,12 +161,17 @@ export class ComboboxList2 {
       this.focusedItemIndex = +target.dataset.index;
   }
 
-  handleClick = (e: any) => {
+  private handleClick = (e: any) => {
     e.preventDefault();
     let index = e.target.dataset.index;
 
-    this.value = this.options[index].value;
-    this.select.emit(this.value);
+    let option = this.options[index];
+    this.setValue(option.value);
+  }
+
+  private setValue(value: string) {
+    this.value = value;
+    this.select.emit();
   }
 
   renderEmpty() {
