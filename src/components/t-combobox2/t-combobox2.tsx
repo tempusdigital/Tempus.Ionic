@@ -78,7 +78,7 @@ export class Combobox2 implements ICombobox {
   }
 
   private updateText() {
-    let item = this.options.find(o => o.value == this.value);
+    let item = this.options && this.options.find(o => o.value == this.value);
 
     if (item)
       this.inputText = item.text;
@@ -89,9 +89,9 @@ export class Combobox2 implements ICombobox {
   private getOffset(el: HTMLElement) {
     var _x = 0;
     var _y = 0;
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      _x += el.offsetLeft - el.scrollLeft;
-      _y += el.offsetTop - el.scrollTop;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop) && el.tagName.toUpperCase() != 'ION-CONTENT') {
+      _x += el.offsetLeft;
+      _y += el.offsetTop;
       el = el.offsetParent as HTMLElement;
     }
     return { top: _y, left: _x };
@@ -171,10 +171,14 @@ export class Combobox2 implements ICombobox {
   private async search(term: string) {
     this.inputText = term.trim();
 
-    if (!this.inputText)
-      this.visibleOptions = this.options;
+    if (this.options) {
+      if (!this.inputText)
+        this.visibleOptions = this.options;
+      else
+        this.visibleOptions = this.options.filter(p => p.text.indexOf(this.inputText) >= 0);
+    }
     else
-      this.visibleOptions = this.options.filter(p => p.text.indexOf(this.inputText) >= 0);
+      this.visibleOptions = [];
 
     if (this.isPopoverOpened)
       await this.syncPopover();
@@ -212,8 +216,12 @@ export class Combobox2 implements ICombobox {
     else if (this.options && this.options.length) {
       let same = this.options.find(f => f.text == inputText);
 
+      if (same){
       if (same.text == inputText && same.value != this.value)
         this.setValue(same.value);
+      }
+        else
+        this.setValue('');
     }
 
     this.updateText();
