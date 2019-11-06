@@ -71,7 +71,7 @@ export class TCombobox implements ICombobox {
   /**
    * Trigger change event when value has changed
    */
-  @Event({ cancelable: false }) change: EventEmitter;
+  @Event({ cancelable: false }) tpChange: EventEmitter;
 
   private isCore: boolean;
 
@@ -86,7 +86,7 @@ export class TCombobox implements ICombobox {
 
     this.value = (e.target as any).value;
 
-    this.change.emit();
+    this.tpChange.emit();
   }
 
   render() {

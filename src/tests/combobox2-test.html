@@ -37,14 +37,14 @@
             var combo = combos.item(i);
   
             if (combo.id == 'multiple') {
-              combo.addEventListener('change', handleMultipleChange);
+              combo.addEventListener('tpChange', handleMultipleChange);
               combo.value = ['1', '5'];
   
               var multipleValue = document.getElementById('multiple-value');
               multipleValue.textContent = JSON.stringify(combo.value);
             }
             else if (combo.id == 'single') {
-              combo.addEventListener('change', handleSingleChange);
+              combo.addEventListener('tpChange', handleSingleChange);
               combo.value = '1';
   
               var singleValue = document.getElementById('single-value');

@@ -58,7 +58,7 @@ export class TComboboxChoices implements ICombobox {
   /**
    * Trigger change event when value has changed
    */
-  @Event({ cancelable: false }) change: EventEmitter;
+  @Event({ cancelable: false }) tpChange: EventEmitter;
 
   @Event() ionStyle!: EventEmitter;
 
@@ -79,7 +79,7 @@ export class TComboboxChoices implements ICombobox {
   _initializedLayout: boolean = false;
 
   async componentWillLoad() {
-    this.change = deferEvent(this.change);
+    this.tpChange = deferEvent(this.tpChange);
     this.emitStyle = debounce(this.emitStyle.bind(this));
   }
 
@@ -330,7 +330,7 @@ export class TComboboxChoices implements ICombobox {
     let newValue = this.getChoicesValue();
     if (this.value !== newValue) {
       this.value = newValue;
-      this.change.emit();
+      this.tpChange.emit();
       this.emitStyle();
     }
   }

@@ -199,6 +199,7 @@ export namespace Components {
     'debounce': number;
     'disabled': boolean;
     'messages': IComboboxMessages;
+    'multiple': boolean;
     'name': string;
     'options': IComboboxOption[];
     'placeholder': string;
@@ -413,7 +414,7 @@ declare namespace LocalJSX {
     /**
     * Trigger change event when value has changed
     */
-    'onChange'?: (event: CustomEvent<any>) => void;
+    'onTpChange'?: (event: CustomEvent<any>) => void;
     /**
     * The visible options to select.
     */
@@ -464,11 +465,11 @@ declare namespace LocalJSX {
     * Native select name attribute
     */
     'name'?: string;
+    'onIonStyle'?: (event: CustomEvent<any>) => void;
     /**
     * Trigger change event when value has changed
     */
-    'onChange'?: (event: CustomEvent<any>) => void;
-    'onIonStyle'?: (event: CustomEvent<any>) => void;
+    'onTpChange'?: (event: CustomEvent<any>) => void;
     /**
     * The visible options to select.
     */
@@ -513,11 +514,11 @@ declare namespace LocalJSX {
     * Native select name attribute
     */
     'name'?: string;
+    'onIonStyle'?: (event: CustomEvent<any>) => void;
     /**
     * Trigger change event when value has changed
     */
-    'onChange'?: (event: CustomEvent<any>) => void;
-    'onIonStyle'?: (event: CustomEvent<any>) => void;
+    'onTpChange'?: (event: CustomEvent<any>) => void;
     /**
     * The visible options to select.
     */
@@ -551,8 +552,9 @@ declare namespace LocalJSX {
     'debounce'?: number;
     'disabled'?: boolean;
     'messages'?: IComboboxMessages;
+    'multiple'?: boolean;
     'name'?: string;
-    'onChange'?: (event: CustomEvent<any>) => void;
+    'onTpChange'?: (event: CustomEvent<any>) => void;
     'options'?: IComboboxOption[];
     'placeholder'?: string;
     'required'?: boolean;
