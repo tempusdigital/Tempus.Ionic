@@ -15,7 +15,7 @@ export interface ICombobox {
 
   options: IComboboxOption[];
 
-  tpChange: any; 
+  change: any; 
   
   messages: IComboboxMessages;
 }

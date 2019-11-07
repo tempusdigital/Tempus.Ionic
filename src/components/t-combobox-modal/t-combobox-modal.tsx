@@ -66,7 +66,7 @@ export class TComboboxModal implements ICombobox {
   /**
    * Trigger change event when value has changed
    */
-  @Event({ cancelable: false }) tpChange: EventEmitter;
+  @Event({ cancelable: false }) change: EventEmitter;
 
   @Event() ionStyle!: EventEmitter;
 
@@ -80,7 +80,7 @@ export class TComboboxModal implements ICombobox {
   @Element() host: HTMLElement;
 
   async componentWillLoad() {
-    this.tpChange = deferEvent(this.tpChange);
+    this.change = deferEvent(this.change);
     this.emitStyle = debounce(this.emitStyle.bind(this));
 
     this.valueChanged();
@@ -197,7 +197,7 @@ export class TComboboxModal implements ICombobox {
 
     this.updateText();
 
-    this.tpChange.emit();
+    this.change.emit();
 
     this.emitStyle();
   }
@@ -263,7 +263,7 @@ export class TComboboxModal implements ICombobox {
 
     this.value = '';
 
-    this.tpChange.emit();
+    this.change.emit();
 
     this.updateText();
     this.emitStyle();

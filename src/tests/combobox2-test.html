@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/normalize.css">
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/structure.css">
   <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/typography.css">
-  <script type="module" src="/@ionic/core/dist/ionic/ionic.esm.js"></script>
-  <script nomodule="" src="/@ionic/core/dist/ionic/ionic.js"></script>
+  <script type="module" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.js"></script>
   <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
 
@@ -37,14 +37,14 @@
             var combo = combos.item(i);
   
             if (combo.id == 'multiple') {
-              combo.addEventListener('tpChange', handleMultipleChange);
+              combo.addEventListener('change', handleMultipleChange);
               combo.value = ['1', '5'];
   
               var multipleValue = document.getElementById('multiple-value');
               multipleValue.textContent = JSON.stringify(combo.value);
             }
             else if (combo.id == 'single') {
-              combo.addEventListener('tpChange', handleSingleChange);
+              combo.addEventListener('change', handleSingleChange);
               combo.value = '1';
   
               var singleValue = document.getElementById('single-value');
@@ -137,6 +137,11 @@
           </ion-item>
 
           <ion-item>
+            <ion-label position="floating">Multiple (floating)</ion-label>
+            <t-combobox2 multiple> </t-combobox2>
+          </ion-item>
+
+          <ion-item>
             <ion-label>Toggle</ion-label>
             <ion-toggle> </ion-toggle>
           </ion-item>
@@ -188,7 +193,6 @@
           </ion-item> 
         </ion-list>
       </form>
-      <div id="test" style="position: absolute; height: 50px; width: 50px; background-color: red;"></div>
     </ion-content>
   </ion-app>
 

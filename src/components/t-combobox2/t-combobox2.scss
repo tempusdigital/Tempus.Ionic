@@ -32,12 +32,24 @@ t-combobox2 {
       padding-bottom: var(--padding-bottom);
     }
 
-    ion-icon {
+    .t-chip-remove {
       cursor: pointer;
       padding-top: var(--padding-top);
       padding-bottom: var(--padding-bottom);
       border-radius: 12px;
       margin-left: 4px;
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      contain: strict;
+      fill: currentcolor;
+      box-sizing: content-box !important;
+
+      svg {
+        display: block;
+        height: 100%;
+        width: 100%;
+      }
     }
   }
 }
@@ -59,41 +71,3 @@ t-combobox2 {
   overflow-x: hidden;
   z-index: 20000;
 }
-/*
-t-combobox2 input:invalid {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-t-combobox2 input, t-combobox2 input:focus {
-border-radius: var(--border-radius);
-padding-left: var(--padding-start);
-padding-right: var(--padding-end);
-padding-top: var(--padding-top);
-padding-bottom: var(--padding-bottom);
-font-family: inherit;
-font-size: inherit;
-font-style: inherit;
-font-weight: inherit;
-letter-spacing: inherit;
-text-decoration: inherit;
-text-overflow: inherit;
-text-transform: inherit;
-text-align: inherit;
-white-space: inherit;
-color: inherit;
-display: inline-block;
--ms-flex: 1;
-flex: 1;
-width: 100%;
-max-width: 100%;
-max-height: 100%;
-border: 0;
-outline: none;
-background: transparent;
--webkit-box-sizing: border-box;
-box-sizing: border-box;
--webkit-appearance: none;
--moz-appearance: none;
-appearance: none;
-}*/
