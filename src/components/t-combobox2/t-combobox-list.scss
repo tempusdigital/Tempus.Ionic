@@ -1,10 +1,11 @@
 t-combobox-list2 {
-    .t-item {
-        padding: 8px 16px; 
-        cursor: pointer;
-    }
+  z-index: 30000;
+  .t-item {
+    padding: 8px 16px;
+    cursor: pointer;
+  }
 
-    .t-item-focused {
-        background-color: #f2f2f2;
-    }
+  .t-item-focused {
+    background-color: #f2f2f2;
+  }
 }
