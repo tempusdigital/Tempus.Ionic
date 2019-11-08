@@ -1,6 +1,7 @@
 t-combobox2 {
   display: flex;
   flex: 1;
+  flex-wrap: wrap;
   align-items: flex-start;
   position: relative;
   z-index: 2;
@@ -25,9 +26,9 @@ t-combobox2 {
     font-size: 0.8rem;
 
     .t-chip-text {
-        height: 26px;
-        display: flex;
-        align-items: center;
+      height: 26px;
+      display: flex;
+      align-items: center;
       padding-top: var(--padding-top);
       padding-bottom: var(--padding-bottom);
     }
@@ -38,18 +39,21 @@ t-combobox2 {
       padding-bottom: var(--padding-bottom);
       border-radius: 12px;
       margin-left: 4px;
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      contain: strict;
-      fill: currentcolor;
-      box-sizing: content-box !important;
+    }
+  }
 
-      svg {
-        display: block;
-        height: 100%;
-        width: 100%;
-      }
+  .t-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    contain: strict;
+    fill: currentcolor;
+    box-sizing: content-box !important;
+
+    svg {
+      display: block;
+      height: 100%;
+      width: 100%;
     }
   }
 }

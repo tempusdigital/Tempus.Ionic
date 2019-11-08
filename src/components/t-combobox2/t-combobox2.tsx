@@ -213,6 +213,8 @@ export class Combobox2 implements ICombobox {
   private setValue(value: string | string[]) {
     this.value = normalizeValue(value);
 
+    this.hideSelectedOptionsFromPopover();
+
     this.change.emit();
   }
 
@@ -250,7 +252,7 @@ export class Combobox2 implements ICombobox {
 
     try {
       if (!this.searching)
-        this.visibleOptions = this.normalizedOptions;
+        this.clearSearch();
 
       let target = this.host;
 
@@ -319,13 +321,14 @@ export class Combobox2 implements ICombobox {
   private async clearSearch() {
     this.searching = false;
     this.visibleOptions = this.normalizedOptions;
+    this.hideSelectedOptionsFromPopover();
 
-    if (this.isPopoverOpened)
-      await this.syncPopover();
+    await this.syncPopover();
   }
 
   private async search(term: string) {
-    this.inputText = term.trim();
+    if (term !== null && term !== undefined)
+      this.inputText = term;
 
     if (this.normalizedOptions) {
       if (!this.inputText)
@@ -339,12 +342,21 @@ export class Combobox2 implements ICombobox {
     else
       this.visibleOptions = [];
 
+    this.hideSelectedOptionsFromPopover();
+
     if (this.isPopoverOpened)
       await this.syncPopover();
-    else
-      await this.openPopover();
 
     this.searching = true;
+  }
+
+  private hideSelectedOptionsFromPopover() {
+    if (this.multiple && this.visibleOptions && !isEmptyValue(this.value)) {
+      let selectedValues = asArray(this.value);
+
+      this.visibleOptions = this.visibleOptions.filter(p => !selectedValues.includes(p.value));
+      this.syncPopover();
+    }
   }
 
   private searchDebounced(term: string) {
@@ -465,7 +477,8 @@ export class Combobox2 implements ICombobox {
         break;
 
       case 'Backspace':
-        !this.inputText && this.removeLastValue();
+        let target = e.target as HTMLInputElement;
+        !target.value && this.removeLastValue();
         break;
     }
   }
@@ -519,7 +532,7 @@ export class Combobox2 implements ICombobox {
         </div>
         {
           !this.disabled && !this.readonly &&
-          <div class="t-chip-remove" onClick={this.handleChipRemoveClick}>
+          <div class="t-chip-remove t-icon" onClick={this.handleChipRemoveClick}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path></svg>
           </div>
         }
@@ -552,6 +565,7 @@ export class Combobox2 implements ICombobox {
             onChange={stopPropagation}
             onInput={stopPropagation}
             clearInput={false}
+            clearOnEdit={false}
             value={this.inputText}
             placeholder={this.placeholder}></ion-input>
         }
