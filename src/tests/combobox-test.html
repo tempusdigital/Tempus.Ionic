@@ -23,15 +23,16 @@
       var options = [];
   
       function init() {
-        document.querySelector('t-combobox').componentOnReady().then(() => {
+        document.querySelector('t-combobox,t-combobox-choices').componentOnReady().then(() => {
           for (let i = 1; i < 300; i++) {
             options.push({
               value: i,
               text: 'Text' + i.toString().padStart(3, '0'),
+              detailText: 'Sub title here'
             })
           }
   
-          var combos = document.querySelectorAll('t-combobox:not(.empty)');
+          var combos = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
   
           for (let i = 0; i < combos.length; i++) {
             var combo = combos.item(i);
@@ -61,7 +62,7 @@
       function handleMultipleChange(e) {
         multiple = e.target.value;
   
-        var combos = document.getElementsByTagName('t-combobox');
+        var combos = document.getElementsByTagName('t-combobox,t-combobox-choices');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -77,7 +78,7 @@
       function handleSingleChange(e) {
         single = e.target.value;
   
-        var combos = document.getElementsByTagName('t-combobox');
+        var combos = document.getElementsByTagName('t-combobox,t-combobox-choices');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -86,7 +87,7 @@
             combo.value = single;
         }
   
-        var singleValue = document.querySelectorAll('t-combobox:not(.empty)');
+        var singleValue = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
         singleValue.textContent = JSON.stringify(single);
       }
   
@@ -96,9 +97,10 @@
         options = [...options, {
           value: 'Value' + i,
           text: 'Text' + i,
+          detailText: 'Sub title here',
         }];
   
-        var combos = document.querySelectorAll('t-combobox:not(.empty)');
+        var combos = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -134,6 +136,11 @@
           <ion-item>
             <ion-label position="stacked">Multiple (with placeholder)</ion-label>
             <t-combobox multiple placeholder="This is a placeholder"> </t-combobox>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Multiple allow add</ion-label>
+            <t-combobox-choices multiple allow-add add-tokens=",;" placeholder="This is a placeholder"> </t-combobox-choices>
           </ion-item>
 
           <ion-item>

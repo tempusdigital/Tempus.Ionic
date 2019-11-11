@@ -31,7 +31,7 @@ enum Scroll {
   tag: 't-combobox-list',
   styleUrl: 't-combobox-list.scss'
 })
-export class ComboboxList2 {
+export class ComboboxList {
   @Element() host: HTMLElement;
 
   @Prop() options: IComboboxOption[] = [];
@@ -79,7 +79,7 @@ export class ComboboxList2 {
 
   @Watch('options')
   optionsChanged() {
-    if (!this.options || this.options.length-1 < this.focusedItemIndex) {
+    if (!this.options || this.options.length - 1 < this.focusedItemIndex) {
       this.focusedItemIndex = null;
       this.focusedElement = null;
       this.scrollFocusedDirection = Scroll.None;
@@ -160,7 +160,11 @@ export class ComboboxList2 {
   }
 
   private handleMouseOver = (e: MouseEvent) => {
-    let target = e.target as HTMLElement;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+
+    let target = e.currentTarget as HTMLElement;
 
     if (target.dataset.index === undefined)
       this.focusedItemIndex = null;
@@ -170,7 +174,10 @@ export class ComboboxList2 {
 
   private handleClick = (e: any) => {
     e.preventDefault();
-    let index = e.target.dataset.index;
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+
+    let index = e.currentTarget.dataset.index;
 
     let option = this.options[index];
     this.setValue(option.value);
@@ -201,6 +208,7 @@ export class ComboboxList2 {
         onMouseOver={this.handleMouseOver}
         onMouseDown={this.handleClick}>
         {item.text}
+        {item.detailText && <div class="t-item-detail">{item.detailText}</div>}
       </div>
     )
   }

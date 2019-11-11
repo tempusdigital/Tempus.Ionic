@@ -96,6 +96,8 @@ export namespace Components {
     'value': any;
   }
   interface TComboboxChoices {
+    'addTokens': string;
+    'allowAdd': boolean;
     'autofocus': boolean;
     'debounce': number;
     'disabled': boolean;
@@ -398,6 +400,8 @@ declare namespace LocalJSX {
     'value'?: any;
   }
   interface TComboboxChoices {
+    'addTokens'?: string;
+    'allowAdd'?: boolean;
     'autofocus'?: boolean;
     'debounce'?: number;
     'disabled'?: boolean;

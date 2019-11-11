@@ -23,6 +23,7 @@ export interface ICombobox {
 export interface IComboboxOption {
   value: string;
   text: string;
+  detailText?: string;
   icon?: { src?: string; name?: string; };
 }
 
