@@ -98,7 +98,7 @@ export class TCombobox implements ICombobox {
 
   renderCore() {
     return [
-      <t-combobox2
+      <t-combobox-choices
         name={this.name}
         autofocus={this.autofocus}
         disabled={this.disabled}
@@ -110,7 +110,7 @@ export class TCombobox implements ICombobox {
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}
         messages={this.messages}
-      ></t-combobox2>
+      ></t-combobox-choices>
     ]
   }
 

@@ -28,7 +28,7 @@ enum Scroll {
 }
 
 @Component({
-  tag: 't-combobox-list2',
+  tag: 't-combobox-list',
   styleUrl: 't-combobox-list.scss'
 })
 export class ComboboxList2 {
@@ -150,6 +150,13 @@ export class ComboboxList2 {
       if (option)
         this.setValue(option.value);
     }
+  }
+
+  @Method()
+  async hasFocusedOption() {
+    return this.options
+      && this.focusedItemIndex >= 0
+      && this.focusedItemIndex < this.options.length;
   }
 
   private handleMouseOver = (e: MouseEvent) => {

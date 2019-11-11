@@ -1,68 +1,77 @@
-
-$choices-bg-color: tranparent;
-$choices-bg-color-disabled: transparent;
-$choices-primary-color: #a0a0a0;
-$choices-button-icon-path: '';
-$choices-selector: 'choices';
-
-@import 'node_modules/choices.js/src/styles/choices.scss';
-
 t-combobox-choices {
-
-  display: block;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
   width: 100%;
-  overflow: visible;
 
-  .choices[data-type*="select-one"]:after {
-    border-color: rgb(171,171,171) transparent transparent transparent;
-    top: auto !important;
-    bottom: 7px;
-    right: 5px;
+  ion-input {
+    width: 100px;
   }
 
-  .choices[data-type*="select-one"] .choices__inner {
-    padding-bottom: 3px;
-  }
+  .t-chip {
+    --padding-top: 6px;
+    --padding-bottom: 6px;
 
-  .choices__inner {
-    // Remove bordas e padroniza layout do choices como se fosse um ion-input
-    border: none;
-    padding-left: 0;
-    min-height: 35px;
+    margin-top: 8px;
+    margin-right: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 16px;
+    background-color: var(--ion-color-medium, silver);
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
 
-    .choices__list--single {
-      padding-top: 2px;
-      padding-left: 0;
-      padding-bottom: 0;
-      font-size: 16px;
+    .t-chip-text {
+      height: 26px;
+      display: flex;
+      align-items: center;
+      padding-top: var(--padding-top);
+      padding-bottom: var(--padding-bottom);
     }
 
-    .choices__input {
-      background-color: transparent;
-    }
-  }
-
-  .choices__list--dropdown{
-    z-index: 10;
-  }
-
-  @media (min-width: 640px) {
-    .choices__list--dropdown .choices__item--selectable {
-      padding-right: 10px !important;
+    .t-chip-remove {
+      cursor: pointer;
+      padding-top: var(--padding-top);
+      padding-bottom: var(--padding-bottom);
+      border-radius: 12px;
+      margin-left: 4px;
     }
   }
 
-  .choices.is-disabled {
-    pointer-events: none;
-    color: lightgray;
+  .t-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    contain: strict;
+    fill: currentcolor;
+    box-sizing: content-box !important;
+
+    svg {
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
   }
 }
 
-.item.item-t-combobox-choices{
-  overflow: visible;
-}
+.t-combobox-popover {
+  --border-color: var(
+    --ion-item-border-color,
+    var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13)))
+  );
 
-.item:not(.item-has-value) .choices__button {
-  /* Hide remove button if there is no value */
-  display: none;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  position: absolute;
+  background-color: white;
+  display: block;
+  max-height: 330px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 20000;
 }
