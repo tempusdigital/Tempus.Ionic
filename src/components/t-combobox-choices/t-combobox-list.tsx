@@ -189,11 +189,12 @@ export class ComboboxList {
   }
 
   renderEmpty() {
-    return (
-      <div class="t-item" key="__empty__">
-        {this.messages.noResultsText}
-      </div>
-    );
+    if (this.messages )
+      return (
+        <div class="t-item" key="__empty__">
+          {this.messages.noResultsText}
+        </div>
+      );
   }
 
   renderItem(item: IComboboxOption, index: number) {

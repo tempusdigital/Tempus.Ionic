@@ -1,9 +1,8 @@
-import { Component, h, Prop, State, Element, Watch, Event, EventEmitter, Host, writeTask } from '@stencil/core';
+import { Component, h, Prop, State, Element, Watch, Event, EventEmitter, Host } from '@stencil/core';
 import { IComboboxOption } from '../../interface';
 import { debounceAsync, normalizeValue, isEmptyValue, removeAccents } from '../../utils/helpers';
 import { ICombobox, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
 import { HTMLStencilElement } from '@stencil/core/internal';
-import { textChangeRangeIsUnchanged } from 'typescript';
 
 function asArray(values: any): any[] {
   if (values === null || values === undefined)
@@ -101,29 +100,41 @@ export class TComboboxChoices implements ICombobox {
 
   @State() inputText: string;
 
-
   private normalizedOptions: NormalizedOption[];
 
   private hasFocus: boolean = false;
 
   private popover: HTMLTComboboxListElement = null;
 
-  private visibleOptions: NormalizedOption[] = [];
+  @State() private visibleOptions: NormalizedOption[] = [];
 
   private isPopoverOpened: boolean = false;
 
   private searching: boolean = false;
 
-  componentWillLoad() {
-    this.syncPopover = debounceAsync(this.syncPopover.bind(this));
+  private initialized = false;
 
-    this.valueChanged();
-    this.optionsChanged();
+  componentWillLoad() {
+    try {
+      this.normalizedOptions = normalizeOptions(this.options);
+      this.value = normalizeValue(this.value);
+
+      this.updateVisibleOptions();
+      this.updateText();
+
+      this.emitStyle();
+    }
+    finally {
+      this.initialized = true;
+    }
   }
 
   componentDidLoad() {
-    //this.searchDebounced = debounceAsync(this.searchDebounced.bind(this));
-    //this.updateVisibleOptions = debounceAsync(this.updateVisibleOptions.bind(this));
+    this.searchDebounced = debounceAsync(this.searchDebounced.bind(this), this.debounce);
+
+    // Improve performance by preventing consecutives unnecessary updates of the visible options list
+    this.syncPopover = debounceAsync(this.syncPopover.bind(this));
+    this.updateVisibleOptions = debounceAsync(this.updateVisibleOptions.bind(this));
   }
 
   componentDidUnload() {
@@ -132,30 +143,40 @@ export class TComboboxChoices implements ICombobox {
 
   @Watch('options')
   optionsChanged() {
+    if (!this.initialized)
+      return;
+
     this.normalizedOptions = normalizeOptions(this.options);
 
     this.updateVisibleOptions();
-    this.syncPopover();
     this.updateText();
   }
 
   @Watch('value')
-  valueChanged() {
+  valueChanged(newValue, oldValue) {
+    if (!this.initialized)
+      return;
+
     let normalized = normalizeValue(this.value);
 
-    if (this.value !== normalized)
+    if (this.value !== normalized) {
       this.value = normalized;
+      return;
+    }
+
+    if (newValue === oldValue)
+      return;
+
+    this.change.emit();
 
     this.updateVisibleOptions();
-    this.syncPopover();
     this.updateText();
 
     this.emitStyle();
   }
 
-  @Watch('inputText')
-  inputTextChanged() {
-    this.updateVisibleOptions();
+  @Watch('visibleOptions')
+  visibleOptionsChanged() {
     this.syncPopover();
   }
 
@@ -215,8 +236,6 @@ export class TComboboxChoices implements ICombobox {
 
   private setValue(value: string | string[]) {
     this.value = normalizeValue(value);
-
-    this.change.emit();
   }
 
   private updateText() {
@@ -313,6 +332,8 @@ export class TComboboxChoices implements ICombobox {
     this.inputText = '';
 
     this.updateText();
+
+    this.updateVisibleOptions();
   }
 
   private async search(term: string) {
@@ -324,6 +345,8 @@ export class TComboboxChoices implements ICombobox {
       this.inputText = term;
     else
       this.inputText = '';
+
+    this.updateVisibleOptions();
   }
 
   private async updateVisibleOptions() {
@@ -353,6 +376,9 @@ export class TComboboxChoices implements ICombobox {
   }
 
   private searchDebounced(term: string) {
+    if (!this.hasFocus)
+      return;
+
     return this.search(term);
   }
 
@@ -367,6 +393,11 @@ export class TComboboxChoices implements ICombobox {
     let top = offset.top + target.offsetHeight;
     let left = offset.left;
     let width = target.offsetWidth;
+
+    let insideIonItem = target.closest('ion-item');
+
+    if (insideIonItem)
+      top += 4;
 
     let popover = this.popover;
 
@@ -453,7 +484,7 @@ export class TComboboxChoices implements ICombobox {
       if (!inputText) {
         this.select(null);
       }
-      else if (this.normalizedOptions && this.normalizedOptions.length && this.searching) {
+      else if (this.normalizedOptions && this.normalizedOptions.length) {
         let same = this.getOptionByText(inputText);
 
         if (same) {
@@ -479,6 +510,11 @@ export class TComboboxChoices implements ICombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
+    let { value } = e.target;
+
+    if (this.inputText !== value)
+      this.inputText = value;
+
     if (!this.hasFocus) {
       this.updateText();
       return;
@@ -487,15 +523,13 @@ export class TComboboxChoices implements ICombobox {
     if (!this.isPopoverOpened)
       return;
 
-    let { value } = e.target;
-
-    if (value && this.inputText == value.trim())
-      return;
-
     this.searchDebounced(value);
   }
 
   private handleKeyDown = async (e: KeyboardEvent) => {
+    if (this.disabled || this.readonly)
+      return;
+
     let target = e.target as HTMLInputElement;
     let inputText = target.value;
 

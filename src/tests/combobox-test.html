@@ -62,7 +62,7 @@
       function handleMultipleChange(e) {
         multiple = e.target.value;
   
-        var combos = document.getElementsByTagName('t-combobox,t-combobox-choices');
+        var combos = document.getElementsByTagName('t-combobox');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
@@ -78,7 +78,7 @@
       function handleSingleChange(e) {
         single = e.target.value;
   
-        var combos = document.getElementsByTagName('t-combobox,t-combobox-choices');
+        var combos = document.getElementsByTagName('t-combobox');
   
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
