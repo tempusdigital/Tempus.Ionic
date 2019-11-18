@@ -1,4 +1,5 @@
 import { EventEmitter } from "@stencil/core";
+import { IComboboxOption, NormalizedOption } from "../interface";
 
 // From: https://github.com/ionic-team/ionic/blob/master/core/src/utils/helpers.ts
 
@@ -114,4 +115,24 @@ export function asArray(values: any): any[] {
     return values;
 
   return [values];
+}
+
+export function normalizeOptions(options: IComboboxOption[]): NormalizedOption[] {
+  if (!options)
+    return null;
+
+  return options.filter(o => !!o).map(o => {
+    return {
+      value: normalizeValue(o.value) as string,
+      text: o.text,
+      textSearchToken: generateSearchToken(o.text),
+      detailTextSearchToken: generateSearchToken(o.detailText),
+      detailText: o.detailText
+    }
+  })
+}
+
+export function stopPropagation(e: Event) {
+  e.stopPropagation();
+  e.stopImmediatePropagation()
 }

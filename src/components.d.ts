@@ -14,6 +14,7 @@ import {
 import {
   IComboboxMessages,
   IComboboxOption,
+  NormalizedOption,
 } from './components/t-combobox/t-combobox-interface';
 import {
   IComboboxMessages as IComboboxMessages1,
@@ -101,7 +102,6 @@ export namespace Components {
     'autofocus': boolean;
     'debounce': number;
     'disabled': boolean;
-    'interface': 'popover' | 'modal';
     'messages': IComboboxMessages;
     'multiple': boolean;
     'name': string;
@@ -121,52 +121,24 @@ export namespace Components {
     'value': string | string[];
   }
   interface TComboboxModal {
-    /**
-    * Set the focus on component is loaded.
-    */
     'autofocus': boolean;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
+    'debounce': number;
     'disabled': boolean;
-    /**
-    * The messages that will be shown
-    */
     'messages': IComboboxMessages;
-    /**
-    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-    */
     'multiple': boolean;
-    /**
-    * Native select name attribute
-    */
     'name': string;
-    /**
-    * The visible options to select.
-    */
     'options': IComboboxOption[];
-    /**
-    * Set the input's placeholder when no option is selected.
-    */
     'placeholder': string;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
     'readonly': boolean;
-    /**
-    * If `true`, the user must fill in a value before submitting a form.
-    */
     'required': boolean;
-    /**
-    * The value of the input.
-    */
     'value': string | string[];
   }
   interface TComboboxModalList {
     'close': () => Promise<any>;
+    'debounce': number;
     'messages': IComboboxMessages;
     'multiple': boolean;
-    'options': IComboboxOption[];
+    'options': NormalizedOption[];
     'value': string | string[];
   }
   interface TContainer {
@@ -406,7 +378,6 @@ declare namespace LocalJSX {
     'autofocus'?: boolean;
     'debounce'?: number;
     'disabled'?: boolean;
-    'interface'?: 'popover' | 'modal';
     'messages'?: IComboboxMessages;
     'multiple'?: boolean;
     'name'?: string;
@@ -425,58 +396,26 @@ declare namespace LocalJSX {
     'value'?: string | string[];
   }
   interface TComboboxModal {
-    /**
-    * Set the focus on component is loaded.
-    */
     'autofocus'?: boolean;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
+    'debounce'?: number;
     'disabled'?: boolean;
-    /**
-    * The messages that will be shown
-    */
     'messages'?: IComboboxMessages;
-    /**
-    * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-    */
     'multiple'?: boolean;
-    /**
-    * Native select name attribute
-    */
     'name'?: string;
-    /**
-    * Trigger change event when value has changed
-    */
     'onChange'?: (event: CustomEvent<any>) => void;
     'onIonStyle'?: (event: CustomEvent<any>) => void;
-    /**
-    * The visible options to select.
-    */
     'options'?: IComboboxOption[];
-    /**
-    * Set the input's placeholder when no option is selected.
-    */
     'placeholder'?: string;
-    /**
-    * If `true`, the user cannot interact with the input. Defaults to `false`.
-    */
     'readonly'?: boolean;
-    /**
-    * If `true`, the user must fill in a value before submitting a form.
-    */
     'required'?: boolean;
-    /**
-    * The value of the input.
-    */
     'value'?: string | string[];
   }
   interface TComboboxModalList {
+    'debounce'?: number;
     'messages'?: IComboboxMessages;
     'multiple'?: boolean;
-    'onSearch'?: (event: CustomEvent<{ searchText: string }>) => void;
     'onSelect'?: (event: CustomEvent<any>) => void;
-    'options'?: IComboboxOption[];
+    'options'?: NormalizedOption[];
     'value'?: string | string[];
   }
   interface TContainer {

@@ -1,5 +1,5 @@
 import { Component, Prop, Element, State, Event, h, EventEmitter, Method } from '@stencil/core';
-import { IComboboxOption, ComboboxDefaultOptions, IComboboxMessages } from '../t-combobox/t-combobox-interface';
+import { IComboboxMessages, NormalizedOption } from '../t-combobox/t-combobox-interface';
 import { generateSearchToken, asArray, isEmptyValue } from '../../utils/helpers';
 
 @Component({
@@ -7,26 +7,29 @@ import { generateSearchToken, asArray, isEmptyValue } from '../../utils/helpers'
   styleUrl: 't-combobox-modal-list.scss'
 })
 export class ComboboxModalListPage {
-  @Prop() options: IComboboxOption[] = [];
+  @Prop() options: NormalizedOption[] = [];
 
   @Prop() messages: IComboboxMessages;
 
-  @State() focusedItemIndex: number;
-
   @Prop({ mutable: true }) value: string | string[];
 
-  @Event({ cancelable: false }) select: EventEmitter;
+  @Prop() debounce: number;
 
-  @Event({ cancelable: false }) search: EventEmitter<{ searchText: string }>;
+  @Event({ cancelable: false }) select: EventEmitter;
 
   @Prop() multiple: boolean = false;
 
   @Element() host: any;
 
+  @State() visibleOptions: NormalizedOption[];
+
   inputType: string;
+
   inputSlot: string;
 
   componentWillLoad() {
+    this.visibleOptions = this.options;
+
     if (!this.multiple) {
       this.inputType = 'ion-radio';
       this.inputSlot = "start";
@@ -60,22 +63,42 @@ export class ComboboxModalListPage {
 
       if (checked) {
         if (!currentValue.includes(value)) {
-          currentValue.push(value)
+          currentValue = [...currentValue, value];
           this.value = currentValue;
         }
       }
       else
         this.value = currentValue.filter(v => v !== value);
     } else {
-        this.value = value;
+      this.value = value;
     }
   }
 
-  async handleSearch(e) {
+  private search(inputText: string) {
+    let { options } = this;
+
+    if (options) {
+      let visibleOptions: NormalizedOption[];
+
+      if (!inputText || !inputText.trim())
+        visibleOptions = options;
+      else {
+        let searchToken = generateSearchToken(inputText);
+
+        visibleOptions = options.filter(p =>
+          p.textSearchToken.indexOf(searchToken) >= 0 || p.detailTextSearchToken.indexOf(searchToken) >= 0);
+      }
+
+      this.visibleOptions = visibleOptions;
+    }
+    else
+      this.visibleOptions = [];
+  }
+
+  private handleSearch(e) {
     let searchText = e.target.value;
 
-    searchText = generateSearchToken(searchText);
-    this.search.emit({ searchText });
+    this.search(searchText);
   }
 
   private isChecked(value: string) {
@@ -99,7 +122,7 @@ export class ComboboxModalListPage {
     if (cell.type === 'item') return this.renderItem(el, cell.value);
   }
 
-  renderItem(el: HTMLElement, data: IComboboxOption) {
+  renderItem(el: HTMLElement, data: NormalizedOption) {
     let item: HTMLElement;
     let input: HTMLInputElement;
     let label: HTMLElement;
@@ -124,13 +147,13 @@ export class ComboboxModalListPage {
     label.textContent = data.text;
     input.value = data.value;
 
-      input.checked = this.isChecked(data.value);
+    input.checked = this.isChecked(data.value);
 
     return el;
   }
 
   renderVirtualScroll() {
-    return (<ion-virtual-scroll items={this.options} nodeRender={this.nodeRender} approxItemHeight={48}></ion-virtual-scroll>);
+    return (<ion-virtual-scroll items={this.visibleOptions} nodeRender={this.nodeRender} approxItemHeight={48}></ion-virtual-scroll>);
   }
 
   renderList() {
@@ -168,13 +191,13 @@ export class ComboboxModalListPage {
           <ion-searchbar
             onIonChange={e => this.handleSearch(e)}
             animated
-            debounce={ComboboxDefaultOptions.searchDebounce}
+            debounce={this.debounce}
             placeholder={this.messages.searchPlaceholderText}></ion-searchbar>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
         <ion-list lines="none">
-          {this.options && this.options.length
+          {this.visibleOptions && this.visibleOptions.length
             ? this.renderList()
             : this.renderEmpty()
           }

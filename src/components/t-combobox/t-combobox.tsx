@@ -76,7 +76,7 @@ export class TCombobox implements ICombobox {
   private isCore: boolean;
 
   componentWillLoad() {
-    this.isCore = true;
+    this.isCore = isCore(window);
   }
 
   handleChange(e: UIEvent) {

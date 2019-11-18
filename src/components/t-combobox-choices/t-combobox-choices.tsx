@@ -1,30 +1,8 @@
 import { Component, h, Prop, State, Element, Watch, Event, EventEmitter, Host } from '@stencil/core';
 import { IComboboxOption } from '../../interface';
-import { debounceAsync, normalizeValue, isEmptyValue, isCore, generateSearchToken, asArray } from '../../utils/helpers';
+import { debounceAsync, normalizeValue, isEmptyValue, stopPropagation, normalizeOptions, asArray, generateSearchToken } from '../../utils/helpers';
 import { ICombobox, IComboboxMessages, ComboboxDefaultOptions, NormalizedOption } from '../t-combobox/t-combobox-interface';
 import { HTMLStencilElement } from '@stencil/core/internal';
-
-
-function stopPropagation(e: Event) {
-  e.stopImmediatePropagation();
-  e.stopPropagation();
-}
-
-
-function normalizeOptions(options: IComboboxOption[]): NormalizedOption[] {
-  if (!options)
-    return null;
-
-  return options.filter(o => !!o).map(o => {
-    return {
-      value: normalizeValue(o.value) as string,
-      text: o.text,
-      textSearchToken: generateSearchToken(o.text),
-      detailTextSearchToken: generateSearchToken(o.detailText),
-      detailText: o.detailText
-    }
-  })
-}
 
 @Component({
   tag: 't-combobox-choices',
@@ -50,7 +28,7 @@ export class TComboboxChoices implements ICombobox {
 
   @Prop() options: IComboboxOption[];
 
-  @Prop() messages: IComboboxMessages;
+  @Prop() messages: IComboboxMessages = ComboboxDefaultOptions.messages;
 
   @Prop() debounce: number = ComboboxDefaultOptions.searchDebounce;
 
@@ -66,11 +44,7 @@ export class TComboboxChoices implements ICombobox {
 
   @State() inputText: string;
 
-  private searchText: string = '';
-
-  @Prop({ connect: 'ion-modal-controller' }) modalController: any;
-
-  @Prop() interface: 'popover' | 'modal' = null;
+  private _internalMessages: IComboboxMessages;
 
   private normalizedOptions: NormalizedOption[];
 
@@ -78,25 +52,13 @@ export class TComboboxChoices implements ICombobox {
 
   private popover: HTMLTComboboxListElement = null;
 
-  private modal: HTMLTComboboxModalListElement = null;
-
   @State() private visibleOptions: NormalizedOption[] = [];
 
-  private isInterfaceOpened: boolean = false;
+  private isPopoverOpened: boolean = false;
 
   private searching: boolean = false;
 
   private initialized = false;
-
-  private _internalMessages: IComboboxMessages;
-
-  private get usePopover(): boolean {
-    return !this.useModal;
-  }
-
-  private get useModal(): boolean {
-    return this.interface === 'modal' || !this.interface && !isCore(window);
-  }
 
   componentWillLoad() {
     try {
@@ -118,12 +80,12 @@ export class TComboboxChoices implements ICombobox {
     this.searchDebounced = debounceAsync(this.searchDebounced.bind(this), this.debounce);
 
     // Improve performance by preventing consecutives unnecessary updates of the visible options list
-    this.syncInterface = debounceAsync(this.syncInterface.bind(this));
+    this.syncPopover = debounceAsync(this.syncPopover.bind(this));
     this.updateVisibleOptions = debounceAsync(this.updateVisibleOptions.bind(this));
   }
 
   componentDidUnload() {
-    this.closeInterface();
+    this.closePopover();
   }
 
   @Watch('options')
@@ -162,7 +124,7 @@ export class TComboboxChoices implements ICombobox {
 
   @Watch('visibleOptions')
   visibleOptionsChanged() {
-    this.syncInterface();
+    this.syncPopover();
   }
 
   @Watch('messages')
@@ -232,19 +194,8 @@ export class TComboboxChoices implements ICombobox {
   }
 
   private updateText() {
-    if (this.searching) {
-      if (this.usePopover)
-        this.inputText = this.searchText;
-        
+    if (this.searching)
       return;
-    }
-
-    if (this.useModal) {
-      let selectedOptions = this.getSelectedOptions();
-
-      this.inputText = selectedOptions.map(option => option.text).join(', ');
-      return;
-    }
 
     if (this.multiple) {
       this.inputText = '';
@@ -271,81 +222,40 @@ export class TComboboxChoices implements ICombobox {
     return { top: _y, left: _x };
   }
 
-  private async openInterface() {
-    if (this.isInterfaceOpened || this.disabled || this.readonly)
+  private async openPopover() {
+    if (this.isPopoverOpened || this.disabled || this.readonly)
       return;
 
-    this.isInterfaceOpened = true;
+    this.isPopoverOpened = true;
 
     try {
-      if (this.usePopover) {
-        this.updateVisibleOptions();
+      this.updateVisibleOptions();
 
-        let popover = document.createElement('t-combobox-list');
+      let popover = document.createElement('t-combobox-list');
 
-        popover.onselect = () => {
-          if (!this.multiple) {
-            this.closeInterface();
-            this.clearSearch();
-          }
+      popover.onselect = () => {
+        if (!this.multiple) {
+          this.closePopover();
+          this.clearSearch();
+        }
 
-          this.select(popover.value);
+        this.select(popover.value);
 
-          this.syncInterface();
-        };
+        this.syncPopover();
+      };
 
-        let container = this.getContainer();
+      let container = this.getContainer();
 
-        this.popover = popover;
+      this.popover = popover;
 
-        this.syncInterface();
+      this.syncPopover();
 
-        container.appendChild(popover);
+      container.appendChild(popover);
 
-        await popover.componentOnReady();
-      }
-      else {
-        await this.updateVisibleOptions();
-
-        await this.modalController.componentOnReady();
-
-        const modalElement = await this.modalController.create({
-          component: 't-combobox-modal-list',
-          componentProps: {
-            multiple: this.multiple,
-            value: this.value,
-            options: this.visibleOptions,
-            messages: this._internalMessages,
-            onselect: (e) => {
-              this.setValue(e.target.value);
-
-              this.syncInterface();
-
-              this.closeInterface();
-            },
-            onsearch: (e) => {
-              this.search(e.detail.searchText);
-            }
-          }
-        });
-
-        modalElement.onDidDismiss().then(() => {
-          this.closeInterface();
-        });
-
-        await modalElement.present();
-
-        let modal = modalElement.querySelector('t-combobox-modal-list');
-
-        await modal.componentOnReady();
-
-        this.modal = modal;
-
-        this.syncInterface();
-      }
+      await popover.componentOnReady();
     }
     catch (err) {
-      this.closeInterface();
+      this.closePopover();
 
       throw err;
     }
@@ -359,28 +269,22 @@ export class TComboboxChoices implements ICombobox {
     return document.querySelector('ion-app');
   }
 
-  private closeInterface() {
+  private closePopover() {
     try {
       if (this.popover) {
         this.popover.remove();
         this.popover = null;
       }
-
-      if (this.modal) {
-        this.modal.close();
-        this.modal = null;
-        this.clearSearch();
-      }
     }
     finally {
-      this.isInterfaceOpened = false;
+      this.isPopoverOpened = false;
     }
   }
 
   private async clearSearch() {
     this.searching = false;
 
-    this.searchText = '';
+    this.inputText = '';
 
     this.updateText();
 
@@ -393,19 +297,18 @@ export class TComboboxChoices implements ICombobox {
     this.searching = searching;
 
     if (term !== null && term !== undefined)
-      this.searchText = term;
+      this.inputText = term;
     else
-      this.searchText = '';
+      this.inputText = '';
 
     this.updateVisibleOptions();
-    this.updateText();
   }
 
   private async updateVisibleOptions() {
-    if (!this.isInterfaceOpened)
+    if (!this.isPopoverOpened)
       return;
 
-    let { normalizedOptions, searchText } = this;
+    let { normalizedOptions, inputText } = this;
 
     if (normalizedOptions) {
       let visibleOptions: NormalizedOption[];
@@ -413,19 +316,15 @@ export class TComboboxChoices implements ICombobox {
       if (!this.searching)
         visibleOptions = normalizedOptions;
       else {
-        let searchToken = generateSearchToken(searchText);
+        let searchToken = generateSearchToken(inputText);
 
         visibleOptions = normalizedOptions.filter(p =>
           p.textSearchToken.indexOf(searchToken) >= 0 || p.detailTextSearchToken.indexOf(searchToken) >= 0);
       }
 
-      if (this.usePopover) {
-        let selectedValues = asArray(this.value);
+      let selectedValues = asArray(this.value);
 
-        visibleOptions = visibleOptions.filter(p => !selectedValues.includes(p.value));
-      }
-
-      this.visibleOptions = visibleOptions;
+      this.visibleOptions = visibleOptions.filter(p => !selectedValues.includes(p.value));
     }
     else
       this.visibleOptions = [];
@@ -438,54 +337,39 @@ export class TComboboxChoices implements ICombobox {
     return this.search(term);
   }
 
-  private async syncInterface() {
-    if (this.popover) {
-      let target = this.host;
+  private async syncPopover() {
+    if (!this.popover)
+      return;
 
-      let offset = this.getOffset(target);
+    let target = this.host;
 
-      let top = offset.top + target.offsetHeight;
-      let left = offset.left;
-      let width = target.offsetWidth;
+    let offset = this.getOffset(target);
 
-      let insideIonItem = target.closest('ion-item');
+    let top = offset.top + target.offsetHeight;
+    let left = offset.left;
+    let width = target.offsetWidth;
 
-      if (insideIonItem)
-        top += 4;
+    let insideIonItem = target.closest('ion-item');
 
-      let popover = this.popover;
+    if (insideIonItem)
+      top += 4;
 
-      popover.style.top = `${top}px`;
-      popover.style.left = `${left}px`;
-      popover.style.width = `${width}px`;
+    let popover = this.popover;
 
-      popover.classList.add('t-combobox-popover');
+    popover.style.top = `${top}px`;
+    popover.style.left = `${left}px`;
+    popover.style.width = `${width}px`;
 
-      if (popover.value != this.value)
-        popover.value = this.value;
+    popover.classList.add('t-combobox-popover');
 
-      if (popover.messages != this._internalMessages)
-        popover.messages = this._internalMessages;
+    if (popover.value != this.value)
+      popover.value = this.value;
 
-      if (popover.options != this.visibleOptions)
-        popover.options = this.visibleOptions;
-    }
+    if (popover.messages != this._internalMessages)
+      popover.messages = this._internalMessages;
 
-    if (this.modal) {
-      let modal = this.modal;
-
-      if (modal.multiple != this.multiple)
-        modal.multiple = this.multiple;
-
-      if (modal.value != this.value)
-        modal.value = this.value;
-
-      if (modal.messages != this._internalMessages)
-        modal.messages = this._internalMessages;
-
-      if (modal.options != this.visibleOptions)
-        modal.options = this.visibleOptions;
-    }
+    if (popover.options != this.visibleOptions)
+      popover.options = this.visibleOptions;
   }
 
   private handleInputFocus = (e: any) => {
@@ -494,10 +378,7 @@ export class TComboboxChoices implements ICombobox {
 
     this.hasFocus = true;
 
-    if (this.useModal)
-      e.preventDefault();
-
-    this.openInterface();
+    this.openPopover();
   }
 
   private getOptionByText(text: string) {
@@ -540,9 +421,6 @@ export class TComboboxChoices implements ICombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    if (this.useModal)
-      return;
-
     this.hasFocus = false;
 
     let inputText = e.target.value;
@@ -574,7 +452,7 @@ export class TComboboxChoices implements ICombobox {
       }
     }
 
-    this.closeInterface();
+    this.closePopover();
 
     this.clearSearch();
 
@@ -587,27 +465,24 @@ export class TComboboxChoices implements ICombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
+    let { value } = e.target;
+
+    if (this.inputText !== value)
+      this.inputText = value;
+
     if (!this.hasFocus) {
       this.updateText();
       return;
     }
 
-    if (this.useModal)
-      return;
-
-    let { value } = e.target;
-
-    if (this.searchText !== value)
-      this.searchText = value;
-
-    if (!this.isInterfaceOpened)
+    if (!this.isPopoverOpened)
       return;
 
     this.searchDebounced(value);
   }
 
   private handleKeyDown = async (e: KeyboardEvent) => {
-    if (this.disabled || this.readonly || !this.usePopover)
+    if (this.disabled || this.readonly)
       return;
 
     let target = e.target as HTMLInputElement;
@@ -617,10 +492,10 @@ export class TComboboxChoices implements ICombobox {
 
     switch (e.key) {
       case 'ArrowDown':
-        if (this.isInterfaceOpened)
+        if (this.isPopoverOpened)
           this.popover && this.popover.focusNext();
         else
-          this.openInterface();
+          this.openPopover();
         break;
 
       case 'ArrowUp':
@@ -644,7 +519,7 @@ export class TComboboxChoices implements ICombobox {
         break;
 
       case 'Escape':
-        this.popover && this.closeInterface();
+        this.popover && this.closePopover();
 
         preventDefault = true;
         break;
@@ -697,16 +572,8 @@ export class TComboboxChoices implements ICombobox {
     e.detail['has-value'] = !isEmptyValue(this.value);
   }
 
-  private handleClearClick = (e: Event) => {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    e.stopPropagation();
-
-    this.setValue(null);
-  }
-
   renderChips() {
-    if (this.useModal || !this.multiple)
+    if (!this.multiple)
       return null;
 
     let selectedOptions = this.getSelectedOptions();
@@ -741,7 +608,7 @@ export class TComboboxChoices implements ICombobox {
             spellcheck={false}
             autofocus={this.autofocus}
             disabled={this.disabled}
-            readonly={this.readonly || this.useModal}
+            readonly={this.readonly}
             onIonFocus={this.handleInputFocus}
             onClick={this.handleInputFocus}
             onIonBlur={this.handleInputBlur}
@@ -762,19 +629,6 @@ export class TComboboxChoices implements ICombobox {
           onChange={stopPropagation}
           onInput={stopPropagation}
           value={value} />
-        {
-          this.useModal && !this.readonly && !this.disabled && !this.required &&
-          <ion-button
-            class="t-clear"
-            type="button"
-            hidden={isEmptyValue(this.value)}
-            size="small"
-            fill="clear"
-            color="medium"
-            onClick={this.handleClearClick}>
-            <ion-icon name="close"></ion-icon>
-          </ion-button>
-        }
       </Host>
     );
   }
