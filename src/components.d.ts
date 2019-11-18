@@ -101,6 +101,7 @@ export namespace Components {
     'autofocus': boolean;
     'debounce': number;
     'disabled': boolean;
+    'interface': 'popover' | 'modal';
     'messages': IComboboxMessages;
     'multiple': boolean;
     'name': string;
@@ -162,11 +163,11 @@ export namespace Components {
     'value': string | string[];
   }
   interface TComboboxModalList {
-    'handleChange': (selectedOption: IComboboxOption[]) => void;
+    'close': () => Promise<any>;
     'messages': IComboboxMessages;
     'multiple': boolean;
     'options': IComboboxOption[];
-    'value': any | any[];
+    'value': string | string[];
   }
   interface TContainer {
     'fluid': boolean;
@@ -405,6 +406,7 @@ declare namespace LocalJSX {
     'autofocus'?: boolean;
     'debounce'?: number;
     'disabled'?: boolean;
+    'interface'?: 'popover' | 'modal';
     'messages'?: IComboboxMessages;
     'multiple'?: boolean;
     'name'?: string;
@@ -470,11 +472,12 @@ declare namespace LocalJSX {
     'value'?: string | string[];
   }
   interface TComboboxModalList {
-    'handleChange'?: (selectedOption: IComboboxOption[]) => void;
     'messages'?: IComboboxMessages;
     'multiple'?: boolean;
+    'onSearch'?: (event: CustomEvent<{ searchText: string }>) => void;
+    'onSelect'?: (event: CustomEvent<any>) => void;
     'options'?: IComboboxOption[];
-    'value'?: any | any[];
+    'value'?: string | string[];
   }
   interface TContainer {
     'fluid'?: boolean;

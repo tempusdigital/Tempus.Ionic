@@ -27,6 +27,15 @@ export interface IComboboxOption {
   icon?: { src?: string; name?: string; };
 }
 
+export interface NormalizedOption {
+  text: string;
+  value: string;
+  detailText: string;
+  textSearchToken: string;
+  detailTextSearchToken: string;
+}
+
+
 export const ComboboxDefaultOptions = {
   searchDebounce: 250,
   messages: {

@@ -59,6 +59,10 @@ t-combobox-choices {
       width: 100%;
     }
   }
+
+  .t-clear{
+    --padding-end: 0;
+  }
 }
 
 .t-combobox-popover {
