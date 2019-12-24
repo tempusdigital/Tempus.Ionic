@@ -54,6 +54,12 @@
           </t-select>
           <t-message name="three"></t-message>
         </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Combobox</ion-label>
+          <t-combobox name="combobox" id="combobox" required> </t-combobox>
+          <t-message name="combobox"></t-message>
+        </ion-item>
       </ion-list>
     </form>
 
@@ -63,6 +69,9 @@
   <script>
     var form = document.querySelector('form');
     var validation = document.querySelector('t-validation-controller');
+    var combobox = document.getElementById('combobox');
+
+    combobox.options = [{ value: 1, text: 'Um' }, { value: 2, text: 'Dois' }];
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();

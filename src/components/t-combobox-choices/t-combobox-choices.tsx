@@ -623,7 +623,8 @@ export class TComboboxChoices implements ICombobox {
             placeholder={this.placeholder}></ion-input>
         }
         <input
-          type="hidden"
+          type="text"
+          class="t-combobox-choices-inner-input"
           required={this.required}
           name={this.name}
           onChange={stopPropagation}

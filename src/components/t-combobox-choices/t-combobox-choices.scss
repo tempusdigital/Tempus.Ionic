@@ -63,6 +63,10 @@ t-combobox-choices {
   .t-clear{
     --padding-end: 0;
   }
+
+  .t-combobox-choices-inner-input {
+    display: none;
+  }
 }
 
 .t-combobox-popover {
