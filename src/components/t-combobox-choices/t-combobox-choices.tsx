@@ -38,6 +38,8 @@ export class TComboboxChoices implements ICombobox {
 
   @Event({ cancelable: false }) change: EventEmitter;
 
+  @Event({ cancelable: true }) search: EventEmitter;
+
   @Event() ionStyle: EventEmitter;
 
   @Element() host: HTMLStencilElement;
@@ -57,6 +59,8 @@ export class TComboboxChoices implements ICombobox {
   private isPopoverOpened: boolean = false;
 
   private searching: boolean = false;
+
+  private customSearching: boolean = false;
 
   private initialized = false;
 
@@ -283,6 +287,7 @@ export class TComboboxChoices implements ICombobox {
 
   private async clearSearch() {
     this.searching = false;
+    this.customSearching = false;
 
     this.inputText = '';
 
@@ -291,7 +296,7 @@ export class TComboboxChoices implements ICombobox {
     this.updateVisibleOptions();
   }
 
-  private async search(term: string) {
+  private async executeSearch(term: string) {
     let searching = term && !!term.toString().trim();
 
     this.searching = searching;
@@ -300,6 +305,8 @@ export class TComboboxChoices implements ICombobox {
       this.inputText = term;
     else
       this.inputText = '';
+
+    this.customSearching = searching && !this.search.emit({ term });
 
     this.updateVisibleOptions();
   }
@@ -313,7 +320,7 @@ export class TComboboxChoices implements ICombobox {
     if (normalizedOptions) {
       let visibleOptions: NormalizedOption[];
 
-      if (!this.searching)
+      if (!this.searching || this.customSearching)
         visibleOptions = normalizedOptions;
       else {
         let searchToken = generateSearchToken(inputText);
@@ -330,11 +337,14 @@ export class TComboboxChoices implements ICombobox {
       this.visibleOptions = [];
   }
 
-  private searchDebounced(term: string) {
+  private async searchDebounced(term: string) {
     if (!this.hasFocus)
       return;
 
-    return this.search(term);
+    await this.executeSearch(term);
+
+    if (!this.isPopoverOpened && term)
+      this.openPopover();
   }
 
   private async syncPopover() {
@@ -378,7 +388,8 @@ export class TComboboxChoices implements ICombobox {
 
     this.hasFocus = true;
 
-    this.openPopover();
+    if (this.options && this.options.length || this.searching)
+      this.openPopover();
   }
 
   private getOptionByText(text: string) {
@@ -467,16 +478,15 @@ export class TComboboxChoices implements ICombobox {
 
     let { value } = e.target;
 
-    if (this.inputText !== value)
-      this.inputText = value;
+    if (this.inputText === value)
+      return;
+
+    this.inputText = value;
 
     if (!this.hasFocus) {
       this.updateText();
       return;
     }
-
-    if (!this.isPopoverOpened)
-      return;
 
     this.searchDebounced(value);
   }
@@ -612,7 +622,7 @@ export class TComboboxChoices implements ICombobox {
             onIonFocus={this.handleInputFocus}
             onClick={this.handleInputFocus}
             onIonBlur={this.handleInputBlur}
-            onIonChange={this.handleInputChange}
+            onKeyUp={this.handleInputChange}
             onIonStyle={this.handleIonStyle}
             onKeyDown={this.handleKeyDown}
             onChange={stopPropagation}

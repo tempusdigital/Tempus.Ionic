@@ -383,6 +383,7 @@ declare namespace LocalJSX {
     'name'?: string;
     'onChange'?: (event: CustomEvent<any>) => void;
     'onIonStyle'?: (event: CustomEvent<any>) => void;
+    'onSearch'?: (event: CustomEvent<any>) => void;
     'options'?: IComboboxOption[];
     'placeholder'?: string;
     'readonly'?: boolean;

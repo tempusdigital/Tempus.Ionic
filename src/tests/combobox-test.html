@@ -16,99 +16,120 @@
 
 
   <script>
-      var multiple;
-  
-      var single;
-  
-      var options = [];
-  
-      function init() {
-        document.querySelector('t-combobox,t-combobox-choices').componentOnReady().then(() => {
-          for (let i = 1; i < 300; i++) {
-            options.push({
-              value: i,
-              text: 'Text' + i.toString().padStart(3, '0'),
-              detailText: 'Sub title here'
-            })
-          }
-  
-          var combos = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
-  
-          for (let i = 0; i < combos.length; i++) {
-            var combo = combos.item(i);
-  
-            if (combo.id == 'multiple') {
-              combo.addEventListener('change', handleMultipleChange);
-              combo.value = ['1', '5'];
-  
-              var multipleValue = document.getElementById('multiple-value');
-              multipleValue.textContent = JSON.stringify(combo.value);
-            }
-            else if (combo.id == 'single') {
-              combo.addEventListener('change', handleSingleChange);
-              combo.value = '1';
-  
-              var singleValue = document.getElementById('single-value');
-              singleValue.textContent = combo.value;
-            }
-  
-            combo.options = options;
-  
-            combo.messages = { noResultsText: 'Empty custom message!' };
-          }
-        });
-      }
-  
-      function handleMultipleChange(e) {
-        multiple = e.target.value;
-  
-        var combos = document.getElementsByTagName('t-combobox');
-  
-        for (let i = 0; i < combos.length; i++) {
-          var combo = combos.item(i);
-  
-          if (combo.multiple)
-            combo.value = multiple;
+    var multiple;
+
+    var single;
+
+    var options = [];
+
+    function init() {
+      document.querySelector('t-combobox,t-combobox-choices').componentOnReady().then(() => {
+        for (let i = 1; i < 300; i++) {
+          options.push({
+            value: i,
+            text: 'Text' + i.toString().padStart(3, '0'),
+            detailText: 'Sub title here'
+          })
         }
-  
-        var multipleValue = document.getElementById('multiple-value');
-        multipleValue.textContent = JSON.stringify(multiple);
-      }
-  
-      function handleSingleChange(e) {
-        single = e.target.value;
-  
-        var combos = document.getElementsByTagName('t-combobox');
-  
-        for (let i = 0; i < combos.length; i++) {
-          var combo = combos.item(i);
-  
-          if (!combo.multiple)
-            combo.value = single;
-        }
-  
-        var singleValue = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
-        singleValue.textContent = JSON.stringify(single);
-      }
-  
-      function addOption() {
-        var i = options.length + 1;
-  
-        options = [...options, {
-          value: 'Value' + i,
-          text: 'Text' + i,
-          detailText: 'Sub title here',
-        }];
-  
+
         var combos = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
-  
+
         for (let i = 0; i < combos.length; i++) {
           var combo = combos.item(i);
-  
+
+          if (combo.id == 'multiple') {
+            combo.addEventListener('change', handleMultipleChange);
+            combo.value = ['1', '5'];
+
+            var multipleValue = document.getElementById('multiple-value');
+            multipleValue.textContent = JSON.stringify(combo.value);
+          }
+          else if (combo.id == 'single') {
+            combo.addEventListener('change', handleSingleChange);
+            combo.value = '1';
+
+            var singleValue = document.getElementById('single-value');
+            singleValue.textContent = combo.value;
+          }
+
           combo.options = options;
+
+          combo.messages = { noResultsText: 'Empty custom message!' };
         }
+
+        var searchCombobox = document.getElementById('search-combobox');
+
+        searchCombobox.onsearch = e => {
+          e.preventDefault();
+
+          var term = e.detail.term;
+
+          var options = [
+            { text: 'Text pesquisa 01', value: 'p01' },
+            { text: 'Text pesquisa 02', value: 'p02' },
+            { text: 'Text pesquisa 03', value: 'p03' },
+            { text: 'Text pesquisa 04', value: 'p04' },
+            { text: 'Text pesquisa 05', value: 'p05' }
+          ];
+
+          e.target.options = options.filter(f => f.text.includes(term));
+        }
+
+        var empty = document.querySelector('.empty');
+        empty.options = [];
+      });
+    }
+
+    function handleMultipleChange(e) {
+      multiple = e.target.value;
+
+      var combos = document.getElementsByTagName('t-combobox');
+
+      for (let i = 0; i < combos.length; i++) {
+        var combo = combos.item(i);
+
+        if (combo.multiple)
+          combo.value = multiple;
       }
-    </script>
+
+      var multipleValue = document.getElementById('multiple-value');
+      multipleValue.textContent = JSON.stringify(multiple);
+    }
+
+    function handleSingleChange(e) {
+      single = e.target.value;
+
+      var combos = document.getElementsByTagName('t-combobox');
+
+      for (let i = 0; i < combos.length; i++) {
+        var combo = combos.item(i);
+
+        if (!combo.multiple)
+          combo.value = single;
+      }
+
+      var singleValue = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
+      singleValue.textContent = JSON.stringify(single);
+    }
+
+    function addOption() {
+      var i = options.length + 1;
+
+      options = [...options, {
+        value: 'Value' + i,
+        text: 'Text' + i,
+        detailText: 'Sub title here',
+      }];
+
+      var combos = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
+
+      for (let i = 0; i < combos.length; i++) {
+        var combo = combos.item(i);
+
+        combo.options = options;
+      }
+    }
+  </script>
 </head>
 
 <body onload="init()">
@@ -140,14 +161,15 @@
 
           <ion-item>
             <ion-label position="stacked">Multiple allow add</ion-label>
-            <t-combobox-choices multiple allow-add add-tokens=",;" placeholder="This is a placeholder"> </t-combobox-choices>
+            <t-combobox-choices multiple allow-add add-tokens=",;" placeholder="This is a placeholder">
+            </t-combobox-choices>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Multiple (floating)</ion-label>
             <t-combobox2 multiple> </t-combobox2>
           </ion-item>
-          
+
           <ion-item>
             <ion-label>Toggle</ion-label>
             <ion-toggle> </ion-toggle>
@@ -207,6 +229,12 @@
             </ion-item>
             <ion-button type="submit">Confirmar</ion-button>
           </form>
+
+          <ion-item>
+            <ion-label position="floating">Com pesquisa customizada</ion-label>
+            <t-combobox class="empty" id="search-combobox"> </t-combobox>
+          </ion-item>
+
         </ion-list>
       </form>
     </ion-content>
