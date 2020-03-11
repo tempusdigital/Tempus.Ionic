@@ -1,4 +1,5 @@
 import { EventEmitter } from "@stencil/core";
+import { IComboboxOption, NormalizedOption } from "../interface";
 
 // From: https://github.com/ionic-team/ionic/blob/master/core/src/utils/helpers.ts
 
@@ -57,6 +58,24 @@ export function removeAccents(str: string) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
+let ignoredSearchTokens = [
+  'o', 'a', 'os', 'as', 'um', 'uma', 'uns', 'umas', 'de', 'do', 'da', 'dos', 'das', 'para', 'em', 'com', 'como',
+  'por', 'no', 'na', 'nos', 'nas', 'pelo', 'pela', 'pelos', 'pelas', 'ao', 'aos', 'd', 'sem'
+];
+
+export function generateSearchToken(text: string) {
+  if (!text)
+    return '';
+
+  return removeAccents(text.toString().toLowerCase())
+    .split(/[\,\;\:\+\(\)\'\´\`\" ]/)
+    .filter(s => !!s && !ignoredSearchTokens.includes(s))
+    .map(s => s
+      .replace(/[\W]+/, '') // removes special caracters
+      .replace(/(ns)$|(oes)$|(eis)$|(is)$|(ies)$|(es)$|(s)$/, '')) //removes plural for pt-BR and en-US
+    .join(' ');
+}
+
 export function isCore(win: Window) {
   const width = win.innerWidth;
   return (width >= 768);
@@ -86,4 +105,34 @@ export function normalizeValue(value: any): string | string[] {
   }
 
   return value.toString();
+}
+
+export function asArray(values: any): any[] {
+  if (values === null || values === undefined)
+    return [];
+
+  if (Array.isArray(values))
+    return values;
+
+  return [values];
+}
+
+export function normalizeOptions(options: IComboboxOption[]): NormalizedOption[] {
+  if (!options)
+    return null;
+
+  return options.filter(o => !!o).map(o => {
+    return {
+      value: normalizeValue(o.value) as string,
+      text: o.text,
+      textSearchToken: generateSearchToken(o.text),
+      detailTextSearchToken: generateSearchToken(o.detailText),
+      detailText: o.detailText
+    }
+  })
+}
+
+export function stopPropagation(e: Event) {
+  e.stopPropagation();
+  e.stopImmediatePropagation()
 }

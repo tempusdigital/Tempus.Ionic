@@ -90,7 +90,7 @@ export class TCombobox implements ICombobox {
   }
 
   render() {
-    if (this.isCore && !this.readonly)
+    if (this.isCore)
       return this.renderCore();
     else
       return this.renderMobile();
@@ -102,6 +102,7 @@ export class TCombobox implements ICombobox {
         name={this.name}
         autofocus={this.autofocus}
         disabled={this.disabled}
+        readonly={this.readonly}
         required={this.required}
         value={this.value}
         multiple={this.multiple}

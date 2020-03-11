@@ -1,7 +1,8 @@
-import { Component, Prop, Event, EventEmitter, State, Element, Watch, h } from '@stencil/core';
-import { ICombobox, IComboboxOption, IComboboxMessages, ComboboxDefaultOptions } from '../t-combobox/t-combobox-interface';
-import { deferEvent, debounce, normalizeValue, isEmptyValue } from '../../utils/helpers';
-
+import { Component, h, Prop, State, Element, Watch, Event, EventEmitter, Host } from '@stencil/core';
+import { IComboboxOption } from '../../interface';
+import { normalizeValue, isEmptyValue, asArray, normalizeOptions, stopPropagation } from '../../utils/helpers';
+import { ICombobox, IComboboxMessages, ComboboxDefaultOptions, NormalizedOption } from '../t-combobox/t-combobox-interface';
+import { HTMLStencilElement } from '@stencil/core/internal';
 
 @Component({
   tag: 't-combobox-modal',
@@ -9,89 +10,91 @@ import { deferEvent, debounce, normalizeValue, isEmptyValue } from '../../utils/
 })
 export class TComboboxModal implements ICombobox {
 
-  /**
-   * Set the input's placeholder when no option is selected.
-   */
   @Prop() placeholder: string;
 
-  /**
-   * Native select name attribute
-   */
   @Prop() name: string;
 
-  /**
-   * Set the focus on component is loaded.
-   */
-  @Prop() autofocus: boolean = false;
+  @Prop() autofocus: boolean;
 
-  /**
-   * If `true`, the user cannot interact with the input. Defaults to `false`.
-   */
-  @Prop() disabled: boolean = false;
+  @Prop() disabled: boolean;
 
-  /**
-   * If `true`, the user cannot interact with the input. Defaults to `false`.
-   */
-  @Prop({ reflectToAttr: true }) readonly: boolean = false;
+  @Prop() readonly: boolean;
 
-  /**
-   * If `true`, the user must fill in a value before submitting a form.
-   */
-  @Prop() required: boolean = false;
+  @Prop() required: boolean;
 
-  /**
-   * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-   */
-  @Prop() multiple: boolean = false;
+  @Prop() multiple: boolean;
 
-  /**
-   * The value of the input.
-   */
-  @Prop({ mutable: true }) value: string | string[] = '';
+  @Prop({ mutable: true }) value: string | string[];
 
-  /**
-   * The visible options to select.
-   */
-  @Prop({ mutable: true }) options: IComboboxOption[] = [];
+  @Prop() options: IComboboxOption[];
 
-  private _internalMessages: IComboboxMessages;
-
-  private presentingModal: boolean = false;
-
-  /**
-  * The messages that will be shown
-  */
   @Prop() messages: IComboboxMessages;
 
-  /**
-   * Trigger change event when value has changed
-   */
+  @Prop() debounce: number = ComboboxDefaultOptions.searchDebounce;
+
   @Event({ cancelable: false }) change: EventEmitter;
 
-  @Event() ionStyle!: EventEmitter;
+  @Event() ionStyle: EventEmitter;
 
-  /**
-   * Text to display with the selected options.
-   */
-  @State() text = '';
+  @Element() host: HTMLStencilElement;
+
+  @State() inputText: string;
 
   @Prop({ connect: 'ion-modal-controller' }) modalController: any;
 
-  @Element() host: HTMLElement;
+  private normalizedOptions: NormalizedOption[];
 
-  async componentWillLoad() {
-    this.change = deferEvent(this.change);
-    this.emitStyle = debounce(this.emitStyle.bind(this));
+  private isInterfaceOpened: boolean = false;
 
-    this.valueChanged();
-    this.optionsChanged();
-    this.disabledChanged();
-    this.emitStyle();
+  private initialized = false;
+
+  private _internalMessages: IComboboxMessages;
+
+  componentWillLoad() {
+    try {
+      this.normalizedOptions = normalizeOptions(this.options);
+      this.value = normalizeValue(this.value);
+
+      this.updateText();
+      this.messagesChanged();
+
+      this.emitStyle();
+    }
+    finally {
+      this.initialized = true;
+    }
   }
 
-  componentDidLoad() {
-    this.messagesChanged();
-    this.host.addEventListener('click', e => this.handleClick(e));
+  @Watch('options')
+  optionsChanged() {
+    if (!this.initialized)
+      return;
+
+    this.normalizedOptions = normalizeOptions(this.options);
+
+    this.updateText();
+  }
+
+  @Watch('value')
+  valueChanged(newValue, oldValue) {
+    if (!this.initialized)
+      return;
+
+    let normalized = normalizeValue(this.value);
+
+    if (this.value !== normalized) {
+      this.value = normalized;
+      return;
+    }
+
+    if (newValue === oldValue)
+      return;
+
+    this.change.emit();
+
+    this.updateText();
+
+    this.emitStyle();
   }
 
   @Watch('messages')
@@ -102,238 +105,176 @@ export class TComboboxModal implements ICombobox {
       this._internalMessages = { ...ComboboxDefaultOptions.messages };
   }
 
-  async presentModal() {
-    if (this.presentingModal) // Prevened open the modal more then one time while it is still loading
+  private setValue(value: string | string[]) {
+    this.value = normalizeValue(value);
+  }
+
+  private updateText() {
+    let selectedOptions = this.getSelectedOptions();
+
+    this.inputText = selectedOptions.map(option => option.text).join(', ');
+  }
+
+  private async openInterface() {
+    if (this.isInterfaceOpened || this.disabled || this.readonly)
       return;
 
-    try {
-      this.presentingModal = true;
+    this.isInterfaceOpened = true;
 
+    try {
       await this.modalController.componentOnReady();
 
       const modalElement = await this.modalController.create({
         component: 't-combobox-modal-list',
         componentProps: {
           multiple: this.multiple,
-          value: this.value,
-          handleChange: this.handleChange.bind(this),
-          options: this.options,
-          messages: this._internalMessages
+          value: Array.isArray(this.value) ? [...this.value] : this.value,
+          options: this.normalizedOptions,
+          messages: this._internalMessages,
+          debounce: this.debounce,
+          onselect: (e) => {
+            this.setValue(e.target.value);
+            this.updateText();
+
+            this.isInterfaceOpened = false;
+          }
         }
+      });
+
+      modalElement.onDidDismiss().then(() => {
+        this.isInterfaceOpened = false;
       });
 
       await modalElement.present();
 
-      await modalElement.didDismiss;
     }
-    finally {
-      this.presentingModal = false;
+    catch (err) {
+      this.isInterfaceOpened = false;
+
+      throw err;
     }
   }
 
-  @Watch('options')
-  optionsChanged() {
-    let normalizedOptions = normalizeOptions(this.options);
+  private emitStyle() {
+    let style = {
+      'has-value': !isEmptyValue(this.value)
+    };
 
-    if (this.options !== normalizedOptions) {
-      this.options = normalizedOptions;
+    requestAnimationFrame(() => {
+      this.ionStyle.emit(style);
+    })
+  }
+
+  private handleKeyDown = async (e: KeyboardEvent) => {
+    if (this.disabled || this.readonly)
       return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+      case 'Enter':
+        if (!this.isInterfaceOpened)
+          this.openInterface();
+        break;
     }
-
-    this.updateText();
   }
 
-  @Watch('value')
-  valueChanged() {
-    let normalizedValue = normalizeValue(this.value);
+  private getSelectedOptions() {
+    if (!this.normalizedOptions)
+      return [];
 
-    if (this.value !== normalizedValue) {
-      this.value = normalizedValue;
-      return;
-    }
+    let values = asArray(this.value);
 
-    this.updateText();
+    return this.normalizedOptions.filter(o => values.includes(o.value));
   }
 
-  updateText() {
-    if (!this.options) {
-      this.text = '';
-      return;
-    }
-
-    if (Array.isArray(this.value)) {
-      let options = this.options.filter(option => this.value.includes(option.value));
-      this.text = options.map(option => option.text).join(', ');
-    }
-    else {
-      let option = this.options.find(option => this.value === option.value);
-      this.text = option && option.text || '';
-    }
-
-    this.emitStyle();
+  private handleIonStyle = (e) => {
+    e.detail['has-value'] = !isEmptyValue(this.value);
   }
 
-  handleChange(selectedOptions: IComboboxOption[]) {
-    if (!selectedOptions || !selectedOptions.length) {
-      this.value = '';
-    }
-    else {
-      if (this.multiple)
-        this.value = selectedOptions.map(v => v.value);
-      else
-        this.value = selectedOptions[0].value;
-    }
-
-    if (!this.options) {
-      this.options = selectedOptions;
-    }
-    else {
-      selectedOptions.forEach((selectedOption: IComboboxOption) => {
-        let hasOption = this.options.some(options => options.value === selectedOption.value);
-        if (!hasOption)
-          this.options = [selectedOption, ...this.options];
-      });
-    }
-
-    this.updateText();
-
-    this.change.emit();
-
-    this.emitStyle();
-  }
-
-  handleClick(e: Event) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-
-    if (!this.disabled && !this.readonly)
-      this.presentModal();
-  }
-
-  hasFocus() {
-    return this.host === document.activeElement;
-  }
-
-  hasValue() {
-    return !isEmptyValue(this.value);
-  }
-
-  isPlaceholderSelected() {
-    return !this.text && !!this.placeholder;
-  }
-
-  emitStyle() {
-    this.ionStyle.emit({
-      'interactive': true,
-      'interactive-disabled': this.disabled,
-      'input': false, // Reset ion-input class if t-combobox changes the internal component
-      'select': true,
-      'has-value': this.hasValue() || this.isPlaceholderSelected(),
-      'has-focus': false, // Reset ion-input class if t-combobox changes the internal component
-      't-combobox-modal': true,
-      't-combobox-choices': false // Reset ion-input class if t-combobox changes the internal component
-    });
-  }
-
-  @Watch('disabled')
-  disabledChanged() {
-    if (this.disabled)
-      this.host.classList.add('t-disabled');
-    else
-      this.host.classList.remove('t-disabled');
-
-    this.emitStyle();
-  }
-
-  isSelected(option: IComboboxOption) {
-    if (option.value === this.value)
-      return true;
-
-    if (Array.isArray(this.value))
-      return this.value.includes(option.value);
-
-    return false;
-  }
-
-  clear(e: Event) {
+  private handleClearClick = (e: Event) => {
     e.preventDefault();
     e.stopImmediatePropagation();
     e.stopPropagation();
 
-    this.value = '';
+    this.setValue(null);
+  }
 
-    this.change.emit();
+  handleInputClick = (e: Event) => {
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
-    this.updateText();
-    this.emitStyle();
+    if (!this.readonly && !this.disabled && !this.isInterfaceOpened)
+      this.openInterface();
   }
 
   render() {
-    return [
-      <div class="t-text">
-        {this.text ? this.text : <span class="t-placeholder">{this.placeholder}</span>}
-        &nbsp;
+    let value = Array.isArray(this.value) ? this.value.join(',') : this.value;
+
+    return (
+      <Host class={{ 't-multiple': this.multiple }}>
         {
-          !this.readonly && !this.required &&
+          <ion-input
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck={false}
+            autofocus={this.autofocus}
+            disabled={this.disabled}
+            readonly={true}
+            onClick={this.handleInputClick}
+            onIonStyle={this.handleIonStyle}
+            onKeyDown={this.handleKeyDown}
+            onChange={stopPropagation}
+            onInput={stopPropagation}
+            clearInput={false}
+            clearOnEdit={false}
+            value={this.inputText}
+            placeholder={this.placeholder}></ion-input>
+        }
+        <input
+          type="hidden"
+          required={this.required}
+          name={this.name}
+          onChange={stopPropagation}
+          onInput={stopPropagation}
+          value={value} />
+        {
+          !this.readonly && !this.disabled && !this.required &&
           <ion-button
             class="t-clear"
             type="button"
-            hidden={!this.text || this.disabled || this.readonly}
+            hidden={isEmptyValue(this.value)}
             size="small"
             fill="clear"
             color="medium"
-            onClick={this.clear.bind(this)}>
+            onClick={this.handleClearClick}>
             <ion-icon name="close"></ion-icon>
           </ion-button>
         }
-      </div>,
 
-      <select
-        hidden
-        name={this.name}
-        required={this.required}
-        multiple={this.multiple}
-        disabled={this.disabled}>
-        {this.options && this.options.map(option =>
-          <option value={option.value} selected={this.isSelected(option)}>{option.text}</option>)}
-      </select>,
-
-      // Fix bundle of modal components on Stencil 1.0.0-beta.16
-      (window['Force bundle']) ?
-        <div>
-          <t-combobox-modal-list></t-combobox-modal-list>
-          <ion-searchbar></ion-searchbar>
-          <ion-buttons></ion-buttons>
-          <ion-button></ion-button>
-          <ion-toolbar></ion-toolbar>
-          <ion-header></ion-header>
-          <ion-content></ion-content>
-          <ion-list></ion-list>
-          <ion-virtual-scroll></ion-virtual-scroll>
-          <ion-item></ion-item>
-          <ion-label></ion-label>
-          <ion-radio></ion-radio>
-          <ion-checkbox></ion-checkbox>
-          <ion-radio-group></ion-radio-group>
-          <ion-icon></ion-icon>
-        </div> : null
-    ];
+        {
+          // Fix bundle of modal components on Stencil 1.0.0-beta.16
+          (window['Force bundle']) ?
+            <div>
+              <t-combobox-modal-list></t-combobox-modal-list>
+              <ion-searchbar></ion-searchbar>
+              <ion-buttons></ion-buttons>
+              <ion-input></ion-input>
+              <ion-button></ion-button>
+              <ion-toolbar></ion-toolbar>
+              <ion-header></ion-header>
+              <ion-content></ion-content>
+              <ion-list></ion-list>
+              <ion-virtual-scroll></ion-virtual-scroll>
+              <ion-item></ion-item>
+              <ion-label></ion-label>
+              <ion-radio></ion-radio>
+              <ion-checkbox></ion-checkbox>
+              <ion-radio-group></ion-radio-group>
+              <ion-icon></ion-icon>
+            </div> : null
+        }
+      </Host>
+    );
   }
-}
-
-function normalizeOptions(value: any): IComboboxOption[] {
-  if (!value || !Array.isArray(value))
-    return value;
-
-  let needToNormalize = value.some(o => typeof o.value !== 'string');
-  if (!needToNormalize)
-    return value;
-
-  return value.map(v => {
-    return {
-      ...v,
-      value: normalizeValue(v.value)
-    }
-  });
 }

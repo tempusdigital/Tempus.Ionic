@@ -23,8 +23,18 @@ export interface ICombobox {
 export interface IComboboxOption {
   value: string;
   text: string;
+  detailText?: string;
   icon?: { src?: string; name?: string; };
 }
+
+export interface NormalizedOption {
+  text: string;
+  value: string;
+  detailText: string;
+  textSearchToken: string;
+  detailTextSearchToken: string;
+}
+
 
 export const ComboboxDefaultOptions = {
   searchDebounce: 250,
