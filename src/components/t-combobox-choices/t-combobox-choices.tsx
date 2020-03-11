@@ -64,6 +64,8 @@ export class TComboboxChoices implements ICombobox {
 
   private initialized = false;
 
+  private forceAutocompleteOff = Date.now().toString();
+
   componentWillLoad() {
     try {
       this.normalizedOptions = normalizeOptions(this.options);
@@ -613,7 +615,7 @@ export class TComboboxChoices implements ICombobox {
         {
           <ion-input
             type="text"
-            autocomplete="off"
+            autocomplete={this.forceAutocompleteOff}
             autocorrect="off"
             spellcheck={false}
             autofocus={this.autofocus}
@@ -635,6 +637,7 @@ export class TComboboxChoices implements ICombobox {
         <input
           type="text"
           class="t-combobox-choices-inner-input"
+          autocomplete={this.forceAutocompleteOff}
           required={this.required}
           name={this.name}
           onChange={stopPropagation}
