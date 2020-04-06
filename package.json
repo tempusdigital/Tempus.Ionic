@@ -22,12 +22,12 @@
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
   "peerDependencies": {
-    "@ionic/core": "^4.11.3"
+    "@ionic/core": "^5.0.7"
   },
   "devDependencies": {
-    "@stencil/core": "1.7.5",
-    "@stencil/sass": "1.0.1",
-    "@ionic/core": "^4.11.3"
+    "@stencil/core": "1.12.2",
+    "@stencil/sass": "1.2.0",
+    "@ionic/core": "^5.0.7"
   },
   "repository": {
     "type": "git",
