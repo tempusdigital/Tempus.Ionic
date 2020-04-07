@@ -1,6 +1,7 @@
-import { Component, Method, Prop, Watch, h } from "@stencil/core";
+import { Component, Method, Prop, Watch } from "@stencil/core";
 import { IActionControllerMessages, ActionControllerDefaultMessages as ActionControllerDefaultMessages, ProcessOptions } from './t-action-controller-interface';
 import { FormValidationMessages } from "../t-validation-controller/t-validation-controller-interface";
+import { toastController, loadingController } from '@ionic/core';
 
 @Component({
   tag: 't-action-controller',
@@ -14,11 +15,7 @@ export class TActionController {
 
   @Prop({ context: 'window' }) win!: Window;
 
-  toastController: any;
-
-  loadingController: any;
-
-  validationController: any;
+  validationController: HTMLTValidationControllerElement;
 
   componentWillLoad() {
     this.messagesChanged();
@@ -147,13 +144,11 @@ export class TActionController {
 
   @Method()
   async getValidationController() {
-    await this.validationController.componentOnReady();
     return this.validationController;
   }
 
   private async showLoading() {
-    await this.loadingController.componentOnReady();
-    let loading = await this.loadingController.create({
+    let loading = await loadingController.create({
       showBackdrop: true,
       translucent: true,
       message: this._internalMessages.sending
@@ -219,9 +214,7 @@ export class TActionController {
   }
 
   private async showToast(message: string, position: 'top' | 'bottom' | 'middle' = 'bottom') {
-    await this.toastController.componentOnReady();
-
-    let toast = await this.toastController.create({
+    let toast = await toastController.create({
       cssClass: 't-toast-validation',
       message: message,
       duration: 5000,
@@ -277,13 +270,5 @@ export class TActionController {
 
   private normalizeName(elementName: string) {
     return elementName.substr(0, 1).toLowerCase() + elementName.substr(1, elementName.length - 1);
-  }
-
-  render() {
-    return [
-      <ion-toast-controller ref={e => this.toastController = e as any}></ion-toast-controller>,
-      <ion-loading-controller ref={e => this.loadingController = e as any}></ion-loading-controller>,
-      <t-validation-controller ref={e => this.validationController = e as any}></t-validation-controller>
-    ];
   }
 }

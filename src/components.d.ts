@@ -12,7 +12,7 @@ import { PopupMenuButton, PopupMenuOptions, } from "./components/t-popup-menu-co
 import { FormInput, FormValidationMessages, } from "./components/t-validation-controller/t-validation-controller-interface";
 export namespace Components {
     interface TActionController {
-        "getValidationController": () => Promise<any>;
+        "getValidationController": () => Promise<HTMLTValidationControllerElement>;
         "messages": IActionControllerMessages;
         /**
           * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
@@ -136,7 +136,7 @@ export namespace Components {
         "validationMessages": string[];
     }
     interface TPopupMenuController {
-        "create": (options: PopupMenuOptions) => Promise<any>;
+        "create": (options: PopupMenuOptions) => Promise<HTMLIonPopoverElement>;
     }
     interface TPopupMenuPopover {
         "buttons": PopupMenuButton[];

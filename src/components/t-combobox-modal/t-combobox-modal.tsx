@@ -187,10 +187,6 @@ export class TComboboxModal implements ICombobox {
     return this.normalizedOptions.filter(o => values.includes(o.value));
   }
 
-  private handleIonStyle = (e) => {
-    e.detail['has-value'] = !isEmptyValue(this.value);
-  }
-
   private handleClearClick = (e: Event) => {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -222,7 +218,6 @@ export class TComboboxModal implements ICombobox {
             disabled={this.disabled}
             readonly={true}
             onClick={this.handleInputClick}
-            onIonStyle={this.handleIonStyle}
             onKeyDown={this.handleKeyDown}
             onChange={stopPropagation}
             onInput={stopPropagation}

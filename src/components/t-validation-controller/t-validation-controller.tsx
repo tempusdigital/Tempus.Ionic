@@ -229,6 +229,4 @@ export class TValidationController {
   private getMessageSummaryElement(form: HTMLFormElement): HTMLTMessageSummaryElement {
     return form.querySelector('t-message-summary');
   }
-
-
 }

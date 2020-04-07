@@ -1,5 +1,6 @@
 import { Component, Method, Prop, h } from "@stencil/core";
 import { PopupMenuOptions } from "./t-popup-menu-controller-interface";
+import { popoverController } from '@ionic/core';
 
 @Component({
   tag: 't-popup-menu-controller',
@@ -8,18 +9,14 @@ import { PopupMenuOptions } from "./t-popup-menu-controller-interface";
 export class TPopupMenuController {
   @Prop({ context: 'window' }) win!: Window;
 
-  popoverController: any;
-
   @Method()
   async create(options: PopupMenuOptions) {
-    await this.popoverController.componentOnReady();
-
-    let popover = await this.popoverController.create({
+    let popover = await popoverController.create({
       component: 't-popup-menu-popover',
       componentProps: {
         header: options.header,
         buttons: options.buttons,
-        popoverController: this.popoverController
+        popoverController: popoverController
       },
       animated: options.animated,
       backdropDismiss: options.backdropDismiss,
@@ -37,7 +34,6 @@ export class TPopupMenuController {
 
   render() {
     return [
-      <ion-popover-controller ref={e => this.popoverController = e as any}></ion-popover-controller>,
       <t-popup-menu-popover></t-popup-menu-popover> // Fixes a problem that causes the menu to not be rendered on apps developed with Stencil
     ];
   }

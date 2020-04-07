@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+    <title>Select</title>
+    <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/core.css">
+    <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/normalize.css">
+    <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/structure.css">
+    <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/typography.css">
+    <script type="module" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.esm.js"></script>
+    <script nomodule="" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.js"></script>
+    <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
+    <script nomodule src="/build/tempusdigitalionic.js"></script>
+</head>
+
+<body>
+    <ion-app>
+        <ion-content>
+            <ion-grid>
+                <div>
+                    DEFAULT
+                </div>
+                <ion-row>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label>T-COMBOBOX</ion-label>
+                            <t-combobox id="combobox-row-1"></t-combobox>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label>T-SELECT</ion-label>
+                            <t-select>
+                                <t-select-option value="1">Text 0</t-select-option>
+                                <t-select-option value="2">Text 1</t-select-option>
+                                <t-select-option value="3">Text 2</t-select-option>
+                            </t-select>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label>ION-INPUT</ion-label>
+                            <ion-input></ion-input>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label>ION-SELECT</ion-label>
+                            <ion-select ok-text="OK" cancel-text="CANCELAR">
+                                <ion-select-option value="1">Text 0</ion-select-option>
+                                <ion-select-option value="2">Text 1</ion-select-option>
+                                <ion-select-option value="3">Text 2</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <div>
+                    STACKED
+                </div>
+                <ion-row>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="stacked">T-COMBOBOX</ion-label>
+                            <t-combobox id="combobox-row-2"></t-combobox>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="stacked">T-SELECT</ion-label>
+                            <t-select>
+                                <t-select-option value="1">Text 0</t-select-option>
+                                <t-select-option value="2">Text 1</t-select-option>
+                                <t-select-option value="3">Text 2</t-select-option>
+                            </t-select>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="stacked">ION-INPUT</ion-label>
+                            <ion-input></ion-input>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="stacked">ION-SELECT</ion-label>
+                            <ion-select ok-text="OK" cancel-text="CANCELAR">
+                                <ion-select-option value="1">Text 0</ion-select-option>
+                                <ion-select-option value="2">Text 1</ion-select-option>
+                                <ion-select-option value="3">Text 2</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <div>
+                    FLOATING
+                </div>
+                <ion-row>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="floating">T-COMBOBOX</ion-label>
+                            <t-combobox id="combobox-row-3"></t-combobox>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="floating">T-SELECT</ion-label>
+                            <t-select>
+                                <t-select-option value="1">Text 0</t-select-option>
+                                <t-select-option value="2">Text 1</t-select-option>
+                                <t-select-option value="3">Text 2</t-select-option>
+                            </t-select>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="floating">ION-INPUT</ion-label>
+                            <ion-input></ion-input>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label position="floating">ION-SELECT</ion-label>
+                            <ion-select ok-text="OK" cancel-text="CANCELAR">
+                                <ion-select-option value="1">Text 0</ion-select-option>
+                                <ion-select-option value="2">Text 1</ion-select-option>
+                                <ion-select-option value="3">Text 2</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-content>
+    </ion-app>
+
+    <script>
+        window.onload = () => {
+            let options = getOptions();
+
+            addComboboxOptions('combobox-row-1', options);
+            addComboboxOptions('combobox-row-2', options);
+            addComboboxOptions('combobox-row-3', options);
+        }
+
+        function addComboboxOptions(comboboxId, options) {
+            let combobox = document.getElementById(comboboxId);
+            combobox.options = options;
+        }
+
+        function getOptions() {
+            let options = [];
+
+            for (let index = 0; index < 3; index++) {
+                options.push({
+                    text: 'Text ' + index,
+                    value: 'Value' + index
+                });
+            }
+
+            return options;
+        }
+    </script>
+</body>
+
+</html>
