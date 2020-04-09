@@ -51,7 +51,7 @@ npm run build
 - Add documentation
 - Add tests
 
-### t-form-controller
+### t-action-controller
 - Add documentation
 - Add tests
 

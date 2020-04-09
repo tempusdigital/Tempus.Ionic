@@ -14,14 +14,15 @@ t-select {
     -webkit-padding-end: var(--padding-end);
     padding-inline-end: var(--padding-end);
 
-    height: 36px;
+    height: 36.8px;
     background-color: transparent;
     display: block;
     border: 0;
     outline: none;
     width: 100%;
     appearance: none;
-    padding-top: 2px;
+    padding-top: 7px;
+    padding-bottom: 8px;
   }
 
   select:-moz-focusring {

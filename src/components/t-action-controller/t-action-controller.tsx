@@ -1,40 +1,34 @@
-import { Component, Method, Prop, Watch } from "@stencil/core";
-import { IActionControllerMessages, ActionControllerDefaultMessages as ActionControllerDefaultMessages, ProcessOptions } from './t-action-controller-interface';
+import { ActionControllerDefaultMessages as ActionControllerDefaultMessages, ProcessOptions as ActionProcessOptions } from './t-action-controller-interface';
 import { FormValidationMessages } from "../t-validation-controller/t-validation-controller-interface";
 import { toastController, loadingController } from '@ionic/core';
+import { validationController } from '../..';
 
-@Component({
-  tag: 't-action-controller',
-  styleUrl: 't-action-controller.scss'
-})
-export class TActionController {
+const DefaultOptions : ActionProcessOptions ={
+  messages: ActionControllerDefaultMessages,
+  showLoading: true,
+  toastPosition: 'bottom'
+};
 
-  private _internalMessages = { ...ActionControllerDefaultMessages };
+class ActionController {
 
-  @Prop() messages: IActionControllerMessages;
+  private getOptions(options?: ActionProcessOptions) {
+    if (!options)
+      return DefaultOptions;
 
-  @Prop({ context: 'window' }) win!: Window;
-
-  validationController: HTMLTValidationControllerElement;
-
-  componentWillLoad() {
-    this.messagesChanged();
+    return {
+      ...DefaultOptions,
+      ...options,
+      messages: {
+        ...DefaultOptions.messages,
+        ...options.messages
+      }
+    };
   }
 
-  @Watch('messages')
-  messagesChanged() {
-    if (this.messages)
-      this._internalMessages = { ...ActionControllerDefaultMessages, ...this.messages };
-    else
-      this._internalMessages = { ...ActionControllerDefaultMessages };
-  }
+  public async validate(form: HTMLFormElement) {
+    await validationController.clearCustomValidity(form);
 
-  async validate(form: HTMLFormElement) {
-    await this.validationController.componentOnReady();
-
-    await this.validationController.clearCustomValidity(form);
-
-    let valid = await this.validationController.reportValidity(form);
+    let valid = await validationController.reportValidity(form);
 
     return valid;
   }
@@ -49,15 +43,13 @@ export class TActionController {
    * @param form Formulário
    * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
    */
-  @Method()
-  async processSubmit(form: HTMLFormElement, action?: () => any, options?: ProcessOptions): Promise<boolean> {
-    let showLoading = !options || options.showLoading === true;
-    let toastPosition = options && options.toastPosition || 'bottom';
-
+  public async processSubmit(form: HTMLFormElement, action?: () => any, options?: ActionProcessOptions): Promise<boolean> {
+    options = this.getOptions(options);
+ 
     let valid = await this.validate(form);
 
     if (!valid) {
-      await this.showToast(this._internalMessages.badRequest, toastPosition);
+      await this.showToast(options.messages.badRequest, options.toastPosition);
       return false;
     }
 
@@ -65,7 +57,7 @@ export class TActionController {
 
     if (action)
       try {
-        loading = showLoading && await this.showLoading();
+        loading = options.showLoading && await this.showLoading(options);
 
         let actionResult = action();
 
@@ -74,12 +66,12 @@ export class TActionController {
       }
       catch (e) {
         if (e && e.status == 400 && e.json)
-          this.processFormStatus400(form, await e.json());
+          this.processFormStatus400(form, await e.json(), options);
 
         loading && loading.dismiss();
 
-        let toastMessage = this.getToastMessage(e);
-        this.showToast(toastMessage, toastPosition);
+        let toastMessage = this.getToastMessage(e, options);
+        this.showToast(toastMessage, options.toastPosition);
 
         return false;
       }
@@ -87,7 +79,7 @@ export class TActionController {
         loading && loading.dismiss();
       }
 
-    this.validationController && this.validationController.reportValidity(form);
+    validationController.reportValidity(form);
 
     loading && loading.dismiss();
 
@@ -104,16 +96,14 @@ export class TActionController {
  * @param form Formulário
  * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
  */
-  @Method()
-  async processAction(action?: () => any, options?: ProcessOptions): Promise<boolean> {
-    let showLoading = !options || options.showLoading === true;
-    let toastPosition = options && options.toastPosition || 'bottom';
+  public async processAction(action?: () => any, options?: ActionProcessOptions): Promise<boolean> {
+    options = this.getOptions(options);
 
     let loading = null;
 
     if (action)
       try {
-        loading = showLoading && await this.showLoading();
+        loading = options.showLoading && await this.showLoading(options);
 
         let actionResult = action();
 
@@ -124,12 +114,12 @@ export class TActionController {
         loading && loading.dismiss();
 
         if (e && e.status == 400 && e.json) {
-          this.processActionStatus400(await e.json());
+          this.processActionStatus400(await e.json(), options);
           return;
         }
 
-        let toastMessage = this.getToastMessage(e);
-        this.showToast(toastMessage, toastPosition);
+        let toastMessage = this.getToastMessage(e, options);
+        this.showToast(toastMessage, options.toastPosition);
 
         return false;
       }
@@ -142,16 +132,11 @@ export class TActionController {
     return true;
   }
 
-  @Method()
-  async getValidationController() {
-    return this.validationController;
-  }
-
-  private async showLoading() {
+  private async showLoading(options: ActionProcessOptions) {
     let loading = await loadingController.create({
       showBackdrop: true,
       translucent: true,
-      message: this._internalMessages.sending
+      message: options.messages.sending
     });
 
     await loading.present();
@@ -159,43 +144,43 @@ export class TActionController {
     return loading;
   }
 
-  private getToastMessage(e: Response) {
+  private getToastMessage(e: Response, options: ActionProcessOptions) {
     switch (e && e.status) {
       case 400:
-        return this._internalMessages.badRequest;
+        return options.messages.badRequest;
 
       case 401:
       case 403:
-        return this._internalMessages.forbidden;
+        return options.messages.forbidden;
 
       case 404:
-        return this._internalMessages.notFound;
+        return options.messages.notFound;
 
       case 408:
       case 502:
       case 504:
-        return this._internalMessages.timeout;
+        return options.messages.timeout;
 
       default:
-        return this._internalMessages.internalServerError;
+        return options.messages.internalServerError;
     }
   }
 
-  private async processFormStatus400(form: HTMLFormElement, data: any) {
-    this.validationController.clearCustomValidity(form);
+  private async processFormStatus400(form: HTMLFormElement, data: any, options: ActionProcessOptions) {
+    validationController.clearCustomValidity(form);
 
-    let messages = await this.getServerValidationMessages(data);
+    let messages = this.getServerValidationMessages(data);
 
     if (messages)
-      this.validationController.setCustomValidity(form, messages);
+      validationController.setCustomValidity(form, messages);
 
-    await this.validationController.reportValidity(form);
+    await validationController.reportValidity(form);
 
-    await this.showToast(this._internalMessages.badRequest);
+    await this.showToast(options.messages.badRequest);
   }
 
-  private async processActionStatus400(data: any) {
-    let messages = await this.getServerValidationMessages(data);
+  private async processActionStatus400(data: any, options: ActionProcessOptions) {
+    let messages = this.getServerValidationMessages(data);
 
     if (messages)
       for (let field in messages) {
@@ -210,7 +195,7 @@ export class TActionController {
         }
       }
 
-    await this.showToast(this._internalMessages.badRequest);
+    await this.showToast(options.messages.badRequest);
   }
 
   private async showToast(message: string, position: 'top' | 'bottom' | 'middle' = 'bottom') {
@@ -272,3 +257,5 @@ export class TActionController {
     return elementName.substr(0, 1).toLowerCase() + elementName.substr(1, elementName.length - 1);
   }
 }
+
+export const actionController = new ActionController();

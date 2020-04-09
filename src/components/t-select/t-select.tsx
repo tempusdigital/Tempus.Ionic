@@ -1,4 +1,4 @@
-import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element, h } from '@stencil/core';
+import { Component, Prop, Listen, State, Event, EventEmitter, Watch, Element, h, forceUpdate } from '@stencil/core';
 import { deferEvent, debounceAsync, normalizeValue, isEmptyValue } from '../../utils/helpers';
 
 @Component({
@@ -50,7 +50,7 @@ export class TSelect {
     // Fix floating label when input starts with value
     setTimeout(() => {
       this.emitStyle();
-      this.host.forceUpdate();
+      forceUpdate(this.host);
     }, 10);
   }
 

@@ -1,6 +1,7 @@
 export interface ProcessOptions {
-  toastPosition: 'top' | 'bottom' | 'middle';
-  showLoading: boolean;
+  toastPosition?: 'top' | 'bottom' | 'middle';
+  showLoading?: boolean;
+  messages?: IActionControllerMessages;
 }
 
 export interface IActionControllerMessages {

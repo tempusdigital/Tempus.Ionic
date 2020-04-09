@@ -5,28 +5,10 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { IActionControllerMessages, ProcessOptions, } from "./components/t-action-controller/t-action-controller-interface";
 import { IComboboxMessages, IComboboxOption, NormalizedOption, } from "./components/t-combobox/t-combobox-interface";
 import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1, } from "./interface";
 import { PopupMenuButton, PopupMenuOptions, } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
-import { FormInput, FormValidationMessages, } from "./components/t-validation-controller/t-validation-controller-interface";
 export namespace Components {
-    interface TActionController {
-        "getValidationController": () => Promise<HTMLTValidationControllerElement>;
-        "messages": IActionControllerMessages;
-        /**
-          * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
-          * @param form Formulário
-          * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
-         */
-        "processAction": (action?: () => any, options?: ProcessOptions) => Promise<boolean>;
-        /**
-          * Processa as mensagens pra execução do submit de um formulário: - Exibe mensagem de "Carregando..."  - Impede alterações dos campos e reenvio do formulário até terminar o submit - Exibe validações locais - Exibe validações do servidor (retornadas com o status 400) - Exibe avisos de erros de servidor
-          * @param form Formulário
-          * @param action Ação para ser executada como submit do formulário. Geralmente nesta ação é enviado o formulário para o servidor.
-         */
-        "processSubmit": (form: HTMLFormElement, action?: () => any, options?: ProcessOptions) => Promise<boolean>;
-    }
     interface TCombobox {
         /**
           * Set the focus on component is loaded.
@@ -161,44 +143,8 @@ export namespace Components {
         "selected": boolean;
         "value": string;
     }
-    interface TValidationController {
-        /**
-          * Clear the custom messages of all field on the form. The messages are remove removed from the field data, but to update the screen you must use reportValidity.
-          * @param form Form element
-         */
-        "clearCustomValidity": (form: HTMLFormElement) => Promise<void>;
-        /**
-          * Returns current global custom validity of a Form Element.
-          * @param form Form element
-         */
-        "getGlobalCustomValidity": (form: HTMLFormElement) => Promise<string>;
-        /**
-          * Update the form validaiton messages on the screen.
-          * @param form
-         */
-        "reportValidity": (form: HTMLFormElement) => Promise<boolean>;
-        /**
-          * Add custom validation to fields of the form.
-          * @param form FormElement
-          * @param formValidationMessages Validation messages to each field
-         */
-        "setCustomValidity": (form: HTMLFormElement, formValidationMessages: FormValidationMessages) => Promise<void>;
-        "setCustomerValidationForField": (form: HTMLFormElement, fieldName: string, validations: string[]) => Promise<void>;
-        /**
-          * Add custom validation at a form level. The validation won't be connected to a specific field.
-          * @param form Form element
-          * @param message Validation message
-         */
-        "setGlobalCustomValidity": (form: HTMLFormElement, message: string) => Promise<void>;
-    }
 }
 declare global {
-    interface HTMLTActionControllerElement extends Components.TActionController, HTMLStencilElement {
-    }
-    var HTMLTActionControllerElement: {
-        prototype: HTMLTActionControllerElement;
-        new (): HTMLTActionControllerElement;
-    };
     interface HTMLTComboboxElement extends Components.TCombobox, HTMLStencilElement {
     }
     var HTMLTComboboxElement: {
@@ -271,14 +217,7 @@ declare global {
         prototype: HTMLTSelectOptionElement;
         new (): HTMLTSelectOptionElement;
     };
-    interface HTMLTValidationControllerElement extends Components.TValidationController, HTMLStencilElement {
-    }
-    var HTMLTValidationControllerElement: {
-        prototype: HTMLTValidationControllerElement;
-        new (): HTMLTValidationControllerElement;
-    };
     interface HTMLElementTagNameMap {
-        "t-action-controller": HTMLTActionControllerElement;
         "t-combobox": HTMLTComboboxElement;
         "t-combobox-choices": HTMLTComboboxChoicesElement;
         "t-combobox-list": HTMLTComboboxListElement;
@@ -291,13 +230,9 @@ declare global {
         "t-popup-menu-popover": HTMLTPopupMenuPopoverElement;
         "t-select": HTMLTSelectElement;
         "t-select-option": HTMLTSelectOptionElement;
-        "t-validation-controller": HTMLTValidationControllerElement;
     }
 }
 declare namespace LocalJSX {
-    interface TActionController {
-        "messages"?: IActionControllerMessages;
-    }
     interface TCombobox {
         /**
           * Set the focus on component is loaded.
@@ -441,10 +376,7 @@ declare namespace LocalJSX {
         "selected"?: boolean;
         "value": string;
     }
-    interface TValidationController {
-    }
     interface IntrinsicElements {
-        "t-action-controller": TActionController;
         "t-combobox": TCombobox;
         "t-combobox-choices": TComboboxChoices;
         "t-combobox-list": TComboboxList;
@@ -457,14 +389,12 @@ declare namespace LocalJSX {
         "t-popup-menu-popover": TPopupMenuPopover;
         "t-select": TSelect;
         "t-select-option": TSelectOption;
-        "t-validation-controller": TValidationController;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "t-action-controller": LocalJSX.TActionController & JSXBase.HTMLAttributes<HTMLTActionControllerElement>;
             "t-combobox": LocalJSX.TCombobox & JSXBase.HTMLAttributes<HTMLTComboboxElement>;
             "t-combobox-choices": LocalJSX.TComboboxChoices & JSXBase.HTMLAttributes<HTMLTComboboxChoicesElement>;
             "t-combobox-list": LocalJSX.TComboboxList & JSXBase.HTMLAttributes<HTMLTComboboxListElement>;
@@ -477,7 +407,6 @@ declare module "@stencil/core" {
             "t-popup-menu-popover": LocalJSX.TPopupMenuPopover & JSXBase.HTMLAttributes<HTMLTPopupMenuPopoverElement>;
             "t-select": LocalJSX.TSelect & JSXBase.HTMLAttributes<HTMLTSelectElement>;
             "t-select-option": LocalJSX.TSelectOption & JSXBase.HTMLAttributes<HTMLTSelectOptionElement>;
-            "t-validation-controller": LocalJSX.TValidationController & JSXBase.HTMLAttributes<HTMLTValidationControllerElement>;
         }
     }
 }
