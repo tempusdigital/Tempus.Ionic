@@ -1,5 +1,6 @@
 import { EventEmitter } from "@stencil/core";
 import { IComboboxOption, NormalizedOption } from "../interface";
+import { isPlatform } from "@ionic/core";
 
 // From: https://github.com/ionic-team/ionic/blob/master/core/src/utils/helpers.ts
 
@@ -76,9 +77,8 @@ export function generateSearchToken(text: string) {
     .join(' ');
 }
 
-export function isCore(win: Window) {
-  const width = win.innerWidth;
-  return (width >= 768);
+export function isCore(_win: Window) {
+  return !isPlatform('ios') && !isPlatform('android') && !isPlatform('ipad');
 }
 
 export function isEmptyValue(value: any) {

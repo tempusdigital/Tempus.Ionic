@@ -1,7 +1,7 @@
 {
   "name": "@tempusdigital/ionic",
   "private": false,
-  "version": "1.0.0-beta.7-3",
+  "version": "1.0.0-beta.8-1",
   "description": "Tempus Digital Custom Ionic Components",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -21,13 +21,11 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
-  "peerDependencies": {
-    "@ionic/core": "^4.11.3"
-  },
   "devDependencies": {
-    "@stencil/core": "1.7.5",
-    "@stencil/sass": "1.0.1",
-    "@ionic/core": "^4.11.3"
+    "@ionic/core": "^5.0.7",
+    "@stencil/core": "1.12.2",
+    "@stencil/sass": "1.2.0",
+    "jest": "^25.2.7"
   },
   "repository": {
     "type": "git",

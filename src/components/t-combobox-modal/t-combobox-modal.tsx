@@ -3,6 +3,7 @@ import { IComboboxOption } from '../../interface';
 import { normalizeValue, isEmptyValue, asArray, normalizeOptions, stopPropagation } from '../../utils/helpers';
 import { ICombobox, IComboboxMessages, ComboboxDefaultOptions, NormalizedOption } from '../t-combobox/t-combobox-interface';
 import { HTMLStencilElement } from '@stencil/core/internal';
+import { modalController } from '@ionic/core';
 
 @Component({
   tag: 't-combobox-modal',
@@ -39,8 +40,6 @@ export class TComboboxModal implements ICombobox {
   @Element() host: HTMLStencilElement;
 
   @State() inputText: string;
-
-  @Prop({ connect: 'ion-modal-controller' }) modalController: any;
 
   private normalizedOptions: NormalizedOption[];
 
@@ -122,9 +121,7 @@ export class TComboboxModal implements ICombobox {
     this.isInterfaceOpened = true;
 
     try {
-      await this.modalController.componentOnReady();
-
-      const modalElement = await this.modalController.create({
+      const modalElement = await modalController.create({
         component: 't-combobox-modal-list',
         componentProps: {
           multiple: this.multiple,
@@ -141,12 +138,11 @@ export class TComboboxModal implements ICombobox {
         }
       });
 
-      modalElement.onDidDismiss().then(() => {
-        this.isInterfaceOpened = false;
-      });
-
       await modalElement.present();
 
+      await modalElement.onDidDismiss();
+
+      this.isInterfaceOpened = false;
     }
     catch (err) {
       this.isInterfaceOpened = false;
@@ -187,10 +183,6 @@ export class TComboboxModal implements ICombobox {
     return this.normalizedOptions.filter(o => values.includes(o.value));
   }
 
-  private handleIonStyle = (e) => {
-    e.detail['has-value'] = !isEmptyValue(this.value);
-  }
-
   private handleClearClick = (e: Event) => {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -221,8 +213,7 @@ export class TComboboxModal implements ICombobox {
             autofocus={this.autofocus}
             disabled={this.disabled}
             readonly={true}
-            onClick={this.handleInputClick}
-            onIonStyle={this.handleIonStyle}
+            onTouchStart={this.handleInputClick}
             onKeyDown={this.handleKeyDown}
             onChange={stopPropagation}
             onInput={stopPropagation}

@@ -5,12 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Form Validation</title>
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/core.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/normalize.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/structure.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@4.11.3/css/typography.css">
-  <script type="module" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.esm.js"></script>
-  <script nomodule="" src="https://unpkg.com/@ionic/core@4.11.3/dist/ionic/ionic.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/typography.css">
+  <script type="module" src="https://unpkg.com/@ionic/core@5.0.7/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@5.0.7/dist/ionic/ionic.js"></script>
   <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
 
@@ -47,26 +47,22 @@
         <ion-button id="custom-validation-button">Execute Custom Server Validation</ion-button>
       </div>
     </ion-content>
-
-    <t-action-controller></t-action-controller>
   </ion-app>
 
-  <script>
+  <script type="module">
     var form = document.querySelector('form');
-    var actionController = document.querySelector('t-action-controller');
+    import { actionController } from '../build/index.esm.js';
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      actionController.componentOnReady().then(() => {
-        actionController.messages = {
-          badRequest: 'Custom message'
-        }
-      });
-
       actionController.processSubmit(form, () => {
         return new Promise((r) => setTimeout(r, 2000));
-      });
+      },{ 
+        messages: {
+          badRequest: 'Custom message'
+        }
+       });
     });
 
     var customButton = document.getElementById('custom-button');

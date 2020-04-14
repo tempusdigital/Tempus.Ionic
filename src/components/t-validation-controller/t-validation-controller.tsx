@@ -1,14 +1,9 @@
-import { Component, Method } from "@stencil/core";
 import { FormInput, FormValidationMessages } from './t-validation-controller-interface';
 
 /**
  * Apply custom validation to a FormElement and display the validation messages on <t-message> and <t-message-summary> 
  */
-@Component({
-  tag: 't-validation-controller',
-  styleUrl: 't-validation-controller.scss'
-})
-export class TValidationController {
+class ValidationController {
   private normalizeLabel(elementName: string) {
     if (elementName == this._globalCustomValidityName)
       return "Global";
@@ -23,8 +18,7 @@ export class TValidationController {
    * @param form FormElement
    * @param formValidationMessages Validation messages to each field
    */
-  @Method()
-  async setCustomValidity(form: HTMLFormElement, formValidationMessages: FormValidationMessages) {
+  public async setCustomValidity(form: HTMLFormElement, formValidationMessages: FormValidationMessages) {
     let globalMessages: string[] = [];
 
     for (let elementName in formValidationMessages) {
@@ -47,8 +41,7 @@ export class TValidationController {
       this.setGlobalCustomValidity(form, globalMessages.join('\n'));
   }
 
-  @Method()
-  async setCustomerValidationForField(form: HTMLFormElement, fieldName: string, validations: string[]) {
+  public async setCustomerValidationForField(form: HTMLFormElement, fieldName: string, validations: string[]) {
     let data: FormValidationMessages = {};
     data[fieldName] = validations;
     this.setCustomValidity(form, data);
@@ -107,8 +100,7 @@ export class TValidationController {
    * @param form Form element
    * @param message Validation message
    */
-  @Method()
-  async setGlobalCustomValidity(form: HTMLFormElement, message: string) {
+  public async setGlobalCustomValidity(form: HTMLFormElement, message: string) {
     let element = this.getOrCreateGlobalCustomValidityElement(form);
     element.setCustomValidity(message);
   }
@@ -117,8 +109,7 @@ export class TValidationController {
    * Returns current global custom validity of a Form Element.
    * @param form Form element
    */
-  @Method()
-  async getGlobalCustomValidity(form: HTMLFormElement): Promise<string> {
+  public async getGlobalCustomValidity(form: HTMLFormElement): Promise<string> {
     let element = this.getOrCreateGlobalCustomValidityElement(form);
     return element.validationMessage;
   }
@@ -144,8 +135,7 @@ export class TValidationController {
    * update the screen you must use reportValidity.
    * @param form Form element
    */
-  @Method()
-  async clearCustomValidity(form: HTMLFormElement) {
+  public async clearCustomValidity(form: HTMLFormElement) {
     for (let element of this.getAllFormInputs(form))
       element.setCustomValidity('')
   }
@@ -160,8 +150,7 @@ export class TValidationController {
    * Update the form validaiton messages on the screen.
    * @param form
    */
-  @Method()
-  async reportValidity(form: HTMLFormElement): Promise<boolean> {
+  public async reportValidity(form: HTMLFormElement): Promise<boolean> {
     let valid = true;
     let globalMessages = [];
     let firstInvalidInput: FormInput;
@@ -229,6 +218,7 @@ export class TValidationController {
   private getMessageSummaryElement(form: HTMLFormElement): HTMLTMessageSummaryElement {
     return form.querySelector('t-message-summary');
   }
-
-
 }
+
+
+export const validationController = new ValidationController();

@@ -64,7 +64,7 @@ export class TComboboxChoices implements ICombobox {
 
   private initialized = false;
 
-  private forceAutocompleteOff = Date.now().toString();
+  private forceAutocompleteOff: any = Date.now().toString();
 
   componentWillLoad() {
     try {
@@ -580,10 +580,6 @@ export class TComboboxChoices implements ICombobox {
     return this.normalizedOptions.filter(o => values.includes(o.value));
   }
 
-  private handleIonStyle = (e) => {
-    e.detail['has-value'] = !isEmptyValue(this.value);
-  }
-
   renderChips() {
     if (!this.multiple)
       return null;
@@ -625,7 +621,6 @@ export class TComboboxChoices implements ICombobox {
             onClick={this.handleInputFocus}
             onIonBlur={this.handleInputBlur}
             onKeyUp={this.handleInputChange}
-            onIonStyle={this.handleIonStyle}
             onKeyDown={this.handleKeyDown}
             onChange={stopPropagation}
             onInput={stopPropagation}
