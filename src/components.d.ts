@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { IComboboxMessages, IComboboxOption, NormalizedOption, } from "./components/t-combobox/t-combobox-interface";
 import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1, } from "./interface";
-import { PopupMenuButton, PopupMenuOptions, } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
+import { PopupMenuButton, } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
 export namespace Components {
     interface TCombobox {
         /**
@@ -117,9 +117,6 @@ export namespace Components {
     interface TMessageSummary {
         "validationMessages": string[];
     }
-    interface TPopupMenuController {
-        "create": (options: PopupMenuOptions) => Promise<HTMLIonPopoverElement>;
-    }
     interface TPopupMenuPopover {
         "buttons": PopupMenuButton[];
         "dismiss": () => Promise<void>;
@@ -193,12 +190,6 @@ declare global {
         prototype: HTMLTMessageSummaryElement;
         new (): HTMLTMessageSummaryElement;
     };
-    interface HTMLTPopupMenuControllerElement extends Components.TPopupMenuController, HTMLStencilElement {
-    }
-    var HTMLTPopupMenuControllerElement: {
-        prototype: HTMLTPopupMenuControllerElement;
-        new (): HTMLTPopupMenuControllerElement;
-    };
     interface HTMLTPopupMenuPopoverElement extends Components.TPopupMenuPopover, HTMLStencilElement {
     }
     var HTMLTPopupMenuPopoverElement: {
@@ -226,7 +217,6 @@ declare global {
         "t-container": HTMLTContainerElement;
         "t-message": HTMLTMessageElement;
         "t-message-summary": HTMLTMessageSummaryElement;
-        "t-popup-menu-controller": HTMLTPopupMenuControllerElement;
         "t-popup-menu-popover": HTMLTPopupMenuPopoverElement;
         "t-select": HTMLTSelectElement;
         "t-select-option": HTMLTSelectOptionElement;
@@ -348,8 +338,6 @@ declare namespace LocalJSX {
     interface TMessageSummary {
         "validationMessages"?: string[];
     }
-    interface TPopupMenuController {
-    }
     interface TPopupMenuPopover {
         "buttons"?: PopupMenuButton[];
         "header"?: string;
@@ -385,7 +373,6 @@ declare namespace LocalJSX {
         "t-container": TContainer;
         "t-message": TMessage;
         "t-message-summary": TMessageSummary;
-        "t-popup-menu-controller": TPopupMenuController;
         "t-popup-menu-popover": TPopupMenuPopover;
         "t-select": TSelect;
         "t-select-option": TSelectOption;
@@ -403,7 +390,6 @@ declare module "@stencil/core" {
             "t-container": LocalJSX.TContainer & JSXBase.HTMLAttributes<HTMLTContainerElement>;
             "t-message": LocalJSX.TMessage & JSXBase.HTMLAttributes<HTMLTMessageElement>;
             "t-message-summary": LocalJSX.TMessageSummary & JSXBase.HTMLAttributes<HTMLTMessageSummaryElement>;
-            "t-popup-menu-controller": LocalJSX.TPopupMenuController & JSXBase.HTMLAttributes<HTMLTPopupMenuControllerElement>;
             "t-popup-menu-popover": LocalJSX.TPopupMenuPopover & JSXBase.HTMLAttributes<HTMLTPopupMenuPopoverElement>;
             "t-select": LocalJSX.TSelect & JSXBase.HTMLAttributes<HTMLTSelectElement>;
             "t-select-option": LocalJSX.TSelectOption & JSXBase.HTMLAttributes<HTMLTSelectOptionElement>;
