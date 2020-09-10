@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Message</title>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/typography.css">
+  <script type="module" src="https://unpkg.com/@ionic/core@5.0.7/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@5.0.7/dist/ionic/ionic.js"></script>
+  <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
+  <script nomodule src="/build/tempusdigitalionic.js"></script>
+
+  <script>
+
+    function init()
+    {
+      var pager = document.getElementById('t-pager-messages');
+      pager.messages = { nextPage: 'Next', previousPage: 'Previous', firstPage: 'First Page', lastPage: 'Last Page'};
+    }
+
+  </script>
+</head>
+
+<body onload="init()">
+
+  <ion-list>
+
+    <ion-item>
+      <ion-label position="floating">Pager Default</ion-label>
+      <br />
+      <t-pager></t-pager>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Pager Desabilitado</ion-label>
+      <br />
+      <t-pager disabled="true"></t-pager>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Pager Apenas com o valor de page(página 2)</ion-label>
+      <br />
+      <t-pager page="4"></t-pager>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Pager Apenas com tamanho da página</ion-label>
+      <br />
+      <t-pager page-size="47"></t-pager>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Pager Apenas com o valor total de itens</ion-label>
+      <br />
+      <t-pager total-items="89"></t-pager>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Pager Apenas com mensagens em outro idioma</ion-label>
+      <br />
+      <t-pager id="t-pager-messages"></t-pager>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Pager com todos valores configurados</ion-label>
+      <br />
+      <t-pager page="1" page-size="5" total-items="38" disabled="false"></t-pager>
+    </ion-item>
+
+  </ion-list>
+
+</body>
+
+</html>
