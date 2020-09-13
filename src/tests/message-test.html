@@ -18,6 +18,24 @@
 
 <body>
   <p padding>Out of a ion-list</p>
+
+
+  <ion-item>
+    <ion-label position="floating">Teste</ion-label>
+    <ion-input></ion-input>
+    <t-message id="meu-componente" helper-message="Meu helper aqui"></t-message>
+  </ion-item>
+
+  <button onclick="alterar()">Alterar</button>
+
+<script>
+  function alterar() {
+    var componente = document.getElementById("meu-componente");
+
+    componente.helperMessage = "Mudou!";
+  }
+</script>
+
   <ion-item>
     <ion-label>Empty - Fixed Label</ion-label>
     <ion-input></ion-input>

@@ -64,7 +64,7 @@ export class TComboboxChoices implements ICombobox {
 
   private initialized = false;
 
-  private forceAutocompleteOff: any = Date.now().toString();
+  private forceAutocompleteOff: any = 'off';
 
   componentWillLoad() {
     try {
