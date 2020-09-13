@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { IComboboxMessages, IComboboxOption, NormalizedOption, } from "./components/t-combobox/t-combobox-interface";
 import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1, } from "./interface";
+import { Messages, PageChanged, } from "./components/t-pager/interfaces";
 import { PopupMenuButton, } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
 export namespace Components {
     interface TCombobox {
@@ -117,6 +118,16 @@ export namespace Components {
     interface TMessageSummary {
         "validationMessages": string[];
     }
+    interface TPager {
+        "disabled": boolean;
+        "messages": Messages;
+        "page": number;
+        "pageSize": number;
+        "totalItems": number;
+    }
+    interface TPagerPopover {
+        "messages": Messages;
+    }
     interface TPopupMenuPopover {
         "buttons": PopupMenuButton[];
         "dismiss": () => Promise<void>;
@@ -189,6 +200,18 @@ declare global {
         prototype: HTMLTMessageSummaryElement;
         new (): HTMLTMessageSummaryElement;
     };
+    interface HTMLTPagerElement extends Components.TPager, HTMLStencilElement {
+    }
+    var HTMLTPagerElement: {
+        prototype: HTMLTPagerElement;
+        new (): HTMLTPagerElement;
+    };
+    interface HTMLTPagerPopoverElement extends Components.TPagerPopover, HTMLStencilElement {
+    }
+    var HTMLTPagerPopoverElement: {
+        prototype: HTMLTPagerPopoverElement;
+        new (): HTMLTPagerPopoverElement;
+    };
     interface HTMLTPopupMenuPopoverElement extends Components.TPopupMenuPopover, HTMLStencilElement {
     }
     var HTMLTPopupMenuPopoverElement: {
@@ -216,6 +239,8 @@ declare global {
         "t-container": HTMLTContainerElement;
         "t-message": HTMLTMessageElement;
         "t-message-summary": HTMLTMessageSummaryElement;
+        "t-pager": HTMLTPagerElement;
+        "t-pager-popover": HTMLTPagerPopoverElement;
         "t-popup-menu-popover": HTMLTPopupMenuPopoverElement;
         "t-select": HTMLTSelectElement;
         "t-select-option": HTMLTSelectOptionElement;
@@ -337,6 +362,17 @@ declare namespace LocalJSX {
     interface TMessageSummary {
         "validationMessages"?: string[];
     }
+    interface TPager {
+        "disabled"?: boolean;
+        "messages"?: Messages;
+        "onPageChanged"?: (event: CustomEvent<PageChanged>) => void;
+        "page"?: number;
+        "pageSize"?: number;
+        "totalItems"?: number;
+    }
+    interface TPagerPopover {
+        "messages"?: Messages;
+    }
     interface TPopupMenuPopover {
         "buttons"?: PopupMenuButton[];
         "header"?: string;
@@ -371,6 +407,8 @@ declare namespace LocalJSX {
         "t-container": TContainer;
         "t-message": TMessage;
         "t-message-summary": TMessageSummary;
+        "t-pager": TPager;
+        "t-pager-popover": TPagerPopover;
         "t-popup-menu-popover": TPopupMenuPopover;
         "t-select": TSelect;
         "t-select-option": TSelectOption;
@@ -388,6 +426,8 @@ declare module "@stencil/core" {
             "t-container": LocalJSX.TContainer & JSXBase.HTMLAttributes<HTMLTContainerElement>;
             "t-message": LocalJSX.TMessage & JSXBase.HTMLAttributes<HTMLTMessageElement>;
             "t-message-summary": LocalJSX.TMessageSummary & JSXBase.HTMLAttributes<HTMLTMessageSummaryElement>;
+            "t-pager": LocalJSX.TPager & JSXBase.HTMLAttributes<HTMLTPagerElement>;
+            "t-pager-popover": LocalJSX.TPagerPopover & JSXBase.HTMLAttributes<HTMLTPagerPopoverElement>;
             "t-popup-menu-popover": LocalJSX.TPopupMenuPopover & JSXBase.HTMLAttributes<HTMLTPopupMenuPopoverElement>;
             "t-select": LocalJSX.TSelect & JSXBase.HTMLAttributes<HTMLTSelectElement>;
             "t-select-option": LocalJSX.TSelectOption & JSXBase.HTMLAttributes<HTMLTSelectOptionElement>;
