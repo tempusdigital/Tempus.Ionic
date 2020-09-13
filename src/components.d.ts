@@ -132,7 +132,6 @@ export namespace Components {
         "buttons": PopupMenuButton[];
         "dismiss": () => Promise<void>;
         "header": string;
-        "popoverController": any;
     }
     interface TSelect {
         "autofocus": boolean;
@@ -377,7 +376,6 @@ declare namespace LocalJSX {
     interface TPopupMenuPopover {
         "buttons"?: PopupMenuButton[];
         "header"?: string;
-        "popoverController"?: any;
     }
     interface TSelect {
         "autofocus"?: boolean;

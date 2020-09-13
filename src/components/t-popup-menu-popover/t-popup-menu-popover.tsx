@@ -1,5 +1,6 @@
 import { Component, Prop, Method, h } from '@stencil/core';
 import { PopupMenuButton } from '../t-popup-menu-controller/t-popup-menu-controller-interface';
+import { popoverController } from '@ionic/core';
 
 @Component({
   tag: 't-popup-menu-popover',
@@ -11,12 +12,9 @@ export class TPopupMenuPopover {
 
   @Prop() buttons: PopupMenuButton[];
 
-  @Prop() popoverController: any;
-
   @Method()
   async dismiss() {
-    await this.popoverController.componentOnReady();
-    await this.popoverController.dismiss();
+    await popoverController.dismiss();
   }
 
   handleButtonClick(button: PopupMenuButton) {
