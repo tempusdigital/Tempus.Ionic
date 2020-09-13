@@ -1,4 +1,5 @@
 t-message-summary {
   font-size: 14px;
   color: var(--highlight-color-invalid, var(--ion-color-danger,  #f04141));
+  white-space: pre-wrap;
 }

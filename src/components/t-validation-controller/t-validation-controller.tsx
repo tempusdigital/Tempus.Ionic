@@ -6,7 +6,7 @@ import { FormInput, FormValidationMessages } from './t-validation-controller-int
 class ValidationController {
   private normalizeLabel(elementName: string) {
     if (elementName == this._globalCustomValidityName)
-      return "Global";
+      return "";
 
     elementName = elementName.replace(/([a-z](?=[A-Z]))|\.\_/g, '$1 ');
 
@@ -24,13 +24,23 @@ class ValidationController {
     for (let elementName in formValidationMessages) {
       let validationMessages = formValidationMessages[elementName];
 
+      if (typeof validationMessages === 'string')
+        validationMessages = [validationMessages];
+
       if (!validationMessages)
         continue;
 
       let element = this.getFormInputByName(form, elementName);
 
       if (!element) {
-        globalMessages.push(...validationMessages.map(m => this.normalizeLabel(elementName) + ': ' + m));
+        globalMessages.push(...validationMessages.map(message => {
+          let label = this.normalizeLabel(elementName);
+
+          if (label)
+            return label + ': ' + message;
+
+          return message;
+        }));
         continue;
       }
 
@@ -62,12 +72,12 @@ class ValidationController {
   }
 
   private getFormInputByName(form: HTMLFormElement, name: string) {
-    let element = form.querySelector(`[name="${name}"]:not(t-message)`);
+    let element = form.querySelector(`[name="${name}"]:not(t-message):not([type="hidden"])`);
 
     if (!element)
       return null;
 
-    if (element.tagName != 'select' && 'length' in element && 'item' in element)
+    if (element.tagName != 'SELECT' && 'length' in element && 'item' in element)
       element = (element as HTMLCollectionBase).item(0);
 
     if (!element)
@@ -80,11 +90,11 @@ class ValidationController {
     // Ionic use a hidden input on <ion-input> to fix keyboad position,
     // but the validation are only
     // appended to another input on the shadow dom
-    if (element.classList.contains('aux-input') || element.tagName == 'ION-TEXTAREA') {
-      let container = element.parentElement.shadowRoot || element.parentElement;
+    if (element.tagName.indexOf('ION-') === 0) 
+      element = element.querySelector('.native-input:not([type="hidden"]),.native-textarea:not([type="hidden"]),.aux-input:not([type="hidden"])');
 
-      element = container.querySelector('.native-input,.native-textarea') || element;
-    }
+    if (!element)
+      return null;
 
     if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA')
       return element;
@@ -167,8 +177,14 @@ class ValidationController {
 
       if (!messageElement) {
         if (element.validationMessage) {
-          if (element.name != 'global' && element.name != 'Global')
-            globalMessages.push(this.normalizeLabel(element.name) + ': ' + element.validationMessage);
+          if (element.name != 'global' && element.name != 'Global') {
+            let label = this.normalizeLabel(element.name);
+
+            if (label)
+              globalMessages.push(label + ': ' + element.validationMessage);
+            else
+              globalMessages.push(element.validationMessage);
+          }
           else
             globalMessages.push(element.validationMessage);
         }

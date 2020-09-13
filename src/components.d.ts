@@ -5,10 +5,10 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { IComboboxMessages, IComboboxOption, NormalizedOption, } from "./components/t-combobox/t-combobox-interface";
-import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1, } from "./interface";
-import { Messages, PageChanged, } from "./components/t-pager/interfaces";
-import { PopupMenuButton, } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
+import { IComboboxMessages, IComboboxOption, NormalizedOption } from "./components/t-combobox/t-combobox-interface";
+import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1 } from "./interface";
+import { Messages, PageChanged } from "./components/t-pager/interfaces";
+import { PopupMenuButton } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
 export namespace Components {
     interface TCombobox {
         /**
@@ -50,9 +50,7 @@ export namespace Components {
         /**
           * Override the default search behavior. Useful to send the search to a web server.
          */
-        "search": (options?: {
-            searchText: string;
-        }) => IComboboxOption[] | Promise<IComboboxOption[]>;
+        "search": (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
         /**
           * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
          */
@@ -141,7 +139,7 @@ export namespace Components {
         "name": string;
         "readonly": boolean;
         "required": boolean;
-        "value": string | string[];
+        "value": string|string[];
     }
     interface TSelectOption {
         "disabled": boolean;
@@ -291,9 +289,7 @@ declare namespace LocalJSX {
         /**
           * Override the default search behavior. Useful to send the search to a web server.
          */
-        "search"?: (options?: {
-            searchText: string;
-        }) => IComboboxOption[] | Promise<IComboboxOption[]>;
+        "search"?: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
         /**
           * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
          */
@@ -386,7 +382,7 @@ declare namespace LocalJSX {
         "onIonStyle"?: (event: CustomEvent<any>) => void;
         "readonly"?: boolean;
         "required"?: boolean;
-        "value"?: string | string[];
+        "value"?: string|string[];
     }
     interface TSelectOption {
         "disabled"?: boolean;

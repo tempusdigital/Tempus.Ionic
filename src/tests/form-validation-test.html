@@ -5,12 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Form Validation</title>
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/core.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/normalize.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/structure.css">
-  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.0.7/css/typography.css">
-  <script type="module" src="https://unpkg.com/@ionic/core@5.0.7/dist/ionic/ionic.esm.js"></script>
-  <script nomodule="" src="https://unpkg.com/@ionic/core@5.0.7/dist/ionic/ionic.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.3.2/css/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.3.2/css/normalize.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.3.2/css/structure.css">
+  <link rel="stylesheet" href="https://unpkg.com/@ionic/core@5.3.2/css/typography.css">
+  <script type="module" src="https://unpkg.com/@ionic/core@5.3.2/dist/ionic/ionic.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/@ionic/core@5.3.2/dist/ionic/ionic.js"></script>
   <script type="module" src="/build/tempusdigitalionic.esm.js"></script>
   <script nomodule src="/build/tempusdigitalionic.js"></script>
 
@@ -20,6 +20,8 @@
   <ion-app>
     <form action="GET" novalidate>
       <ion-button type="submit">Submit</ion-button>
+      <ion-button type="button" id="set-custom-validity">Set Custom Validity</ion-button>
+
       <t-message-summary></t-message-summary>
       <ion-list>
         <ion-item>
@@ -31,6 +33,11 @@
         <ion-item>
           <ion-label position="floating">Without t-message</ion-label>
           <ion-input name="zero-1" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Hidden input</ion-label>
+          <ion-input type="hidden" name="hidden"></ion-input>
         </ion-item>
 
         <ion-item>
@@ -60,7 +67,19 @@
           <t-combobox name="combobox" id="combobox" required> </t-combobox>
           <t-message name="combobox"></t-message>
         </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">ion-select</ion-label>
+          <ion-select name="ion-select" required>
+            <ion-select-option value="a">A</ion-select-option>
+            <ion-select-option value="b">B</ion-select-option>
+            <ion-select-option value="c">C</ion-select-option>
+          </ion-select>
+          <t-message name="ion-select"></t-message>
+        </ion-item>
       </ion-list>
+
+
     </form>
   </ion-app>
 
@@ -77,6 +96,23 @@
 
       validationController.reportValidity(form);
     });
+
+    document
+      .getElementById('set-custom-validity')
+      .addEventListener('click', function () {
+        let custom = {
+          "ion-select": "ion-select has message",
+          'zero-0': ['Zero is invalid'],
+          'zero-1': ['One is invalid'],
+          'two': ['Is invalid'],
+          'hidden': ['hidden is also invalid'],
+          "": ['This is a global message'],
+        };
+
+        validationController.clearCustomValidity(form);
+        validationController.setCustomValidity(form, custom);
+        validationController.reportValidity(form);
+      });
   </script>
 </body>
 
