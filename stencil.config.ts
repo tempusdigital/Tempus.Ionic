@@ -2,6 +2,7 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 
 export const config: Config = {
+  taskQueue: 'async',
   bundles: [
     { components: ['t-combobox'] },
     { components: ['t-combobox-choices', 't-combobox-list'] },

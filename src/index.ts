@@ -8,3 +8,5 @@ export { IActionControllerMessages, ProcessOptions } from './components/t-action
 
 export { popupMenuController } from './components/t-popup-menu-controller/t-popup-menu-controller';
 export { PopupMenuOptions, PopupMenuButton } from './components/t-popup-menu-controller/t-popup-menu-controller-interface';
+
+export * from './components/t-pager/interfaces';

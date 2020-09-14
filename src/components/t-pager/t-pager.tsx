@@ -1,6 +1,6 @@
 import { Component, Prop, h, Event, EventEmitter } from '@stencil/core';
 import { popoverController } from '@ionic/core';
-import { PageChanged, PagerButton, Messages } from './interfaces';
+import { PageChanged, PagerButton, PagerMessages } from './interfaces';
 
 @Component({
   tag: 't-pager'
@@ -14,7 +14,7 @@ export class tPager {
   @Prop() pageSize: number = 20;
   @Prop() totalItems: number = 500;
 
-  @Prop() messages: Messages = {
+  @Prop() messages: PagerMessages = {
     nextPage: 'Próxima',
     previousPage: 'Anterior',
     firstPage: 'Primeira Página',

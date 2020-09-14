@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { IComboboxMessages, IComboboxOption, NormalizedOption } from "./components/t-combobox/t-combobox-interface";
 import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1 } from "./interface";
-import { Messages, PageChanged } from "./components/t-pager/interfaces";
+import { PageChanged, PagerMessages } from "./components/t-pager/interfaces";
 import { PopupMenuButton } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
 export namespace Components {
     interface TCombobox {
@@ -118,13 +118,13 @@ export namespace Components {
     }
     interface TPager {
         "disabled": boolean;
-        "messages": Messages;
+        "messages": PagerMessages;
         "page": number;
         "pageSize": number;
         "totalItems": number;
     }
     interface TPagerPopover {
-        "messages": Messages;
+        "messages": PagerMessages;
     }
     interface TPopupMenuPopover {
         "buttons": PopupMenuButton[];
@@ -360,14 +360,14 @@ declare namespace LocalJSX {
     }
     interface TPager {
         "disabled"?: boolean;
-        "messages"?: Messages;
+        "messages"?: PagerMessages;
         "onPageChanged"?: (event: CustomEvent<PageChanged>) => void;
         "page"?: number;
         "pageSize"?: number;
         "totalItems"?: number;
     }
     interface TPagerPopover {
-        "messages"?: Messages;
+        "messages"?: PagerMessages;
     }
     interface TPopupMenuPopover {
         "buttons"?: PopupMenuButton[];

@@ -1,5 +1,4 @@
-export interface PageChanged
-{
+export interface PageChanged {
     start: number,
     end: number,
     page: number,
@@ -11,10 +10,9 @@ export interface PageChanged
 
 export type PagerButton = 'first-page' | 'last-page';
 
-export interface Messages
-{
-    nextPage:string,
-    previousPage:string,
-    firstPage:string,
-    lastPage:string,
+export interface PagerMessages {
+    nextPage: string,
+    previousPage: string,
+    firstPage: string,
+    lastPage: string,
 }
