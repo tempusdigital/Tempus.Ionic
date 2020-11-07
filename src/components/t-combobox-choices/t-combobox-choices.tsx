@@ -42,9 +42,9 @@ export class TComboboxChoices implements ICombobox {
 
   @Event() ionStyle: EventEmitter;
 
-  @Element() host: HTMLStencilElement;
+  @Element() private host: HTMLStencilElement;
 
-  @State() inputText: string;
+  @State() private inputText: string;
 
   private _internalMessages: IComboboxMessages;
 
@@ -630,7 +630,7 @@ export class TComboboxChoices implements ICombobox {
             placeholder={this.placeholder}></ion-input>
         }
         <input
-          type="text"
+          type="search"
           class="t-combobox-choices-inner-input"
           autocomplete={this.forceAutocompleteOff}
           required={this.required}
