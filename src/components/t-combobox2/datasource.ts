@@ -1,15 +1,15 @@
 import { createStore } from "@stencil/store";
 import { asArray, generateSearchToken, isEmptyValue, normalizeOptions, normalizeValue } from "../../utils/helpers";
+import { NormalizedOption } from "./interfaces";
 
 interface State {
     options?: any[],
-    normalizedOptions?: any[];
-    visibleOptions?: any[],
+    normalizedOptions?: NormalizedOption[];
+    visibleOptions?: NormalizedOption[],
     value?: string | string[];
     optionValue?: string;
     optionText?: string;
     optionDetail?: string;
-    searchText?: string;
 }
 
 interface DataSourceOptions {
@@ -31,11 +31,7 @@ export class DataSource {
                 this.state.optionText,
                 this.state.optionDetail);
             this.state.normalizedOptions = normalizedOptions || [];
-            this.updateVisibleOptions();
-        });
-
-        onChange('searchText', () => {
-            this.updateVisibleOptions();
+            this.search();
         });
 
         onChange('value', (value) => {
@@ -50,8 +46,8 @@ export class DataSource {
         });
     }
 
-    private updateVisibleOptions() {
-        let { normalizedOptions, searchText } = this.state;
+    search(searchText: string = '') {
+        let { normalizedOptions } = this.state;
 
         if (normalizedOptions && searchText) {
             const searchToken = generateSearchToken(searchText);
@@ -65,6 +61,15 @@ export class DataSource {
         }
         else
             this.state.visibleOptions = normalizedOptions;
+    }
+
+    getOptionByText(text: string) {
+        if (!text)
+            return null;
+
+        let searchToken = generateSearchToken(text);
+
+        return this.state.normalizedOptions.find(f => f.textSearchToken == searchToken);
     }
 
     select(value: any) {

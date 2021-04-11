@@ -1,4 +1,5 @@
 import { Component, h, Method, Prop, Element, Watch, Event, EventEmitter, State } from "@stencil/core";
+import { debounce, stopPropagation } from "../../utils/helpers";
 import { DataSource } from "./datasource";
 import { DefaultComboboxMessages, IComboboxMessages } from "./interfaces";
 
@@ -15,7 +16,7 @@ export class TCombobox2 {
         return !!this.popover;
     }
 
-    private popover: HTMLElement;
+    private popover: HTMLTComboboxPopoverListElement;
 
     @Prop() options: any[];
 
@@ -35,6 +36,8 @@ export class TCombobox2 {
 
     @State() private searching = false;
 
+    private hasFocus = false;
+
     componentWillLoad() {
         this.dataSource = new DataSource({
             onValueChanged: (value) => {
@@ -49,6 +52,8 @@ export class TCombobox2 {
         });
 
         this.updateDataSource();
+
+        this.search = debounce(this.search.bind(this), this.debounce);
     }
 
     @Watch('options')
@@ -76,11 +81,15 @@ export class TCombobox2 {
             return;
 
         try {
+            if (!this.searching)
+                this.dataSource.search('');
+
             let popover = document.createElement('t-combobox-popover-list');
             this.popover = popover;
 
             popover.onselect = () => {
                 this.closeList();
+                this.clearSearch();
             };
 
             popover.dataSource = this.dataSource;
@@ -152,32 +161,64 @@ export class TCombobox2 {
         }
     }
 
-    private handleInputFocus = () => {
+    private handleInputBlur = (e) => {
+        this.hasFocus = false;
+
+        this.closeList();
+
+        const option = this.dataSource.getOptionByText(e.target.value);
+
+        if (option)
+            this.dataSource.state.value = option.value;
+        else
+            this.dataSource.state.value = '';
+
+        this.clearSearch();
+
+        e.target.value = this.dataSource.getText();
+    }
+
+    private handleInputType = (e) => {
+        this.searching = true;
+        this.search(e.target.value);
+    }
+
+    private handleInputClick = () => {
         this.openList();
     }
 
-    private handleInputBlur = () => {
-        this.searching = false;
-        this.closeList();
+    private handleInputFocus = () => {
+        this.hasFocus = true;
     }
 
-    private handleSearch = (e) => {
+    private clearSearch() {
+        this.searching = false;
+    }
+
+    private search(term) {
+        if (!this.hasFocus)
+            return;
+
         this.searching = true;
-        this.dataSource.state.searchText = e.target.value;
+        this.dataSource.search(term);
         this.openList();
     }
 
     render() {
-        const value = this.searching
-            ? this.dataSource.state.searchText
-            : this.dataSource.getText();
+        const value = this.dataSource.getText();
 
         return (
             <ion-input
+                type="search"
+                autocomplete="off"
+                autocorrect="off"
                 value={value}
                 debounce={this.debounce}
-                onIonInput={this.handleSearch}
-                onClick={this.handleInputFocus}
+                onChange={stopPropagation}
+                onInput={stopPropagation}
+                onIonInput={this.handleInputType}
+                onClick={this.handleInputClick}
+                onIonFocus={this.handleInputFocus}
                 onIonBlur={this.handleInputBlur} />
         )
     }
