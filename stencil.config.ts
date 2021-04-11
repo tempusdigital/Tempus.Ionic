@@ -2,7 +2,6 @@ import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 
 export const config: Config = {
-  taskQueue: 'async',
   bundles: [
     { components: ['t-combobox'] },
     { components: ['t-combobox-choices', 't-combobox-list'] },
@@ -15,18 +14,25 @@ export const config: Config = {
   plugins: [
     sass()
   ],
-  copy: [
-    { src: 'tests' }
-  ],
   namespace: 'TempusDigitalIonic',
   outputTargets:[
     {
       type: 'dist',
-      esmLoaderPath: '../loader'
+      esmLoaderPath: '../loader',
+    },
+    {
+      type: 'dist-custom-elements-bundle',
+    },
+    {
+      type: 'docs-readme',
     },
     {
       type: 'www',
-      serviceWorker: null
-    }
+      serviceWorker: null, // disable service workers
+      copy: [
+        { src: 'tests' },
+        { src: '..\\node_modules\\@ionic\\core', dest: 'ionic'}
+      ],
+    },
   ]
 };

@@ -90,7 +90,7 @@ export class TComboboxChoices implements ICombobox {
     this.updateVisibleOptions = debounceAsync(this.updateVisibleOptions.bind(this));
   }
 
-  componentDidUnload() {
+  disconnectedCallback() {
     this.closePopover();
   }
 

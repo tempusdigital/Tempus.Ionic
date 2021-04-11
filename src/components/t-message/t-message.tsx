@@ -6,7 +6,7 @@ import { deferEvent } from "../../utils/helpers";
   styleUrl: 't-message.scss'
 })
 export class TMessage {
-  @Prop({ reflectToAttr: true }) name: string;
+  @Prop({ reflect: true }) name: string;
 
   @Prop() helperMessage: string;
 

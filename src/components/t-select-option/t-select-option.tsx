@@ -38,7 +38,7 @@ export class TSelectOption {
     this.selectOptionDidLoad.emit();
   }
 
-  componentDidUnload() {
+  disconnectedCallback() {
     this.selectOptionDidUnload.emit();
     this.onDidUnload && this.onDidUnload();
   }
