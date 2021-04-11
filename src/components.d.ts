@@ -5,62 +5,28 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { IComboboxMessages, IComboboxOption, NormalizedOption } from "./components/t-combobox/t-combobox-interface";
-import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1 } from "./interface";
-import { DataSource } from "./components/t-combobox2/datasource";
-import { IComboboxMessages as IComboboxMessages2 } from "./components/t-combobox2/interfaces";
+import { IComboboxMessages as IComboboxMessages1, IComboboxOption } from "./interface";
+import { IComboboxMessages, IComboboxOption as IComboboxOption1, NormalizedOption } from "./components/t-combobox/t-combobox-interface";
 import { PageChanged, PagerMessages } from "./components/t-pager/interfaces";
 import { PopupMenuButton } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
 export namespace Components {
     interface TCombobox {
-        /**
-          * Set the focus on component is loaded.
-         */
+        "addTokens": string;
+        "allowAdd": boolean;
         "autofocus": boolean;
-        /**
-          * If `true`, the user cannot interact with the input. Defaults to `false`.
-         */
+        "debounce": number;
         "disabled": boolean;
-        /**
-          * The messages that will be shown
-         */
         "messages": IComboboxMessages;
-        /**
-          * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-         */
         "multiple": boolean;
-        /**
-          * Native select name attribute
-         */
         "name": string;
-        /**
-          * The visible options to select.
-         */
+        "optionDetail": string;
+        "optionText": string;
+        "optionValue": string;
         "options": IComboboxOption[];
-        /**
-          * Set the input's placeholder when no option is selected.
-         */
         "placeholder": string;
-        /**
-          * If `true`, the user cannot interact with the input. Defaults to `false`.
-         */
         "readonly": boolean;
-        /**
-          * If `true`, the user must fill in a value before submitting a form.
-         */
         "required": boolean;
-        /**
-          * Override the default search behavior. Useful to send the search to a web server.
-         */
-        "search": (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-        /**
-          * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-         */
-        "searchDebounce": number;
-        /**
-          * The value of the input.
-         */
-        "value": any;
+        "value": string | string[];
     }
     interface TComboboxChoices {
         "addTokens": string;
@@ -106,25 +72,6 @@ export namespace Components {
         "multiple": boolean;
         "options": NormalizedOption[];
         "value": string | string[];
-    }
-    interface TComboboxPopoverList {
-        "dataSource": DataSource;
-        "focusNext": () => Promise<void>;
-        "focusPrevious": () => Promise<void>;
-        "hasFocusedOption": () => Promise<boolean>;
-        "messages": IComboboxMessages;
-        "selectFocused": () => Promise<void>;
-    }
-    interface TCombobox2 {
-        "closeList": () => Promise<void>;
-        "debounce": number;
-        "messages": IComboboxMessages;
-        "openList": () => Promise<void>;
-        "optionDetail": string;
-        "optionText": string;
-        "optionValue": string;
-        "options": any[];
-        "value": any;
     }
     interface TContainer {
         "fluid": boolean;
@@ -201,18 +148,6 @@ declare global {
         prototype: HTMLTComboboxModalListElement;
         new (): HTMLTComboboxModalListElement;
     };
-    interface HTMLTComboboxPopoverListElement extends Components.TComboboxPopoverList, HTMLStencilElement {
-    }
-    var HTMLTComboboxPopoverListElement: {
-        prototype: HTMLTComboboxPopoverListElement;
-        new (): HTMLTComboboxPopoverListElement;
-    };
-    interface HTMLTCombobox2Element extends Components.TCombobox2, HTMLStencilElement {
-    }
-    var HTMLTCombobox2Element: {
-        prototype: HTMLTCombobox2Element;
-        new (): HTMLTCombobox2Element;
-    };
     interface HTMLTContainerElement extends Components.TContainer, HTMLStencilElement {
     }
     var HTMLTContainerElement: {
@@ -267,8 +202,6 @@ declare global {
         "t-combobox-list": HTMLTComboboxListElement;
         "t-combobox-modal": HTMLTComboboxModalElement;
         "t-combobox-modal-list": HTMLTComboboxModalListElement;
-        "t-combobox-popover-list": HTMLTComboboxPopoverListElement;
-        "t-combobox2": HTMLTCombobox2Element;
         "t-container": HTMLTContainerElement;
         "t-message": HTMLTMessageElement;
         "t-message-summary": HTMLTMessageSummaryElement;
@@ -281,58 +214,25 @@ declare global {
 }
 declare namespace LocalJSX {
     interface TCombobox {
-        /**
-          * Set the focus on component is loaded.
-         */
+        "addTokens"?: string;
+        "allowAdd"?: boolean;
         "autofocus"?: boolean;
-        /**
-          * If `true`, the user cannot interact with the input. Defaults to `false`.
-         */
+        "debounce"?: number;
         "disabled"?: boolean;
-        /**
-          * The messages that will be shown
-         */
         "messages"?: IComboboxMessages;
-        /**
-          * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
-         */
         "multiple"?: boolean;
-        /**
-          * Native select name attribute
-         */
         "name"?: string;
-        /**
-          * Trigger change event when value has changed
-         */
         "onChange"?: (event: CustomEvent<any>) => void;
-        /**
-          * The visible options to select.
-         */
+        "onIonStyle"?: (event: CustomEvent<any>) => void;
+        "onSearch"?: (event: CustomEvent<any>) => void;
+        "optionDetail"?: string;
+        "optionText"?: string;
+        "optionValue"?: string;
         "options"?: IComboboxOption[];
-        /**
-          * Set the input's placeholder when no option is selected.
-         */
         "placeholder"?: string;
-        /**
-          * If `true`, the user cannot interact with the input. Defaults to `false`.
-         */
         "readonly"?: boolean;
-        /**
-          * If `true`, the user must fill in a value before submitting a form.
-         */
         "required"?: boolean;
-        /**
-          * Override the default search behavior. Useful to send the search to a web server.
-         */
-        "search"?: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
-        /**
-          * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
-         */
-        "searchDebounce"?: number;
-        /**
-          * The value of the input.
-         */
-        "value"?: any;
+        "value"?: string | string[];
     }
     interface TComboboxChoices {
         "addTokens"?: string;
@@ -380,20 +280,6 @@ declare namespace LocalJSX {
         "onSelect"?: (event: CustomEvent<any>) => void;
         "options"?: NormalizedOption[];
         "value"?: string | string[];
-    }
-    interface TComboboxPopoverList {
-        "dataSource"?: DataSource;
-        "messages"?: IComboboxMessages;
-    }
-    interface TCombobox2 {
-        "debounce"?: number;
-        "messages"?: IComboboxMessages;
-        "onChange"?: (event: CustomEvent<any>) => void;
-        "optionDetail"?: string;
-        "optionText"?: string;
-        "optionValue"?: string;
-        "options"?: any[];
-        "value"?: any;
     }
     interface TContainer {
         "fluid"?: boolean;
@@ -449,8 +335,6 @@ declare namespace LocalJSX {
         "t-combobox-list": TComboboxList;
         "t-combobox-modal": TComboboxModal;
         "t-combobox-modal-list": TComboboxModalList;
-        "t-combobox-popover-list": TComboboxPopoverList;
-        "t-combobox2": TCombobox2;
         "t-container": TContainer;
         "t-message": TMessage;
         "t-message-summary": TMessageSummary;
@@ -470,8 +354,6 @@ declare module "@stencil/core" {
             "t-combobox-list": LocalJSX.TComboboxList & JSXBase.HTMLAttributes<HTMLTComboboxListElement>;
             "t-combobox-modal": LocalJSX.TComboboxModal & JSXBase.HTMLAttributes<HTMLTComboboxModalElement>;
             "t-combobox-modal-list": LocalJSX.TComboboxModalList & JSXBase.HTMLAttributes<HTMLTComboboxModalListElement>;
-            "t-combobox-popover-list": LocalJSX.TComboboxPopoverList & JSXBase.HTMLAttributes<HTMLTComboboxPopoverListElement>;
-            "t-combobox2": LocalJSX.TCombobox2 & JSXBase.HTMLAttributes<HTMLTCombobox2Element>;
             "t-container": LocalJSX.TContainer & JSXBase.HTMLAttributes<HTMLTContainerElement>;
             "t-message": LocalJSX.TMessage & JSXBase.HTMLAttributes<HTMLTMessageElement>;
             "t-message-summary": LocalJSX.TMessageSummary & JSXBase.HTMLAttributes<HTMLTMessageSummaryElement>;

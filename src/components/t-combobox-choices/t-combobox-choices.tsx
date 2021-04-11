@@ -69,7 +69,7 @@ export class TComboboxChoices implements ICombobox {
   componentWillLoad() {
     try {
       this.normalizedOptions = normalizeOptions(this.options);
-      this.value = normalizeValue(this.value);
+      this.value = normalizeValue(this.value, this.multiple);
 
       this.updateVisibleOptions();
       this.updateText();
@@ -110,7 +110,7 @@ export class TComboboxChoices implements ICombobox {
     if (!this.initialized)
       return;
 
-    let normalized = normalizeValue(this.value);
+    let normalized = normalizeValue(this.value, this.multiple);
 
     if (this.value !== normalized) {
       this.value = normalized;
@@ -196,7 +196,7 @@ export class TComboboxChoices implements ICombobox {
   }
 
   private setValue(value: string | string[]) {
-    this.value = normalizeValue(value);
+    this.value = normalizeValue(value, this.multiple);
   }
 
   private updateText() {

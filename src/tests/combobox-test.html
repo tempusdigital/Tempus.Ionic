@@ -77,6 +77,15 @@
 
         var empty = document.querySelector('.empty');
         empty.options = [];
+        
+        var customCombobox = document.getElementById('custom-options');
+        customCombobox.options = [
+          { label: 'Text pesquisa 01', id: 'p01', info: 'custom 01' },
+          { label: 'Text pesquisa 02', id: 'p02', info: 'custom 02' },
+          { label: 'Text pesquisa 03', id: 'p03', info: 'custom 03' },
+          { label: 'Text pesquisa 04', id: 'p04', info: 'custom 04' },
+          { label: 'Text pesquisa 05', id: 'p05', info: 'custom 05' }
+        ]
       });
     }
 
@@ -108,7 +117,7 @@
           combo.value = single;
       }
 
-      var singleValue = document.querySelectorAll('t-combobox:not(.empty),t-combobox-choices:not(.empty)');
+      var singleValue = document.getElementById('single-value');
       singleValue.textContent = JSON.stringify(single);
     }
 
@@ -161,8 +170,7 @@
 
           <ion-item>
             <ion-label position="stacked">Multiple allow add</ion-label>
-            <t-combobox-choices multiple allow-add add-tokens=",;" placeholder="This is a placeholder">
-            </t-combobox-choices>
+            <t-combobox multiple allow-add add-tokens=",;" placeholder="This is a placeholder"/>
           </ion-item>
 
           <ion-item>
@@ -173,6 +181,11 @@
           <ion-item>
             <ion-label>Toggle</ion-label>
             <ion-toggle> </ion-toggle>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Custom options fields</ion-label>
+            <t-combobox2 id="custom-options" option-value="id" option-text="label" option-detail="info"></t-combobox2>
           </ion-item>
 
           <ion-item>

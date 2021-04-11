@@ -88,21 +88,29 @@ export function isEmptyValue(value: any) {
   return value === null || value === undefined || value === '';
 }
 
-export function normalizeValue(value: any): string | string[] {
+export function normalizeValue(value: any, multiple: boolean): string | string[] {
+  if (multiple) {
+    const isArray = Array.isArray(value);
+
+    if (!value)
+      return [];
+
+    if (!isArray)
+      value = [value];
+
+    const needToNormalize = value.some(v => typeof v !== 'string');
+
+    if (needToNormalize)
+      return value.map(v => v.toString());
+
+    return value;
+  }
+
   if (isEmptyValue(value))
     return '';
 
   if (typeof value === 'string')
     return value;
-
-  if (Array.isArray(value)) {
-    let needToNormalize = value.some(v => typeof v !== 'string');
-
-    if (!needToNormalize)
-      return value;
-
-    return value.map(v => v.toString());
-  }
 
   return value.toString();
 }
@@ -131,7 +139,7 @@ export function normalizeOptions(options: IComboboxOption[], optionValue?: strin
     const detail = o[optionDetail];
 
     return {
-      value: normalizeValue(value) as string,
+      value: normalizeValue(value, false) as string,
       text: text,
       textSearchToken: generateSearchToken(text),
       detailTextSearchToken: generateSearchToken(detail),

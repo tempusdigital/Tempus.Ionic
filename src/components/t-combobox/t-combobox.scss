@@ -1,5 +1,88 @@
 t-combobox {
-  display: block;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
   width: 100%;
-  overflow: visible;
+
+  ion-input {
+    width: 100px;
+  }
+
+  .t-chip {
+    --padding-top: 6px;
+    --padding-bottom: 6px;
+
+    margin-top: 8px;
+    margin-right: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 16px;
+    background-color: var(--ion-color-medium, silver);
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+
+    .t-chip-text {
+      height: 26px;
+      display: flex;
+      align-items: center;
+      padding-top: var(--padding-top);
+      padding-bottom: var(--padding-bottom);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .t-chip-remove {
+      cursor: pointer;
+      padding-top: var(--padding-top);
+      padding-bottom: var(--padding-bottom);
+      border-radius: 12px;
+      margin-left: 4px;
+    }
+  }
+
+  .t-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    contain: strict;
+    fill: currentcolor;
+    box-sizing: content-box !important;
+
+    svg {
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .t-clear{
+    --padding-end: 0;
+  }
+
+  .t-combobox-choices-inner-input {
+    display: none;
+  }
+}
+
+.t-combobox-popover {
+  --border-color: var(
+    --ion-item-border-color,
+    var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13)))
+  );
+
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  position: absolute;
+  background-color: white;
+  display: block;
+  max-height: 330px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 20000;
 }
