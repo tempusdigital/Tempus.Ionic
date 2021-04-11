@@ -10,7 +10,7 @@ export class TSelect {
   @Prop() name: string;
   @Prop() autofocus: boolean = false;
   @Prop() disabled: boolean = false;
-  @Prop({ reflectToAttr: true }) readonly: boolean = false;
+  @Prop({ reflect: true }) readonly: boolean = false;
   @Prop() required: boolean = false;
   @Prop() hidden: boolean = false;
   @Prop() multiple: boolean = false;
