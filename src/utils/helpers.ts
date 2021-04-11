@@ -117,17 +117,25 @@ export function asArray(values: any): any[] {
   return [values];
 }
 
-export function normalizeOptions(options: IComboboxOption[]): NormalizedOption[] {
+export function normalizeOptions(options: IComboboxOption[], optionValue?: string, optionText?: string, optionDetail?: string): NormalizedOption[] {
   if (!options)
     return null;
 
+  optionValue ||= 'value';
+  optionText ||= 'text';
+  optionDetail ||= 'detailText';
+
   return options.filter(o => !!o).map(o => {
+    const value = o[optionValue];
+    const text = o[optionText];
+    const detail = o[optionDetail];
+
     return {
-      value: normalizeValue(o.value) as string,
-      text: o.text,
-      textSearchToken: generateSearchToken(o.text),
-      detailTextSearchToken: generateSearchToken(o.detailText),
-      detailText: o.detailText
+      value: normalizeValue(value) as string,
+      text: text,
+      textSearchToken: generateSearchToken(text),
+      detailTextSearchToken: generateSearchToken(detail),
+      detailText: detail
     }
   })
 }
