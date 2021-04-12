@@ -68,21 +68,3 @@ t-combobox {
     display: none;
   }
 }
-
-.t-combobox-popover {
-  --border-color: var(
-    --ion-item-border-color,
-    var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13)))
-  );
-
-  border-left: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  position: absolute;
-  background-color: white;
-  display: block;
-  max-height: 330px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  z-index: 20000;
-}

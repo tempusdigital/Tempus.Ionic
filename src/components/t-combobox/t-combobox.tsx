@@ -207,15 +207,16 @@ export class TCombobox {
     return '';
   }
 
-  private getOffset(el: HTMLElement) {
-    var _x = 0;
-    var _y = 0;
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop) && el.tagName.toUpperCase() != 'ION-CONTENT') {
-      _x += el.offsetLeft;
-      _y += el.offsetTop;
-      el = el.offsetParent as HTMLElement;
-    }
-    return { top: _y, left: _x };
+  private getContainer() {
+    const content = this.host.closest('ion-content');
+    if (content)
+      return content;
+
+    const modal = this.host.closest('ion-modal');
+    if (modal)
+      return modal;
+
+    return document.querySelector('ion-app');
   }
 
   private async openPopover() {
@@ -230,22 +231,21 @@ export class TCombobox {
 
       this.syncPopover();
 
+      popover.target = this.host;
       popover.onselect = () => {
+        this.select(popover.value);
+
         if (!this.multiple) {
           this.closePopover();
           this.clearSearch();
         }
-
-        this.select(popover.value);
-
-        this.syncPopover();
+        else 
+          this.syncPopover();
       };
 
       const container = this.getContainer();
 
       container.appendChild(popover);
-
-      await popover.componentOnReady();
     }
     catch (err) {
       this.closePopover();
@@ -254,17 +254,6 @@ export class TCombobox {
     }
   }
 
-  private getContainer() {
-    const content = this.host.closest('ion-content');
-    if (content)
-      return content;
-
-    const modal = this.host.closest('ion-modal');
-    if (modal)
-      return modal;
-
-    return document.querySelector('ion-app');
-  }
 
   private closePopover() {
     if (this.popover) {
@@ -282,17 +271,8 @@ export class TCombobox {
     this.updateVisibleOptions();
   }
 
-  private async executeSearch(term: string) {
-    let searching = term && !!term.toString().trim();
-
-    this.searching = searching;
-
-    if (term !== null && term !== undefined)
-      this.searchText = term;
-    else
-      this.searchText = '';
-
-    this.customSearching = searching && !this.search.emit({ term });
+  private async executeSearch() {
+    this.customSearching = !this.search.emit({ term: this.searchText });
 
     this.updateVisibleOptions();
   }
@@ -301,23 +281,24 @@ export class TCombobox {
     if (!this.isPopoverOpened)
       return;
 
-    const { normalizedOptions, searchText: inputText } = this;
+    const { normalizedOptions, searchText } = this;
 
     if (normalizedOptions) {
-      let visibleOptions: NormalizedOption[];
+      let visibleOptions = normalizedOptions;
 
-      if (!this.searching || this.customSearching)
-        visibleOptions = normalizedOptions;
-      else {
-        const searchToken = generateSearchToken(inputText);
+      if (this.searching && !this.customSearching && searchText?.trim()) {
+        const searchToken = generateSearchToken(searchText);
 
         visibleOptions = normalizedOptions.filter(p =>
           p.textSearchToken.indexOf(searchToken) >= 0 || p.detailTextSearchToken.indexOf(searchToken) >= 0);
       }
 
-      const selectedValues = asArray(this.value);
+      if (this.multiple) {
+        const selectedValues = asArray(this.value);
+        visibleOptions = visibleOptions.filter(p => !selectedValues.includes(p.value))
+      }
 
-      this.visibleOptions = visibleOptions.filter(p => !selectedValues.includes(p.value));
+      this.visibleOptions = visibleOptions;
     }
     else
       this.visibleOptions = [];
@@ -325,13 +306,13 @@ export class TCombobox {
     this.syncPopover();
   }
 
-  private async searchDebounced(term: string) {
+  private async searchDebounced() {
     if (!this.hasFocus || !this.searching)
       return;
 
-    await this.executeSearch(term);
+    await this.executeSearch();
 
-    if (!this.isPopoverOpened && term)
+    if (!this.isPopoverOpened)
       this.openPopover();
   }
 
@@ -339,28 +320,7 @@ export class TCombobox {
     if (!this.popover)
       return;
 
-    let target = this.host;
-
-    let offset = this.getOffset(target);
-
-    let top = offset.top + target.offsetHeight;
-    let left = offset.left;
-    let width = target.offsetWidth;
-
-    let insideIonItem = target.closest('ion-item');
-
-    if (insideIonItem)
-      top += 4;
-
-    let popover = this.popover;
-
-    popover.style.top = `${top}px`;
-    popover.style.left = `${left}px`;
-    popover.style.width = `${width}px`;
-
-    popover.classList.add('t-combobox-popover');
-
-    this.updateVisibleOptions();
+    const popover = this.popover;
 
     if (popover.value != this.value)
       popover.value = this.value;
@@ -370,6 +330,8 @@ export class TCombobox {
 
     if (popover.options != this.visibleOptions)
       popover.options = this.visibleOptions;
+
+    popover.updatePosition();
   }
 
   private handleInputFocus = (e: any) => {
@@ -426,8 +388,6 @@ export class TCombobox {
 
     if (option)
       this.select(option.value);
-    else if (this.allowAdd)
-      this.addAndSelect(inputText);
     else
       this.select(null);
 
@@ -442,23 +402,23 @@ export class TCombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    let { value } = e.target;
+    const { value } = e.target;
 
-    if (this.searchText === value)
+    if (this.getText() === value)
       return;
 
     this.searchText = value;
-
     this.searching = true;
-    this.searchDebounced(value);
+
+    this.searchDebounced();
   }
 
   private handleKeyDown = async (e: KeyboardEvent) => {
     if (this.disabled || this.readonly)
       return;
 
-    let target = e.target as HTMLInputElement;
-    let inputText = target.value;
+    const target = e.target as HTMLInputElement;
+    const searchText = target.value;
 
     function preventDefault() {
       e.stopImmediatePropagation();
@@ -468,6 +428,7 @@ export class TCombobox {
 
     switch (e.key) {
       case 'ArrowDown':
+        preventDefault();
         if (this.isPopoverOpened)
           this.popover && this.popover.focusNext();
         else
@@ -475,6 +436,7 @@ export class TCombobox {
         break;
 
       case 'ArrowUp':
+        preventDefault();
         this.popover && this.popover.focusPrevious();
         break;
 
@@ -486,9 +448,9 @@ export class TCombobox {
             preventDefault();
             this.popover.selectFocused();
           }
-          else if (inputText?.trim() && this.allowAdd) {
+          else if (searchText?.trim() && this.allowAdd) {
             preventDefault();
-            this.addAndSelect(inputText);
+            this.addAndSelect(searchText);
             this.clearSearch();
           }
         }
@@ -500,16 +462,16 @@ export class TCombobox {
         break;
 
       case 'Backspace':
-        !inputText && this.removeLastValue();
+        !searchText && this.removeLastValue();
         break;
 
       default:
-        if (inputText?.trim()
+        if (searchText?.trim()
           && this.allowAdd
           && this.addTokens
           && this.addTokens.includes(e.key)) {
           preventDefault();
-          this.addAndSelect(inputText);
+          this.addAndSelect(searchText);
           this.clearSearch();
         }
         break;
@@ -533,12 +495,12 @@ export class TCombobox {
     if (!this.normalizedOptions)
       return [];
 
-    let values = asArray(this.value);
+    const values = asArray(this.value);
 
     return this.normalizedOptions.filter(o => values.includes(o.value));
   }
 
-  renderChips() {
+  private renderChips() {
     if (!this.multiple)
       return null;
 
@@ -579,7 +541,7 @@ export class TCombobox {
             onIonFocus={this.handleInputFocus}
             onClick={this.handleInputFocus}
             onIonBlur={this.handleInputBlur}
-            onKeyUp={this.handleInputChange}
+            onIonInput={this.handleInputChange}
             onKeyDown={this.handleKeyDown}
             onChange={stopPropagation}
             onInput={stopPropagation}

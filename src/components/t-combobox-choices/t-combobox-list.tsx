@@ -1,4 +1,5 @@
 import { Component, h, Prop, State, Element, Method, Watch, writeTask, Event, EventEmitter } from '@stencil/core';
+import { HTMLStencilElement } from '@stencil/core/internal';
 import { IComboboxMessages } from '../../interface';
 import { IComboboxOption } from '../t-combobox/t-combobox-interface';
 
@@ -32,27 +33,29 @@ enum Scroll {
   styleUrl: 't-combobox-list.scss'
 })
 export class ComboboxList {
-  @Element() host: HTMLElement;
+  @Element() private host: HTMLStencilElement;
 
   @Prop() options: IComboboxOption[] = [];
 
   @Prop() messages: IComboboxMessages;
-
-  @State() focusedItemIndex: number;
-
+  
   @Prop({ mutable: true }) value: string | string[];
+
+  @Prop() target: HTMLElement;
 
   @Event({ cancelable: false }) select: EventEmitter;
 
-  focusedElement: HTMLElement;
+  @State() private focusedIndex: number;
 
-  scrollFocusedDirection: Scroll = Scroll.None;
+  private scrollFocusedDirection: Scroll = Scroll.None;
 
   componentWillLoad() {
     if (!this.options)
       return;
 
-    this.focusedItemIndex = this.options.findIndex(o => o.value == this.value);
+    if (!Array.isArray(this.value))
+      this.focusedIndex = this.options?.findIndex(o => o.value == this.value);
+
     this.scrollFocusedDirection = Scroll.Down;
   }
 
@@ -64,26 +67,58 @@ export class ComboboxList {
     this.executeScroll();
   }
 
-  private executeScroll() {
-    if (this.scrollFocusedDirection != Scroll.None && this.focusedElement) {
-      let isVisible = isScrolledIntoView(this.focusedElement, this.host, this.scrollFocusedDirection);
-
-      if (!isVisible)
-        writeTask(() => {
-          this.scrollToChoice(this.focusedElement, this.scrollFocusedDirection);
-        });
-
-      this.scrollFocusedDirection = Scroll.None;
+  private getOffset(el: HTMLElement) {
+    var _x = 0;
+    var _y = 0;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop) && el.tagName.toUpperCase() != 'ION-CONTENT') {
+      _x += el.offsetLeft;
+      _y += el.offsetTop;
+      el = el.offsetParent as HTMLElement;
     }
+
+    return { top: _y, left: _x };
+  }
+
+  @Method()
+  async updatePosition() {
+    const target = this.target;
+    const popover = this.host;
+
+    const offset = this.getOffset(target);
+
+    const top = offset.top + target.offsetHeight + 1;
+    const left = offset.left;
+    const width = target.offsetWidth;
+
+    popover.style.top = `${top}px`;
+    popover.style.left = `${left}px`;
+    popover.style.width = `${width}px`;
+  }
+
+  private executeScroll() {
+    if (this.scrollFocusedDirection == Scroll.None)
+      return;
+
+    const focusedElement = this.host.querySelector('.t-item-focused') as HTMLElement;
+
+    if (!focusedElement) {
+      this.scrollFocusedDirection = Scroll.None;
+      return;
+    }
+
+    const isVisible = isScrolledIntoView(focusedElement, this.host, this.scrollFocusedDirection);
+
+    if (!isVisible)
+      writeTask(() => {
+        this.scrollToChoice(focusedElement, this.scrollFocusedDirection);
+      });
+
+    this.scrollFocusedDirection = Scroll.None;
   }
 
   @Watch('options')
   optionsChanged() {
-    if (!this.options || this.options.length - 1 < this.focusedItemIndex) {
-      this.focusedItemIndex = null;
-      this.focusedElement = null;
-      this.scrollFocusedDirection = Scroll.None;
-    }
+    this.scrollFocusedDirection = Scroll.None;
   }
 
   private scrollToChoice(choice, direction: Scroll) {
@@ -106,26 +141,26 @@ export class ComboboxList {
     this.host.scrollTo(0, destination);
   }
 
-
   private focusStep(step: number) {
-    let { options, focusedItemIndex } = this;
-
-    if (!options || !options.length)
+    if (!this.options?.length)
       return;
 
-    let maxIndex = options.length - 1;
+    const oldIndex = this.focusedIndex;
+    let newIndex = oldIndex + step;
 
-    if (focusedItemIndex === null || focusedItemIndex === undefined || focusedItemIndex > maxIndex) {
-      this.focusedItemIndex = 0;
-      return;
+    if (isNaN(newIndex) || newIndex === null || newIndex < 0)
+      newIndex = 0;
+    else if (this.options.length && newIndex >= this.options.length)
+      newIndex = this.options.length - 1;
+
+    if (newIndex != this.focusedIndex) {
+      this.focusedIndex = newIndex;
+
+      if (newIndex > oldIndex)
+        this.scrollFocusedDirection = Scroll.Down;
+      else
+        this.scrollFocusedDirection = Scroll.Up;
     }
-
-    let newIndex = (focusedItemIndex || 0) + step;
-
-    if (newIndex < 0 || newIndex > maxIndex)
-      return;
-
-    this.focusedItemIndex = newIndex;
   }
 
   @Method()
@@ -142,21 +177,20 @@ export class ComboboxList {
 
   @Method()
   async selectFocused() {
-    if (this.options
-      && this.focusedItemIndex >= 0
-      && this.focusedItemIndex < this.options.length) {
-      let option = this.options[this.focusedItemIndex];
+    if (!this.options)
+      return;
 
-      if (option)
-        this.setValue(option.value);
-    }
+    const option = this.options[this.focusedIndex];
+
+    if (option)
+      this.setValue(option.value);
   }
 
   @Method()
   async hasFocusedOption() {
     return this.options
-      && this.focusedItemIndex >= 0
-      && this.focusedItemIndex < this.options.length;
+      && this.focusedIndex >= 0
+      && this.options[this.focusedIndex];
   }
 
   private handleMouseOver = (e: MouseEvent) => {
@@ -164,12 +198,24 @@ export class ComboboxList {
     e.stopImmediatePropagation();
     e.stopPropagation();
 
-    let target = e.currentTarget as HTMLElement;
+    if (!this.options?.length)
+      return;
 
-    if (target.dataset.index === undefined)
-      this.focusedItemIndex = null;
-    else
-      this.focusedItemIndex = +target.dataset.index;
+    const target = e.currentTarget as HTMLElement;
+
+    const value = target.dataset.value;
+
+    if (value === undefined)
+      return;
+
+    const currentValue = this.options[this.focusedIndex]?.value;
+
+    if (currentValue !== value) {
+      const index = this.options.findIndex(o => o.value == value);
+
+      if (index >= 0)
+        this.focusedIndex = index;
+    }
   }
 
   private handleClick = (e: any) => {
@@ -177,10 +223,8 @@ export class ComboboxList {
     e.stopImmediatePropagation();
     e.stopPropagation();
 
-    let index = e.currentTarget.dataset.index;
-
-    let option = this.options[index];
-    this.setValue(option.value);
+    const value = e.currentTarget.dataset.value;
+    this.setValue(value);
   }
 
   private setValue(value: string) {
@@ -188,8 +232,8 @@ export class ComboboxList {
     this.select.emit();
   }
 
-  renderEmpty() {
-    if (this.messages )
+  private renderEmpty() {
+    if (this.messages)
       return (
         <div class="t-item" key="__empty__">
           {this.messages.noResultsText}
@@ -197,14 +241,13 @@ export class ComboboxList {
       );
   }
 
-  renderItem(item: IComboboxOption, index: number) {
-    let focused = index === this.focusedItemIndex;
+  private renderItem(item: IComboboxOption, index: number) {
+    const focused = index === this.focusedIndex;
 
     return (
       <div
-        ref={focused ? (e => this.focusedElement = e as any) : null}
         key={item.value}
-        data-index={index}
+        data-value={item.value}
         class={{ "t-item": true, 't-item-focused': focused }}
         onMouseOver={this.handleMouseOver}
         onMouseDown={this.handleClick}>
@@ -214,7 +257,7 @@ export class ComboboxList {
     )
   }
 
-  renderList() {
+  private renderList() {
     return this.options.map((item, index) => this.renderItem(item, index));
   }
 
@@ -223,7 +266,6 @@ export class ComboboxList {
       this.options && this.options.length
         ? this.renderList()
         : this.renderEmpty()
-
     ];
   }
 }
