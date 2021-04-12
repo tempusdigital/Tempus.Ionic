@@ -50,6 +50,8 @@ export class TComboboxChoices implements ICombobox {
 
   @Event() chipClick: EventEmitter<{ value: string }>;
 
+  @Event() addOption: EventEmitter<{ option: IComboboxOption }>;
+
   @Element() private host: HTMLStencilElement;
 
   private searchText: string;
@@ -133,13 +135,20 @@ export class TComboboxChoices implements ICombobox {
   private addAndSelect(inputText: string) {
     inputText = inputText?.trim();
 
-    if (!inputText)
+    if (!inputText || this.addTokens?.includes(inputText))
       return;
 
-    if (!this.getOptionByText(inputText))
-      this.options = [...this.options, { text: inputText, value: inputText }];
+    const newOption = { text: inputText, value: inputText };
 
-    this.select(inputText);
+    const event = this.addOption.emit({ option: newOption });
+
+    if (event.defaultPrevented)
+      return;
+
+    if (!this.getOptionByText(newOption.value))
+      this.options = [...this.options, newOption];
+
+    this.select(newOption.value);
   }
 
   private select(value: string | string[]) {
@@ -443,18 +452,16 @@ export class TComboboxChoices implements ICombobox {
         break;
 
       case 'Enter':
-        if (this.popover) {
-          const hasFocusedOption = await this.popover.hasFocusedOption();
+        const hasFocusedOption = this.popover && await this.popover.hasFocusedOption();
 
-          if (hasFocusedOption) {
-            preventDefault();
-            this.popover.selectFocused();
-          }
-          else if (searchText?.trim() && this.allowAdd) {
-            preventDefault();
-            this.addAndSelect(searchText);
-            this.clearSearch();
-          }
+        if (hasFocusedOption) {
+          preventDefault();
+          this.popover.selectFocused();
+        }
+        else if (searchText?.trim() && this.allowAdd) {
+          preventDefault();
+          this.addAndSelect(searchText);
+          this.clearSearch();
         }
         break;
 
@@ -537,12 +544,25 @@ export class TComboboxChoices implements ICombobox {
     return (
       <Host class={{ 't-multiple': this.multiple }}>
         {chips}
+        <input
+          type="text"
+          class="t-combobox-choices-inner-input"
+          autocomplete="off"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck={false}
+          required={this.required}
+          name={this.name}
+          onChange={stopPropagation}
+          onInput={stopPropagation}
+          value={value} />
         {
           <ion-input
             type="text"
             autocomplete="off"
             autocapitalize="none"
             autocorrect="off"
+            role="combobox"
             spellcheck={false}
             autofocus={this.autofocus}
             disabled={this.disabled}
@@ -559,16 +579,6 @@ export class TComboboxChoices implements ICombobox {
             value={text}
             placeholder={this.placeholder}></ion-input>
         }
-        <input
-          type="search"
-          class="t-combobox-choices-inner-input"
-          aria-hidden="true"
-          autocomplete="off"
-          required={this.required}
-          name={this.name}
-          onChange={stopPropagation}
-          onInput={stopPropagation}
-          value={value} />
       </Host>
     );
   }

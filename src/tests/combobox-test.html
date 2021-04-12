@@ -77,7 +77,7 @@
 
         var empty = document.querySelector('.empty');
         empty.options = [];
-        
+
         var customCombobox = document.getElementById('custom-options');
         customCombobox.options = [
           { label: 'Text pesquisa 01', id: 'p01', info: 'custom 01' },
@@ -85,14 +85,17 @@
           { label: 'Text pesquisa 03', id: 'p03', info: 'custom 03' },
           { label: 'Text pesquisa 04', id: 'p04', info: 'custom 04' },
           { label: 'Text pesquisa 05', id: 'p05', info: 'custom 05' }
-        ]
+        ];
+
+        var addoption = document.getElementById('addoption');
+        addoption.addEventListener('addOption', formatNewOption);
       });
     }
 
     function handleMultipleChange(e) {
       multiple = e.target.value;
 
-      var combos = document.getElementsByTagName('t-combobox');
+      var combos = document.querySelectorAll('t-combobox,t-combobox-choices');
 
       for (let i = 0; i < combos.length; i++) {
         var combo = combos.item(i);
@@ -138,6 +141,10 @@
         combo.options = options;
       }
     }
+
+    function formatNewOption(e) {
+      e.detail.option.text += ' (nova)';
+    }
   </script>
 </head>
 
@@ -145,6 +152,36 @@
   <ion-app>
     <ion-content>
       <form novalidate>
+        <ion-item>
+          <ion-label position="floating">nome</ion-label>
+          <t-combobox name="nome" class="empty"></t-combobox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">endereço</ion-label>
+          <t-combobox name="endereco" class="empty"></t-combobox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">telefone</ion-label>
+          <t-combobox name="telefone" class="empty"></t-combobox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">cep</ion-label>
+          <t-combobox name="cep" class="empty"></t-combobox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">email</ion-label>
+          <t-combobox name="email" class="empty"></t-combobox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">cidade</ion-label>
+          <t-combobox name="cidade" class="empty"></t-combobox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">uf</ion-label>
+          <t-combobox name="uf" class="empty"></t-combobox>
+        </ion-item>
+
+
         <ion-list>
           <ion-list-header>Main</ion-list-header>
 
@@ -170,7 +207,7 @@
 
           <ion-item>
             <ion-label position="stacked">Multiple allow add</ion-label>
-            <t-combobox multiple allow-add add-tokens=",;" placeholder="This is a placeholder"/>
+            <t-combobox-choices multiple allow-add add-tokens=",;" id="addoption" placeholder="This is a placeholder" />
           </ion-item>
 
           <ion-item>

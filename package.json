@@ -22,8 +22,7 @@
   "devDependencies": {
     "@ionic/core": "^5.6.4",
     "@stencil/core": "2.5.2",
-    "@stencil/sass": "1.4.1",
-    "@stencil/store": "^1.4.1"
+    "@stencil/sass": "1.4.1"
   },
   "repository": {
     "type": "git",

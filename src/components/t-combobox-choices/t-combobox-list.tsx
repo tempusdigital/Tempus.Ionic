@@ -38,14 +38,14 @@ export class ComboboxList {
   @Prop() options: IComboboxOption[] = [];
 
   @Prop() messages: IComboboxMessages;
-  
+
   @Prop({ mutable: true }) value: string | string[];
 
   @Prop() target: HTMLElement;
 
   @Event({ cancelable: false }) select: EventEmitter;
 
-  @State() private focusedIndex: number;
+  @State() private focusedItemIndex: number;
 
   private scrollFocusedDirection: Scroll = Scroll.None;
 
@@ -54,7 +54,7 @@ export class ComboboxList {
       return;
 
     if (!Array.isArray(this.value))
-      this.focusedIndex = this.options?.findIndex(o => o.value == this.value);
+      this.focusedItemIndex = this.options?.findIndex(o => o.value == this.value);
 
     this.scrollFocusedDirection = Scroll.Down;
   }
@@ -145,7 +145,7 @@ export class ComboboxList {
     if (!this.options?.length)
       return;
 
-    const oldIndex = this.focusedIndex;
+    const oldIndex = this.focusedItemIndex;
     let newIndex = oldIndex + step;
 
     if (isNaN(newIndex) || newIndex === null || newIndex < 0)
@@ -153,8 +153,8 @@ export class ComboboxList {
     else if (this.options.length && newIndex >= this.options.length)
       newIndex = this.options.length - 1;
 
-    if (newIndex != this.focusedIndex) {
-      this.focusedIndex = newIndex;
+    if (newIndex != this.focusedItemIndex) {
+      this.focusedItemIndex = newIndex;
 
       if (newIndex > oldIndex)
         this.scrollFocusedDirection = Scroll.Down;
@@ -180,7 +180,7 @@ export class ComboboxList {
     if (!this.options)
       return;
 
-    const option = this.options[this.focusedIndex];
+    const option = this.options[this.focusedItemIndex];
 
     if (option)
       this.setValue(option.value);
@@ -189,8 +189,8 @@ export class ComboboxList {
   @Method()
   async hasFocusedOption() {
     return this.options
-      && this.focusedIndex >= 0
-      && this.options[this.focusedIndex];
+      && this.focusedItemIndex >= 0
+      && !!this.options[this.focusedItemIndex];
   }
 
   private handleMouseOver = (e: MouseEvent) => {
@@ -208,13 +208,13 @@ export class ComboboxList {
     if (value === undefined)
       return;
 
-    const currentValue = this.options[this.focusedIndex]?.value;
+    const currentValue = this.options[this.focusedItemIndex]?.value;
 
     if (currentValue !== value) {
       const index = this.options.findIndex(o => o.value == value);
 
       if (index >= 0)
-        this.focusedIndex = index;
+        this.focusedItemIndex = index;
     }
   }
 
@@ -242,7 +242,7 @@ export class ComboboxList {
   }
 
   private renderItem(item: IComboboxOption, index: number) {
-    const focused = index === this.focusedIndex;
+    const focused = index === this.focusedItemIndex;
 
     return (
       <div

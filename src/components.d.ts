@@ -84,7 +84,7 @@ export namespace Components {
     interface TComboboxList {
         "focusNext": () => Promise<void>;
         "focusPrevious": () => Promise<void>;
-        "hasFocusedOption": () => Promise<IComboboxOption>;
+        "hasFocusedOption": () => Promise<boolean>;
         "messages": IComboboxMessages;
         "options": IComboboxOption[];
         "selectFocused": () => Promise<void>;
@@ -322,6 +322,7 @@ declare namespace LocalJSX {
         "messages"?: IComboboxMessages;
         "multiple"?: boolean;
         "name"?: string;
+        "onAddOption"?: (event: CustomEvent<{ option: IComboboxOption }>) => void;
         "onChange"?: (event: CustomEvent<any>) => void;
         "onChipClick"?: (event: CustomEvent<{ value: string }>) => void;
         "onIonStyle"?: (event: CustomEvent<any>) => void;
