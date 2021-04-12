@@ -86,7 +86,7 @@ export class ComboboxList {
 
     const offset = this.getOffset(target);
 
-    const top = offset.top + target.offsetHeight + 1;
+    const top = offset.top + target.offsetHeight + 4;
     const left = offset.left;
     const width = target.offsetWidth;
 

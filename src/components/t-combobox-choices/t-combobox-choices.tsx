@@ -26,7 +26,13 @@ export class TComboboxChoices implements ICombobox {
 
   @Prop({ mutable: true }) value: string | string[];
 
-  @Prop() options: IComboboxOption[];
+  @Prop({ mutable: true }) options: IComboboxOption[];
+
+  @Prop() optionValue: string;
+
+  @Prop() optionText: string;
+
+  @Prop() optionDetail: string;
 
   @Prop() messages: IComboboxMessages = ComboboxDefaultOptions.messages;
 
@@ -42,9 +48,11 @@ export class TComboboxChoices implements ICombobox {
 
   @Event() ionStyle: EventEmitter;
 
+  @Event() chipClick: EventEmitter<{ value: string }>;
+
   @Element() private host: HTMLStencilElement;
 
-  @State() private inputText: string;
+  private searchText: string;
 
   private _internalMessages: IComboboxMessages;
 
@@ -54,38 +62,27 @@ export class TComboboxChoices implements ICombobox {
 
   private popover: HTMLTComboboxListElement = null;
 
-  @State() private visibleOptions: NormalizedOption[] = [];
+  private visibleOptions: NormalizedOption[] = [];
 
-  private isPopoverOpened: boolean = false;
+  private get isPopoverOpened() {
+    return !!this.popover;
+  }
 
-  private searching: boolean = false;
+  @State() private searching: boolean = false;
 
   private customSearching: boolean = false;
 
-  private initialized = false;
-
-  private forceAutocompleteOff: any = 'off';
-
   componentWillLoad() {
-    try {
-      this.normalizedOptions = normalizeOptions(this.options);
-      this.value = normalizeValue(this.value, this.multiple);
+    this.value = normalizeValue(this.value, this.multiple);
 
-      this.updateVisibleOptions();
-      this.updateText();
-      this.messagesChanged();
+    this.optionsChanged();
+    this.messagesChanged();
 
-      this.emitStyle();
-    }
-    finally {
-      this.initialized = true;
-    }
+    this.emitStyle();
   }
 
   componentDidLoad() {
     this.searchDebounced = debounceAsync(this.searchDebounced.bind(this), this.debounce);
-
-    // Improve performance by preventing consecutives unnecessary updates of the visible options list
     this.syncPopover = debounceAsync(this.syncPopover.bind(this));
     this.updateVisibleOptions = debounceAsync(this.updateVisibleOptions.bind(this));
   }
@@ -96,21 +93,14 @@ export class TComboboxChoices implements ICombobox {
 
   @Watch('options')
   optionsChanged() {
-    if (!this.initialized)
-      return;
-
-    this.normalizedOptions = normalizeOptions(this.options);
+    this.normalizedOptions = normalizeOptions(this.options, this.optionValue, this.optionText, this.optionDetail);
 
     this.updateVisibleOptions();
-    this.updateText();
   }
 
   @Watch('value')
   valueChanged(newValue, oldValue) {
-    if (!this.initialized)
-      return;
-
-    let normalized = normalizeValue(this.value, this.multiple);
+    const normalized = normalizeValue(this.value, this.multiple);
 
     if (this.value !== normalized) {
       this.value = normalized;
@@ -123,14 +113,13 @@ export class TComboboxChoices implements ICombobox {
     this.change.emit();
 
     this.updateVisibleOptions();
-    this.updateText();
 
     this.emitStyle();
   }
 
-  @Watch('visibleOptions')
-  visibleOptionsChanged() {
-    this.syncPopover();
+  @Watch('multiple')
+  multipleChanged() {
+    this.value = normalizeValue(this.value, this.multiple);
   }
 
   @Watch('messages')
@@ -142,16 +131,25 @@ export class TComboboxChoices implements ICombobox {
   }
 
   private addAndSelect(inputText: string) {
-    this.options = [...this.options, { text: inputText, value: inputText }];
+    inputText = inputText?.trim();
+
+    if (!inputText)
+      return;
+
+    if (!this.getOptionByText(inputText))
+      this.options = [...this.options, { text: inputText, value: inputText }];
+
     this.select(inputText);
   }
 
   private select(value: string | string[]) {
     if (this.multiple) {
-      if (value === null || value === undefined)
-        throw new Error('Value must be defined');
+      if (isEmptyValue(value))
+        return;
 
-      let newValue = this.value ? [...this.value] : [];
+      value = normalizeValue(value, this.multiple);
+
+      let newValue = [...asArray(this.value)];
       let hasChanges = false;
 
       if (Array.isArray(value)) {
@@ -169,18 +167,16 @@ export class TComboboxChoices implements ICombobox {
       if (hasChanges)
         this.setValue(newValue);
     }
-    else {
-      if (isEmptyValue(value))
-        this.setValue(null);
-      else
-        this.setValue(value);
-    }
+    else
+      this.setValue(value);
   }
 
   private deselect(value?: string | string[]) {
     if (this.multiple) {
       if (isEmptyValue(value))
         return;
+
+      value = normalizeValue(value, this.multiple);
 
       let newValue = asArray(this.value);
 
@@ -199,66 +195,59 @@ export class TComboboxChoices implements ICombobox {
     this.value = normalizeValue(value, this.multiple);
   }
 
-  private updateText() {
+  private getText() {
     if (this.searching)
-      return;
+      return this.searchText;
 
-    if (this.multiple) {
-      this.inputText = '';
+    if (this.multiple)
+      return '';
 
-      return;
-    }
-
-    let item = this.normalizedOptions && this.value && this.normalizedOptions.find(o => o.value == this.value);
-
+    const item = !isEmptyValue(this.value) && this.normalizedOptions?.find(o => o.value == this.value);
     if (item)
-      this.inputText = item.text;
-    else
-      this.inputText = '';
+      return item.text;
+
+    return '';
   }
 
-  private getOffset(el: HTMLElement) {
-    var _x = 0;
-    var _y = 0;
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop) && el.tagName.toUpperCase() != 'ION-CONTENT') {
-      _x += el.offsetLeft;
-      _y += el.offsetTop;
-      el = el.offsetParent as HTMLElement;
-    }
-    return { top: _y, left: _x };
+  private getContainer() {
+    const content = this.host.closest('ion-content');
+    if (content)
+      return content;
+
+    const modal = this.host.closest('ion-modal');
+    if (modal)
+      return modal;
+
+    return document.querySelector('ion-app');
   }
 
   private async openPopover() {
     if (this.isPopoverOpened || this.disabled || this.readonly)
       return;
 
-    this.isPopoverOpened = true;
-
     try {
+      const popover = document.createElement('t-combobox-list');
+      this.popover = popover;
+
       this.updateVisibleOptions();
 
-      let popover = document.createElement('t-combobox-list');
+      this.syncPopover();
 
+      popover.target = this.host;
       popover.onselect = () => {
+        this.select(popover.value);
+
         if (!this.multiple) {
           this.closePopover();
           this.clearSearch();
         }
-
-        this.select(popover.value);
-
-        this.syncPopover();
+        else
+          this.syncPopover();
       };
 
-      let container = this.getContainer();
-
-      this.popover = popover;
-
-      this.syncPopover();
+      const container = this.getContainer();
 
       container.appendChild(popover);
-
-      await popover.componentOnReady();
     }
     catch (err) {
       this.closePopover();
@@ -267,23 +256,11 @@ export class TComboboxChoices implements ICombobox {
     }
   }
 
-  private getContainer() {
-    let content = this.host.closest('ion-content');
-    if (content)
-      return content;
-
-    return document.querySelector('ion-app');
-  }
 
   private closePopover() {
-    try {
-      if (this.popover) {
-        this.popover.remove();
-        this.popover = null;
-      }
-    }
-    finally {
-      this.isPopoverOpened = false;
+    if (this.popover) {
+      this.popover.remove();
+      this.popover = null;
     }
   }
 
@@ -291,24 +268,13 @@ export class TComboboxChoices implements ICombobox {
     this.searching = false;
     this.customSearching = false;
 
-    this.inputText = '';
-
-    this.updateText();
+    this.searchText = '';
 
     this.updateVisibleOptions();
   }
 
-  private async executeSearch(term: string) {
-    let searching = term && !!term.toString().trim();
-
-    this.searching = searching;
-
-    if (term !== null && term !== undefined)
-      this.inputText = term;
-    else
-      this.inputText = '';
-
-    this.customSearching = searching && !this.search.emit({ term });
+  private async executeSearch() {
+    this.customSearching = !this.search.emit({ term: this.searchText });
 
     this.updateVisibleOptions();
   }
@@ -317,35 +283,38 @@ export class TComboboxChoices implements ICombobox {
     if (!this.isPopoverOpened)
       return;
 
-    let { normalizedOptions, inputText } = this;
+    const { normalizedOptions, searchText } = this;
 
     if (normalizedOptions) {
-      let visibleOptions: NormalizedOption[];
+      let visibleOptions = normalizedOptions;
 
-      if (!this.searching || this.customSearching)
-        visibleOptions = normalizedOptions;
-      else {
-        let searchToken = generateSearchToken(inputText);
+      if (this.searching && !this.customSearching && searchText?.trim()) {
+        const searchToken = generateSearchToken(searchText);
 
         visibleOptions = normalizedOptions.filter(p =>
           p.textSearchToken.indexOf(searchToken) >= 0 || p.detailTextSearchToken.indexOf(searchToken) >= 0);
       }
 
-      let selectedValues = asArray(this.value);
+      if (this.multiple) {
+        const selectedValues = asArray(this.value);
+        visibleOptions = visibleOptions.filter(p => !selectedValues.includes(p.value))
+      }
 
-      this.visibleOptions = visibleOptions.filter(p => !selectedValues.includes(p.value));
+      this.visibleOptions = visibleOptions;
     }
     else
       this.visibleOptions = [];
+
+    this.syncPopover();
   }
 
-  private async searchDebounced(term: string) {
-    if (!this.hasFocus)
+  private async searchDebounced() {
+    if (!this.hasFocus || !this.searching)
       return;
 
-    await this.executeSearch(term);
+    await this.executeSearch();
 
-    if (!this.isPopoverOpened && term)
+    if (!this.isPopoverOpened)
       this.openPopover();
   }
 
@@ -353,26 +322,7 @@ export class TComboboxChoices implements ICombobox {
     if (!this.popover)
       return;
 
-    let target = this.host;
-
-    let offset = this.getOffset(target);
-
-    let top = offset.top + target.offsetHeight;
-    let left = offset.left;
-    let width = target.offsetWidth;
-
-    let insideIonItem = target.closest('ion-item');
-
-    if (insideIonItem)
-      top += 4;
-
-    let popover = this.popover;
-
-    popover.style.top = `${top}px`;
-    popover.style.left = `${left}px`;
-    popover.style.width = `${width}px`;
-
-    popover.classList.add('t-combobox-popover');
+    const popover = this.popover;
 
     if (popover.value != this.value)
       popover.value = this.value;
@@ -382,6 +332,8 @@ export class TComboboxChoices implements ICombobox {
 
     if (popover.options != this.visibleOptions)
       popover.options = this.visibleOptions;
+
+    popover.updatePosition();
   }
 
   private handleInputFocus = (e: any) => {
@@ -390,21 +342,21 @@ export class TComboboxChoices implements ICombobox {
 
     this.hasFocus = true;
 
-    if (this.options && this.options.length || this.searching)
+    if (this.options?.length || this.searching)
       this.openPopover();
   }
 
   private getOptionByText(text: string) {
-    if (!text)
+    if (!text?.trim() || !this.normalizedOptions?.length)
       return null;
 
-    let searchToken = generateSearchToken(text);
+    const searchToken = generateSearchToken(text);
 
     return this.normalizedOptions.find(f => f.textSearchToken == searchToken);
   }
 
   private emitStyle() {
-    let style = {
+    const style = {
       'has-value': !isEmptyValue(this.value)
     };
 
@@ -414,20 +366,16 @@ export class TComboboxChoices implements ICombobox {
   }
 
   private removeLastValue() {
-    if (this.value !== null && this.value !== undefined) {
-      let selected = this.getSelectedOptions();
+    const selected = this.getSelectedOptions();
 
-      if (selected.length == 0)
-        return;
+    if (selected.length == 0)
+      return;
 
-      let last = selected[selected.length - 1];
+    const last = selected[selected.length - 1];
 
-      let newValue: string[] = asArray(this.value);
+    const newValue = asArray(this.value).filter(v => v !== last.value);
 
-      newValue = newValue.filter(v => v !== last.value);
-
-      this.setValue([...newValue]);
-    }
+    this.setValue(newValue);
   }
 
   private handleInputBlur = (e) => {
@@ -436,40 +384,18 @@ export class TComboboxChoices implements ICombobox {
 
     this.hasFocus = false;
 
-    let inputText = e.target.value;
+    const inputText = e.target.value;
 
-    if (this.multiple) {
-      if (inputText && this.normalizedOptions && this.normalizedOptions.length) {
-        let same = this.getOptionByText(inputText);
+    const option = this.getOptionByText(inputText);
 
-        if (same)
-          this.select(same.value);
-        else if (this.allowAdd)
-          this.addAndSelect(inputText);
-      }
-    }
-    else {
-      if (!inputText) {
-        this.select(null);
-      }
-      else if (this.normalizedOptions && this.normalizedOptions.length) {
-        let same = this.getOptionByText(inputText);
-
-        if (same) {
-          if (same.value != this.value)
-            this.select(same.value);
-        }
-        else {
-          this.select(null);
-        }
-      }
-    }
+    if (option)
+      this.select(option.value);
+    else
+      this.select(null);
 
     this.closePopover();
 
     this.clearSearch();
-
-    this.updateText();
 
     this.emitStyle();
   }
@@ -478,32 +404,33 @@ export class TComboboxChoices implements ICombobox {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    let { value } = e.target;
+    const { value } = e.target;
 
-    if (this.inputText === value)
+    if (this.getText() === value)
       return;
 
-    this.inputText = value;
+    this.searchText = value;
+    this.searching = true;
 
-    if (!this.hasFocus) {
-      this.updateText();
-      return;
-    }
-
-    this.searchDebounced(value);
+    this.searchDebounced();
   }
 
   private handleKeyDown = async (e: KeyboardEvent) => {
     if (this.disabled || this.readonly)
       return;
 
-    let target = e.target as HTMLInputElement;
-    let inputText = target.value;
+    const target = e.target as HTMLInputElement;
+    const searchText = target.value;
 
-    let preventDefault = false;
+    function preventDefault() {
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      e.preventDefault();
+    }
 
     switch (e.key) {
       case 'ArrowDown':
+        preventDefault();
         if (this.isPopoverOpened)
           this.popover && this.popover.focusNext();
         else
@@ -511,50 +438,45 @@ export class TComboboxChoices implements ICombobox {
         break;
 
       case 'ArrowUp':
+        preventDefault();
         this.popover && this.popover.focusPrevious();
         break;
 
       case 'Enter':
         if (this.popover) {
-          let hasFocusedOption = await this.popover.hasFocusedOption();
+          const hasFocusedOption = await this.popover.hasFocusedOption();
 
           if (hasFocusedOption) {
+            preventDefault();
             this.popover.selectFocused();
-            preventDefault = true;
           }
-          else if (inputText && inputText.trim() && this.allowAdd) {
-            this.addAndSelect(inputText);
+          else if (searchText?.trim() && this.allowAdd) {
+            preventDefault();
+            this.addAndSelect(searchText);
             this.clearSearch();
-            preventDefault = true;
           }
         }
         break;
 
       case 'Escape':
+        preventDefault();
         this.popover && this.closePopover();
-
-        preventDefault = true;
         break;
 
       case 'Backspace':
-        !inputText && this.removeLastValue();
+        !searchText && this.removeLastValue();
         break;
 
       default:
-        if (inputText && inputText.trim() && this.allowAdd && this.addTokens && this.addTokens.includes(e.key)) {
-          this.addAndSelect(inputText);
+        if (searchText?.trim()
+          && this.allowAdd
+          && this.addTokens
+          && this.addTokens.includes(e.key)) {
+          preventDefault();
+          this.addAndSelect(searchText);
           this.clearSearch();
-          this.inputText = '';
-
-          preventDefault = true;
         }
         break;
-    }
-
-    if (preventDefault) {
-      e.stopImmediatePropagation();
-      e.stopPropagation();
-      e.preventDefault();
     }
   }
 
@@ -563,31 +485,37 @@ export class TComboboxChoices implements ICombobox {
     e.stopImmediatePropagation();
     e.stopPropagation();
 
-    let target = e.target as HTMLElement;
-    let chip = target.closest('.t-chip') as HTMLElement;
+    const target = e.target as HTMLElement;
+    const chip = target.closest('.t-chip') as HTMLElement;
 
-    let value = chip.dataset.value;
+    const value = chip.dataset.value;
 
     this.deselect(value);
+  }
+
+  private handleChipClick = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    if (target.classList.contains('t-chip'))
+      this.chipClick.emit({ value: target.dataset.value });
   }
 
   private getSelectedOptions() {
     if (!this.normalizedOptions)
       return [];
 
-    let values = asArray(this.value);
+    const values = asArray(this.value);
 
     return this.normalizedOptions.filter(o => values.includes(o.value));
   }
 
-  renderChips() {
+  private renderChips() {
     if (!this.multiple)
       return null;
 
-    let selectedOptions = this.getSelectedOptions();
+    const selectedOptions = this.getSelectedOptions();
 
     return selectedOptions.map(item =>
-      <div class="t-chip" key={item.value} data-value={item.value}>
+      <div class="t-chip" key={item.value} data-value={item.value} onClick={this.handleChipClick}>
         <div class="t-chip-text">
           {item.text}
         </div>
@@ -602,8 +530,9 @@ export class TComboboxChoices implements ICombobox {
   }
 
   render() {
-    let chips = this.renderChips();
-    let value = Array.isArray(this.value) ? this.value.join(',') : this.value;
+    const chips = this.renderChips();
+    const value = Array.isArray(this.value) ? this.value.join(',') : this.value;
+    const text = this.getText();
 
     return (
       <Host class={{ 't-multiple': this.multiple }}>
@@ -611,7 +540,8 @@ export class TComboboxChoices implements ICombobox {
         {
           <ion-input
             type="text"
-            autocomplete={this.forceAutocompleteOff}
+            autocomplete="off"
+            autocapitalize="none"
             autocorrect="off"
             spellcheck={false}
             autofocus={this.autofocus}
@@ -620,19 +550,20 @@ export class TComboboxChoices implements ICombobox {
             onIonFocus={this.handleInputFocus}
             onClick={this.handleInputFocus}
             onIonBlur={this.handleInputBlur}
-            onKeyUp={this.handleInputChange}
+            onIonInput={this.handleInputChange}
             onKeyDown={this.handleKeyDown}
             onChange={stopPropagation}
             onInput={stopPropagation}
             clearInput={false}
             clearOnEdit={false}
-            value={this.inputText}
+            value={text}
             placeholder={this.placeholder}></ion-input>
         }
         <input
           type="search"
           class="t-combobox-choices-inner-input"
-          autocomplete={this.forceAutocompleteOff}
+          aria-hidden="true"
+          autocomplete="off"
           required={this.required}
           name={this.name}
           onChange={stopPropagation}

@@ -5,12 +5,65 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { IComboboxMessages as IComboboxMessages1, IComboboxOption } from "./interface";
-import { IComboboxMessages, IComboboxOption as IComboboxOption1, NormalizedOption } from "./components/t-combobox/t-combobox-interface";
+import { IComboboxMessages, IComboboxOption, NormalizedOption } from "./components/t-combobox/t-combobox-interface";
+import { IComboboxMessages as IComboboxMessages1, IComboboxOption as IComboboxOption1 } from "./interface";
 import { PageChanged, PagerMessages } from "./components/t-pager/interfaces";
 import { PopupMenuButton } from "./components/t-popup-menu-controller/t-popup-menu-controller-interface";
 export namespace Components {
     interface TCombobox {
+        /**
+          * Set the focus on component is loaded.
+         */
+        "autofocus": boolean;
+        /**
+          * If `true`, the user cannot interact with the input. Defaults to `false`.
+         */
+        "disabled": boolean;
+        /**
+          * The messages that will be shown
+         */
+        "messages": IComboboxMessages;
+        /**
+          * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
+         */
+        "multiple": boolean;
+        /**
+          * Native select name attribute
+         */
+        "name": string;
+        "optionDetail": string;
+        "optionText": string;
+        "optionValue": string;
+        /**
+          * The visible options to select.
+         */
+        "options": IComboboxOption[];
+        /**
+          * Set the input's placeholder when no option is selected.
+         */
+        "placeholder": string;
+        /**
+          * If `true`, the user cannot interact with the input. Defaults to `false`.
+         */
+        "readonly": boolean;
+        /**
+          * If `true`, the user must fill in a value before submitting a form.
+         */
+        "required": boolean;
+        /**
+          * Override the default search behavior. Useful to send the search to a web server.
+         */
+        "search": (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
+        /**
+          * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
+         */
+        "searchDebounce": number;
+        /**
+          * The value of the input.
+         */
+        "value": any;
+    }
+    interface TComboboxChoices {
         "addTokens": string;
         "allowAdd": boolean;
         "autofocus": boolean;
@@ -22,21 +75,6 @@ export namespace Components {
         "optionDetail": string;
         "optionText": string;
         "optionValue": string;
-        "options": IComboboxOption[];
-        "placeholder": string;
-        "readonly": boolean;
-        "required": boolean;
-        "value": string | string[];
-    }
-    interface TComboboxChoices {
-        "addTokens": string;
-        "allowAdd": boolean;
-        "autofocus": boolean;
-        "debounce": number;
-        "disabled": boolean;
-        "messages": IComboboxMessages;
-        "multiple": boolean;
-        "name": string;
         "options": IComboboxOption[];
         "placeholder": string;
         "readonly": boolean;
@@ -61,6 +99,9 @@ export namespace Components {
         "messages": IComboboxMessages;
         "multiple": boolean;
         "name": string;
+        "optionDetail": string;
+        "optionText": string;
+        "optionValue": string;
         "options": IComboboxOption[];
         "placeholder": string;
         "readonly": boolean;
@@ -216,25 +257,61 @@ declare global {
 }
 declare namespace LocalJSX {
     interface TCombobox {
-        "addTokens"?: string;
-        "allowAdd"?: boolean;
+        /**
+          * Set the focus on component is loaded.
+         */
         "autofocus"?: boolean;
-        "debounce"?: number;
+        /**
+          * If `true`, the user cannot interact with the input. Defaults to `false`.
+         */
         "disabled"?: boolean;
+        /**
+          * The messages that will be shown
+         */
         "messages"?: IComboboxMessages;
+        /**
+          * If `true`, the user can enter more than one value. This attribute applies when the type attribute is set to `"email"` or `"file"`, otherwise it is ignored.
+         */
         "multiple"?: boolean;
+        /**
+          * Native select name attribute
+         */
         "name"?: string;
+        /**
+          * Trigger change event when value has changed
+         */
         "onChange"?: (event: CustomEvent<any>) => void;
-        "onIonStyle"?: (event: CustomEvent<any>) => void;
-        "onSearch"?: (event: CustomEvent<any>) => void;
         "optionDetail"?: string;
         "optionText"?: string;
         "optionValue"?: string;
+        /**
+          * The visible options to select.
+         */
         "options"?: IComboboxOption[];
+        /**
+          * Set the input's placeholder when no option is selected.
+         */
         "placeholder"?: string;
+        /**
+          * If `true`, the user cannot interact with the input. Defaults to `false`.
+         */
         "readonly"?: boolean;
+        /**
+          * If `true`, the user must fill in a value before submitting a form.
+         */
         "required"?: boolean;
-        "value"?: string | string[];
+        /**
+          * Override the default search behavior. Useful to send the search to a web server.
+         */
+        "search"?: (options?: { searchText: string; }) => IComboboxOption[] | Promise<IComboboxOption[]>;
+        /**
+          * Set the amount of time, in milliseconds, to wait to trigger the search after each keystroke. Default `250`.
+         */
+        "searchDebounce"?: number;
+        /**
+          * The value of the input.
+         */
+        "value"?: any;
     }
     interface TComboboxChoices {
         "addTokens"?: string;
@@ -246,8 +323,12 @@ declare namespace LocalJSX {
         "multiple"?: boolean;
         "name"?: string;
         "onChange"?: (event: CustomEvent<any>) => void;
+        "onChipClick"?: (event: CustomEvent<{ value: string }>) => void;
         "onIonStyle"?: (event: CustomEvent<any>) => void;
         "onSearch"?: (event: CustomEvent<any>) => void;
+        "optionDetail"?: string;
+        "optionText"?: string;
+        "optionValue"?: string;
         "options"?: IComboboxOption[];
         "placeholder"?: string;
         "readonly"?: boolean;
@@ -270,6 +351,9 @@ declare namespace LocalJSX {
         "name"?: string;
         "onChange"?: (event: CustomEvent<any>) => void;
         "onIonStyle"?: (event: CustomEvent<any>) => void;
+        "optionDetail"?: string;
+        "optionText"?: string;
+        "optionValue"?: string;
         "options"?: IComboboxOption[];
         "placeholder"?: string;
         "readonly"?: boolean;
