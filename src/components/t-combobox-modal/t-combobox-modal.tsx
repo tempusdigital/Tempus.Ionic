@@ -29,6 +29,12 @@ export class TComboboxModal implements ICombobox {
 
   @Prop() options: IComboboxOption[];
 
+  @Prop() optionValue: string;
+
+  @Prop() optionText: string;
+
+  @Prop() optionDetail: string;
+
   @Prop() messages: IComboboxMessages;
 
   @Prop() debounce: number = ComboboxDefaultOptions.searchDebounce;
@@ -45,41 +51,27 @@ export class TComboboxModal implements ICombobox {
 
   private isInterfaceOpened: boolean = false;
 
-  private initialized = false;
-
   private _internalMessages: IComboboxMessages;
 
   componentWillLoad() {
-    try {
-      this.normalizedOptions = normalizeOptions(this.options);
-      this.value = normalizeValue(this.value);
+    this.value = normalizeValue(this.value, this.multiple);
 
-      this.updateText();
-      this.messagesChanged();
+    this.optionsChanged();
+    this.messagesChanged();
 
-      this.emitStyle();
-    }
-    finally {
-      this.initialized = true;
-    }
+    this.emitStyle();
   }
 
   @Watch('options')
   optionsChanged() {
-    if (!this.initialized)
-      return;
-
-    this.normalizedOptions = normalizeOptions(this.options);
+    this.normalizedOptions = normalizeOptions(this.options, this.optionValue, this.optionText, this.optionDetail);
 
     this.updateText();
   }
 
   @Watch('value')
   valueChanged(newValue, oldValue) {
-    if (!this.initialized)
-      return;
-
-    let normalized = normalizeValue(this.value);
+    let normalized = normalizeValue(this.value, this.multiple);
 
     if (this.value !== normalized) {
       this.value = normalized;
@@ -105,7 +97,7 @@ export class TComboboxModal implements ICombobox {
   }
 
   private setValue(value: string | string[]) {
-    this.value = normalizeValue(value);
+    this.value = normalizeValue(value, this.multiple);
   }
 
   private updateText() {

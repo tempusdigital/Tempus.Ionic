@@ -11,6 +11,7 @@
 | ---------- | --------- | ----------- | -------------------- | ----------- |
 | `messages` | --        |             | `IComboboxMessages`  | `undefined` |
 | `options`  | --        |             | `IComboboxOption[]`  | `[]`        |
+| `target`   | --        |             | `HTMLElement`        | `undefined` |
 | `value`    | `value`   |             | `string \| string[]` | `undefined` |
 
 
@@ -54,6 +55,16 @@ Type: `Promise<boolean>`
 
 
 ### `selectFocused() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `updatePosition() => Promise<void>`
 
 
 

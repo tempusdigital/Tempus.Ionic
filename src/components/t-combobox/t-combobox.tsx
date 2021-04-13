@@ -63,6 +63,12 @@ export class TCombobox implements ICombobox {
    */
   @Prop() options: IComboboxOption[];
 
+  @Prop() optionValue: string;
+
+  @Prop() optionText: string;
+
+  @Prop() optionDetail: string;
+
   /**
   * The messages that will be shown
   */
@@ -107,6 +113,9 @@ export class TCombobox implements ICombobox {
         value={this.value}
         multiple={this.multiple}
         options={this.options}
+        optionValue={this.optionValue}
+        optionText={this.optionText}
+        optionDetail={this.optionDetail}
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}
         messages={this.messages}
@@ -125,6 +134,9 @@ export class TCombobox implements ICombobox {
         value={this.value}
         multiple={this.multiple}
         options={this.options}
+        optionValue={this.optionValue}
+        optionText={this.optionText}
+        optionDetail={this.optionDetail}
         placeholder={this.placeholder}
         onChange={this.handleChange.bind(this)}
         messages={this.messages}

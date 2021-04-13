@@ -88,21 +88,29 @@ export function isEmptyValue(value: any) {
   return value === null || value === undefined || value === '';
 }
 
-export function normalizeValue(value: any): string | string[] {
+export function normalizeValue(value: any, multiple: boolean): string | string[] {
+  if (multiple) {
+    const isArray = Array.isArray(value);
+
+    if (!value)
+      return [];
+
+    if (!isArray)
+      value = [value];
+
+    const needToNormalize = value.some(v => typeof v !== 'string');
+
+    if (needToNormalize)
+      return value.map(v => v.toString());
+
+    return value;
+  }
+
   if (isEmptyValue(value))
     return '';
 
   if (typeof value === 'string')
     return value;
-
-  if (Array.isArray(value)) {
-    let needToNormalize = value.some(v => typeof v !== 'string');
-
-    if (!needToNormalize)
-      return value;
-
-    return value.map(v => v.toString());
-  }
 
   return value.toString();
 }
@@ -117,17 +125,25 @@ export function asArray(values: any): any[] {
   return [values];
 }
 
-export function normalizeOptions(options: IComboboxOption[]): NormalizedOption[] {
+export function normalizeOptions(options: IComboboxOption[], optionValue?: string, optionText?: string, optionDetail?: string): NormalizedOption[] {
   if (!options)
     return null;
 
+  optionValue ||= 'value';
+  optionText ||= 'text';
+  optionDetail ||= 'detailText';
+
   return options.filter(o => !!o).map(o => {
+    const value = o[optionValue];
+    const text = o[optionText];
+    const detail = o[optionDetail];
+
     return {
-      value: normalizeValue(o.value) as string,
-      text: o.text,
-      textSearchToken: generateSearchToken(o.text),
-      detailTextSearchToken: generateSearchToken(o.detailText),
-      detailText: o.detailText
+      value: normalizeValue(value, false) as string,
+      text: text,
+      textSearchToken: generateSearchToken(text),
+      detailTextSearchToken: generateSearchToken(detail),
+      detailText: detail
     }
   })
 }
