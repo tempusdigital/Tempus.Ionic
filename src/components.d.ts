@@ -31,6 +31,9 @@ export namespace Components {
           * Native select name attribute
          */
         "name": string;
+        "optionDetail": string;
+        "optionText": string;
+        "optionValue": string;
         /**
           * The visible options to select.
          */
@@ -69,6 +72,9 @@ export namespace Components {
         "messages": IComboboxMessages;
         "multiple": boolean;
         "name": string;
+        "optionDetail": string;
+        "optionText": string;
+        "optionValue": string;
         "options": IComboboxOption[];
         "placeholder": string;
         "readonly": boolean;
@@ -82,6 +88,8 @@ export namespace Components {
         "messages": IComboboxMessages;
         "options": IComboboxOption[];
         "selectFocused": () => Promise<void>;
+        "target": HTMLElement;
+        "updatePosition": () => Promise<void>;
         "value": string | string[];
     }
     interface TComboboxModal {
@@ -91,6 +99,9 @@ export namespace Components {
         "messages": IComboboxMessages;
         "multiple": boolean;
         "name": string;
+        "optionDetail": string;
+        "optionText": string;
+        "optionValue": string;
         "options": IComboboxOption[];
         "placeholder": string;
         "readonly": boolean;
@@ -270,6 +281,9 @@ declare namespace LocalJSX {
           * Trigger change event when value has changed
          */
         "onChange"?: (event: CustomEvent<any>) => void;
+        "optionDetail"?: string;
+        "optionText"?: string;
+        "optionValue"?: string;
         /**
           * The visible options to select.
          */
@@ -308,9 +322,14 @@ declare namespace LocalJSX {
         "messages"?: IComboboxMessages;
         "multiple"?: boolean;
         "name"?: string;
+        "onAddOption"?: (event: CustomEvent<{ option: IComboboxOption }>) => void;
         "onChange"?: (event: CustomEvent<any>) => void;
+        "onChipClick"?: (event: CustomEvent<{ value: string }>) => void;
         "onIonStyle"?: (event: CustomEvent<any>) => void;
         "onSearch"?: (event: CustomEvent<any>) => void;
+        "optionDetail"?: string;
+        "optionText"?: string;
+        "optionValue"?: string;
         "options"?: IComboboxOption[];
         "placeholder"?: string;
         "readonly"?: boolean;
@@ -321,6 +340,7 @@ declare namespace LocalJSX {
         "messages"?: IComboboxMessages;
         "onSelect"?: (event: CustomEvent<any>) => void;
         "options"?: IComboboxOption[];
+        "target"?: HTMLElement;
         "value"?: string | string[];
     }
     interface TComboboxModal {
@@ -332,6 +352,9 @@ declare namespace LocalJSX {
         "name"?: string;
         "onChange"?: (event: CustomEvent<any>) => void;
         "onIonStyle"?: (event: CustomEvent<any>) => void;
+        "optionDetail"?: string;
+        "optionText"?: string;
+        "optionValue"?: string;
         "options"?: IComboboxOption[];
         "placeholder"?: string;
         "readonly"?: boolean;

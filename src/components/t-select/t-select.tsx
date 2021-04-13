@@ -140,7 +140,7 @@ export class TSelect {
 
   @Watch('value')
   valueChanged() {
-    let normalizedValue = normalizeValue(this.value);
+    let normalizedValue = normalizeValue(this.value, false);
 
     if (this.value !== normalizedValue) {
       this.value = normalizedValue;

@@ -23,7 +23,7 @@ export class TSelectOption {
   @Element() host!: HTMLElement;
 
   componentWillLoad() {
-    let normalizedValue = normalizeValue(this.value) as any;
+    let normalizedValue = normalizeValue(this.value, false) as any;
 
     if (normalizedValue !== this.value)
       this.value = normalizedValue;

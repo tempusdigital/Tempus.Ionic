@@ -7,6 +7,18 @@ t-combobox-choices {
   z-index: 2;
   width: 100%;
 
+  &:not(.t-multiple) {
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' fill-opacity='0.3' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: 0px;
+
+    ion-input {
+      --padding-end: 20px;
+    }
+  }
+
   ion-input {
     width: 100px;
   }
@@ -60,29 +72,11 @@ t-combobox-choices {
     }
   }
 
-  .t-clear{
+  .t-clear {
     --padding-end: 0;
   }
 
   .t-combobox-choices-inner-input {
     display: none;
   }
-}
-
-.t-combobox-popover {
-  --border-color: var(
-    --ion-item-border-color,
-    var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13)))
-  );
-
-  border-left: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  position: absolute;
-  background-color: white;
-  display: block;
-  max-height: 330px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  z-index: 20000;
 }
