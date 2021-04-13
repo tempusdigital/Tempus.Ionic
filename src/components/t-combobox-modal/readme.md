@@ -7,19 +7,19 @@
 
 ## Properties
 
-| Property      | Attribute     | Description | Type                 | Default                                 |
-| ------------- | ------------- | ----------- | -------------------- | --------------------------------------- |
-| `autofocus`   | `autofocus`   |             | `boolean`            | `undefined`                             |
-| `debounce`    | `debounce`    |             | `number`             | `ComboboxDefaultOptions.searchDebounce` |
-| `disabled`    | `disabled`    |             | `boolean`            | `undefined`                             |
-| `messages`    | --            |             | `IComboboxMessages`  | `undefined`                             |
-| `multiple`    | `multiple`    |             | `boolean`            | `undefined`                             |
-| `name`        | `name`        |             | `string`             | `undefined`                             |
-| `options`     | --            |             | `IComboboxOption[]`  | `undefined`                             |
-| `placeholder` | `placeholder` |             | `string`             | `undefined`                             |
-| `readonly`    | `readonly`    |             | `boolean`            | `undefined`                             |
-| `required`    | `required`    |             | `boolean`            | `undefined`                             |
-| `value`       | `value`       |             | `string \| string[]` | `undefined`                             |
+| Property      | Attribute     | Description | Type                | Default                                 |
+| ------------- | ------------- | ----------- | ------------------- | --------------------------------------- |
+| `autofocus`   | `autofocus`   |             | `boolean`           | `undefined`                             |
+| `debounce`    | `debounce`    |             | `number`            | `ComboboxDefaultOptions.searchDebounce` |
+| `disabled`    | `disabled`    |             | `boolean`           | `undefined`                             |
+| `messages`    | --            |             | `IComboboxMessages` | `undefined`                             |
+| `multiple`    | `multiple`    |             | `boolean`           | `undefined`                             |
+| `name`        | `name`        |             | `string`            | `undefined`                             |
+| `options`     | --            |             | `IComboboxOption[]` | `undefined`                             |
+| `placeholder` | `placeholder` |             | `string`            | `undefined`                             |
+| `readonly`    | `readonly`    |             | `boolean`           | `undefined`                             |
+| `required`    | `required`    |             | `boolean`           | `undefined`                             |
+| `value`       | `value`       |             | `any`               | `undefined`                             |
 
 
 ## Events

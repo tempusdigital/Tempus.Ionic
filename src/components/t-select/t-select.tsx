@@ -15,7 +15,7 @@ export class TSelect {
   @Prop() hidden: boolean = false;
   @Prop() multiple: boolean = false;
 
-  @Prop({ mutable: true }) value: string|string[];
+  @Prop({ mutable: true }) value: any;
 
   @Element() host!: any;
 
@@ -40,11 +40,11 @@ export class TSelect {
     if (this.value === undefined) {
       this.updateValue();
     }
-    
+
     this.valueChanged();
 
     this.updateOptions();
-    
+
     this.didInit = true;
 
     // Fix floating label when input starts with value
@@ -63,7 +63,7 @@ export class TSelect {
   }
 
   @Listen('selectOptionDidLoad')
-  async selectOptionDidLoad() {    
+  async selectOptionDidLoad() {
     if (this.didInit) {
       await this.loadOptions();
       this.updateOptions();
@@ -72,8 +72,8 @@ export class TSelect {
   }
 
   @Listen('selectOptionDidUpdate')
-  async selectOptionDidUpdate() {    
-    if (this.didInit) {   
+  async selectOptionDidUpdate() {
+    if (this.didInit) {
       await this.loadOptions();
       this.updateOptions();
       this.updateValue();
@@ -82,7 +82,7 @@ export class TSelect {
   }
 
   @Listen('selectOptionDidUnload')
-  async selectOptionDidUnload() {    
+  async selectOptionDidUnload() {
     if (this.didInit) {
       await this.loadOptions();
       this.updateOptions();

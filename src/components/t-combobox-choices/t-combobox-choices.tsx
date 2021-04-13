@@ -24,7 +24,7 @@ export class TComboboxChoices implements ICombobox {
 
   @Prop() multiple: boolean;
 
-  @Prop({ mutable: true }) value: string | string[];
+  @Prop({ mutable: true }) value: any;
 
   @Prop() options: IComboboxOption[];
 

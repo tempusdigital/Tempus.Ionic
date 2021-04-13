@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property    | Attribute   | Description | Type                 | Default     |
-| ----------- | ----------- | ----------- | -------------------- | ----------- |
-| `autofocus` | `autofocus` |             | `boolean`            | `false`     |
-| `disabled`  | `disabled`  |             | `boolean`            | `false`     |
-| `hidden`    | `hidden`    |             | `boolean`            | `false`     |
-| `multiple`  | `multiple`  |             | `boolean`            | `false`     |
-| `name`      | `name`      |             | `string`             | `undefined` |
-| `readonly`  | `readonly`  |             | `boolean`            | `false`     |
-| `required`  | `required`  |             | `boolean`            | `false`     |
-| `value`     | `value`     |             | `string \| string[]` | `undefined` |
+| Property    | Attribute   | Description | Type      | Default     |
+| ----------- | ----------- | ----------- | --------- | ----------- |
+| `autofocus` | `autofocus` |             | `boolean` | `false`     |
+| `disabled`  | `disabled`  |             | `boolean` | `false`     |
+| `hidden`    | `hidden`    |             | `boolean` | `false`     |
+| `multiple`  | `multiple`  |             | `boolean` | `false`     |
+| `name`      | `name`      |             | `string`  | `undefined` |
+| `readonly`  | `readonly`  |             | `boolean` | `false`     |
+| `required`  | `required`  |             | `boolean` | `false`     |
+| `value`     | `value`     |             | `any`     | `undefined` |
 
 
 ## Events

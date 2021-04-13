@@ -11,7 +11,7 @@ export class TSelectOption {
   @Event() selectOptionDidLoad!: EventEmitter<void>;
   @Event() selectOptionDidUpdate!: EventEmitter<void>;
   @Event() selectOptionDidUnload!: EventEmitter<void>;
-  @Prop({ mutable: true }) value!: string;
+  @Prop({ mutable: true }) value!: any;
   @Prop() selected = false;
   @Prop() disabled = false;
   @Prop() hidden = false;

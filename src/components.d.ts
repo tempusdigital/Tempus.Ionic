@@ -73,7 +73,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "value": string | string[];
+        "value": any;
     }
     interface TComboboxList {
         "focusNext": () => Promise<void>;
@@ -95,7 +95,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "value": string | string[];
+        "value": any;
     }
     interface TComboboxModalList {
         "close": () => Promise<any>;
@@ -139,14 +139,14 @@ export namespace Components {
         "name": string;
         "readonly": boolean;
         "required": boolean;
-        "value": string|string[];
+        "value": any;
     }
     interface TSelectOption {
         "disabled": boolean;
         "hidden": boolean;
         "onDidUnload": () => void;
         "selected": boolean;
-        "value": string;
+        "value": any;
     }
 }
 declare global {
@@ -315,7 +315,7 @@ declare namespace LocalJSX {
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
-        "value"?: string | string[];
+        "value"?: any;
     }
     interface TComboboxList {
         "messages"?: IComboboxMessages;
@@ -336,7 +336,7 @@ declare namespace LocalJSX {
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
-        "value"?: string | string[];
+        "value"?: any;
     }
     interface TComboboxModalList {
         "debounce"?: number;
@@ -382,7 +382,7 @@ declare namespace LocalJSX {
         "onIonStyle"?: (event: CustomEvent<any>) => void;
         "readonly"?: boolean;
         "required"?: boolean;
-        "value"?: string|string[];
+        "value"?: any;
     }
     interface TSelectOption {
         "disabled"?: boolean;
@@ -392,7 +392,7 @@ declare namespace LocalJSX {
         "onSelectOptionDidUnload"?: (event: CustomEvent<void>) => void;
         "onSelectOptionDidUpdate"?: (event: CustomEvent<void>) => void;
         "selected"?: boolean;
-        "value": string;
+        "value": any;
     }
     interface IntrinsicElements {
         "t-combobox": TCombobox;

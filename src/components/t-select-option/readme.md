@@ -13,7 +13,7 @@
 | `hidden`             | `hidden`   |             | `boolean`    | `false`     |
 | `onDidUnload`        | --         |             | `() => void` | `undefined` |
 | `selected`           | `selected` |             | `boolean`    | `false`     |
-| `value` _(required)_ | `value`    |             | `string`     | `undefined` |
+| `value` _(required)_ | `value`    |             | `any`        | `undefined` |
 
 
 ## Events
