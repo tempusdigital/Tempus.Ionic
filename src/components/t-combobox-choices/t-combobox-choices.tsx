@@ -399,6 +399,8 @@ export class TComboboxChoices implements ICombobox {
 
     if (option)
       this.select(option.value);
+    else if (!this.multiple && this.allowAdd && inputText?.trim())
+      this.addAndSelect(inputText);
     else
       this.select(null);
 

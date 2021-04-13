@@ -23,6 +23,12 @@ t-select {
     appearance: none;
     padding-top: 7px;
     padding-bottom: 8px;
+
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23ABABAB' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: 0px;
   }
 
   select:-moz-focusring {
@@ -43,7 +49,7 @@ t-select {
   font-size: inherit;
 }
 
-.item-label-floating t-select, 
+.item-label-floating t-select,
 .item-label-stacked t-select {
   --padding-top: 8px;
   --padding-bottom: 8px;
