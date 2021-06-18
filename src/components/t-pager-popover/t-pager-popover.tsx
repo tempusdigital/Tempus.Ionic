@@ -8,19 +8,10 @@ import { popoverController } from '@ionic/core';
 
 export class TPagerPopover {
 
-  @Prop() messages: PagerMessages = {
-
-    nextPage: 'Próxima',
-    previousPage: 'Anterior',
-    firstPage: 'Primeira Página',
-    lastPage: 'Ultima Página',
-
-  }
+  @Prop() messages: PagerMessages;
 
   handleButtonClick(button: PagerButton) {
-
     popoverController.dismiss({ button });
-
   }
 
   render() {

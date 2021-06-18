@@ -24,6 +24,16 @@
 
 ## Methods
 
+### `focusFirst() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `focusNext() => Promise<void>`
 
 

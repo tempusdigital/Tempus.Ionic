@@ -27,7 +27,7 @@ export class TComboboxModal implements ICombobox {
 
   @Prop({ mutable: true }) value: any;
 
-  @Prop() options: IComboboxOption[];
+  @Prop() options: IComboboxOption[] | any[];
 
   @Prop() optionValue: string;
 

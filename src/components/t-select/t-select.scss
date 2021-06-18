@@ -14,21 +14,20 @@ t-select {
     -webkit-padding-end: var(--padding-end);
     padding-inline-end: var(--padding-end);
 
-    height: 34.4px;
     background-color: transparent;
     display: block;
     border: 0;
     outline: none;
     width: 100%;
     appearance: none;
-    padding-top: 7px;
-    padding-bottom: 8px;
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
 
     background: transparent;
     background-image: url("data:image/svg+xml;utf8,<svg fill='black' fill-opacity='0.3' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
     background-repeat: no-repeat;
     background-position-x: right;
-    background-position-y: 0px;
+    background-position-y: 5px;
   }
 
   select:-moz-focusring {
@@ -42,8 +41,8 @@ t-select {
 }
 
 t-select {
-  --padding-top: 10px;
-  --padding-end: 0;
+  --padding-top: 8px;
+  --padding-end: 20px;
   --padding-bottom: 10px;
   --padding-start: 8px;
   font-size: inherit;
@@ -54,4 +53,8 @@ t-select {
   --padding-top: 8px;
   --padding-bottom: 8px;
   --padding-start: 0;
+  
+  select {
+    background-position-y: 0;
+  }
 }

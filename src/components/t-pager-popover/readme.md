@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property   | Attribute | Description | Type            | Default                                                                                                                           |
-| ---------- | --------- | ----------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `messages` | --        |             | `PagerMessages` | `{      nextPage: 'Próxima',     previousPage: 'Anterior',     firstPage: 'Primeira Página',     lastPage: 'Ultima Página',    }` |
+| Property   | Attribute | Description | Type            | Default     |
+| ---------- | --------- | ----------- | --------------- | ----------- |
+| `messages` | --        |             | `PagerMessages` | `undefined` |
 
 
 ## Dependencies

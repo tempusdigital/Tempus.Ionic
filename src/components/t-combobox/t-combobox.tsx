@@ -61,7 +61,7 @@ export class TCombobox implements ICombobox {
   /**
    * The visible options to select.
    */
-  @Prop() options: IComboboxOption[];
+  @Prop() options: IComboboxOption[] | any[];
 
   @Prop() optionValue: string;
 

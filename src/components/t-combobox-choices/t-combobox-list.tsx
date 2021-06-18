@@ -193,6 +193,12 @@ export class ComboboxList {
       && !!this.options[this.focusedItemIndex];
   }
 
+  @Method()
+  async focusFirst() {
+    this.focusedItemIndex = 0;
+    this.scrollFocusedDirection = Scroll.Down;
+  }
+
   private handleMouseOver = (e: MouseEvent) => {
     e.preventDefault();
     e.stopImmediatePropagation();

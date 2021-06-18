@@ -26,7 +26,7 @@ export class TComboboxChoices implements ICombobox {
 
   @Prop({ mutable: true }) value: any;
 
-  @Prop({ mutable: true }) options: IComboboxOption[];
+  @Prop({ mutable: true }) options: IComboboxOption[] | any[];
 
   @Prop() optionValue: string;
 
@@ -310,6 +310,9 @@ export class TComboboxChoices implements ICombobox {
       }
 
       this.visibleOptions = visibleOptions;
+
+      if (this.isPopoverOpened)
+        this.popover?.focusFirst();
     }
     else
       this.visibleOptions = [];
@@ -460,7 +463,7 @@ export class TComboboxChoices implements ICombobox {
           preventDefault();
           this.popover.selectFocused();
         }
-        else if (searchText?.trim() && this.allowAdd) {
+        else if (searchText?.trim() && this.allowAdd && this.visibleOptions?.length <= 0) {
           preventDefault();
           this.addAndSelect(searchText);
           this.clearSearch();

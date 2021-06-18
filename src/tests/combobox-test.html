@@ -86,9 +86,6 @@
           { label: 'Text pesquisa 04', id: 'p04', info: 'custom 04' },
           { label: 'Text pesquisa 05', id: 'p05', info: 'custom 05' }
         ];
-
-        var addoption = document.getElementById('addoption');
-        addoption.addEventListener('addOption', formatNewOption);
       });
     }
 
@@ -140,10 +137,6 @@
 
         combo.options = options;
       }
-    }
-
-    function formatNewOption(e) {
-      e.detail.option.text += ' (nova)';
     }
   </script>
 </head>

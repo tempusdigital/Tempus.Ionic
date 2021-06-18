@@ -37,7 +37,7 @@ export namespace Components {
         /**
           * The visible options to select.
          */
-        "options": IComboboxOption[];
+        "options": IComboboxOption[] | any[];
         /**
           * Set the input's placeholder when no option is selected.
          */
@@ -75,13 +75,14 @@ export namespace Components {
         "optionDetail": string;
         "optionText": string;
         "optionValue": string;
-        "options": IComboboxOption[];
+        "options": IComboboxOption[] | any[];
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
         "value": any;
     }
     interface TComboboxList {
+        "focusFirst": () => Promise<void>;
         "focusNext": () => Promise<void>;
         "focusPrevious": () => Promise<void>;
         "hasFocusedOption": () => Promise<boolean>;
@@ -102,7 +103,7 @@ export namespace Components {
         "optionDetail": string;
         "optionText": string;
         "optionValue": string;
-        "options": IComboboxOption[];
+        "options": IComboboxOption[] | any[];
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
@@ -287,7 +288,7 @@ declare namespace LocalJSX {
         /**
           * The visible options to select.
          */
-        "options"?: IComboboxOption[];
+        "options"?: IComboboxOption[] | any[];
         /**
           * Set the input's placeholder when no option is selected.
          */
@@ -330,7 +331,7 @@ declare namespace LocalJSX {
         "optionDetail"?: string;
         "optionText"?: string;
         "optionValue"?: string;
-        "options"?: IComboboxOption[];
+        "options"?: IComboboxOption[] | any[];
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
@@ -355,7 +356,7 @@ declare namespace LocalJSX {
         "optionDetail"?: string;
         "optionText"?: string;
         "optionValue"?: string;
-        "options"?: IComboboxOption[];
+        "options"?: IComboboxOption[] | any[];
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;

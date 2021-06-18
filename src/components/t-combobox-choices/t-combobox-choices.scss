@@ -12,7 +12,7 @@ t-combobox-choices {
     background-image: url("data:image/svg+xml;utf8,<svg fill='black' fill-opacity='0.3' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
     background-repeat: no-repeat;
     background-position-x: right;
-    background-position-y: 0px;
+    background-position-y: 5px;
 
     ion-input {
       --padding-end: 20px;
@@ -79,4 +79,9 @@ t-combobox-choices {
   .t-combobox-choices-inner-input {
     display: none;
   }
+}
+
+.item-label-floating t-combobox-choices,
+.item-label-stacked t-combobox-choices {
+    background-position-y: 0;
 }

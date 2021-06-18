@@ -1,53 +1,44 @@
 import { Component, Prop, h, Event, EventEmitter } from '@stencil/core';
 import { popoverController } from '@ionic/core';
-import { PageChanged, PagerButton, PagerMessages } from './interfaces';
+import { PageChanged, PagerButton, PagerDefaultMessages, PagerMessages } from './interfaces';
 
 @Component({
   tag: 't-pager'
 })
-  
 export class tPager {
-  private start: number = 1;
-  private end: number = 20;
   @Prop() disabled: boolean = false;
+
   @Prop({ mutable: true }) page: number = 1;
+
   @Prop() pageSize: number = 20;
+
   @Prop() totalItems: number = 500;
 
-  @Prop() messages: PagerMessages = {
-    nextPage: 'Próxima',
-    previousPage: 'Anterior',
-    firstPage: 'Primeira Página',
-    lastPage: 'Ultima Página'
-  }
+  @Prop() messages: PagerMessages;
 
   @Event() pageChanged: EventEmitter<PageChanged>;
 
-  private getStart() {
-    this.start = ((this.pageSize * this.page - 1) - this.pageSize) + 2;
-    return this.start;
+  private getMessages() {
+    if (!this.messages)
+      return PagerDefaultMessages;
+
+    return { ...PagerDefaultMessages, ...this.messages };
   }
 
-  private getEnd() {
-    if (this.pageSize * this.page <= this.totalItems) {
-      this.end = (this.pageSize * this.page);
-    } else {
-      this.end = this.totalItems;
-    }
+  private get start():number {
+    return ((this.pageSize * this.page - 1) - this.pageSize) + 2;
+  }
 
-    return this.end;
+  private get end():number {
+    if (this.pageSize * this.page <= this.totalItems) {
+      return this.pageSize * this.page;
+    } else {
+      return this.totalItems;
+    }
   }
 
   private emitChanges(pageToPass: number) {
     let buttons = this.callEnabled();
-
-    if (this.pageSize * pageToPass <= this.totalItems) {
-      this.end = (this.pageSize * pageToPass);
-    } else {
-      this.end = this.totalItems;
-    }
-
-    this.start = ((this.pageSize * pageToPass - 1) - this.pageSize) + 2;
 
     this.pageChanged.emit({
       start: this.start,
@@ -90,7 +81,7 @@ export class tPager {
       hasPreviousPage = !false;
       hasButonCenter = !false;
       hasNextPage = !false;
-    }else {
+    } else {
       hasButonCenter = !true;
 
       if (this.page >= 2) {
@@ -113,13 +104,13 @@ export class tPager {
     }
   }
 
-  private async presentPopover(ev: any) {
-
+  private async presentPopover(ev: any, messages: PagerMessages) {
     const tPagerPopover = await popoverController.create({
       component: 't-pager-popover',
-      componentProps: { messages: this.messages },
+      componentProps: { messages: messages },
       event: ev,
-      translucent: false
+      translucent: false,
+      showBackdrop: false
     });
 
     await tPagerPopover.present();
@@ -132,33 +123,42 @@ export class tPager {
 
     if (button == 'first-page') {
       this.buttonsFirtPage();
-    }else {
+    } else {
       this.buttonsLastPage();
     }
   }
 
-  private formatString() {
-    return this.getStart() + " - " + this.getEnd() + " de " + this.totalItems;
+  private formatString(messages: PagerMessages) {
+    return messages.currentPage({
+      start: this.start,
+      end: this.end,
+      page: this.page,
+      pageSize: this.pageSize,
+      totalItems: this.totalItems
+    });
   }
 
   render() {
     let buttonsState = this.callEnabled();
+
+    const messages = this.getMessages();
+
     return [
 
       <div>
         <ion-button disabled={buttonsState.hasPreviousPage} fill="clear"
           onClick={() => this.buttonsPreviousPage()}>
-          {this.messages.previousPage}
+          {messages.previousPage}
         </ion-button>
 
         <ion-button disabled={buttonsState.hasButonCenter} fill="clear"
-          onClick={(ev) => this.presentPopover(ev)}>
-          {this.formatString()}
+          onClick={(ev) => this.presentPopover(ev, messages)}>
+          {this.formatString(messages)}
         </ion-button>
 
         <ion-button disabled={buttonsState.hasNextPage} fill="clear"
           onClick={() => this.buttonsNextPage()}>
-          {this.messages.nextPage}
+          {messages.nextPage}
         </ion-button>
 
       </div>

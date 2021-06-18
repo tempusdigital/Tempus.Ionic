@@ -71,8 +71,25 @@
       <t-pager page="1" page-size="5" total-items="38" disabled="false"></t-pager>
     </ion-item>
 
+    <ion-item>
+      <ion-label position="floating">Pager traduzido</ion-label>
+      <br />
+      <t-pager page="1" page-size="5" total-items="38" disabled="false" id="traduzido"></t-pager>
+    </ion-item>
+
   </ion-list>
 
 </body>
+
+<script  >
+  var traduzido = document.getElementById('traduzido');
+  traduzido.messages= {
+    nextPage: '>',
+    previousPage: '<',
+    firstPage: 'First',
+    lastPage: 'Last',
+    currentPage: (options) => options.start + " / " + options.end + " from " + options.totalItems
+  }
+</script>
 
 </html>

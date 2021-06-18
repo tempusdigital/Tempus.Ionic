@@ -7,13 +7,13 @@
 
 ## Properties
 
-| Property     | Attribute     | Description | Type            | Default                                                                                                                        |
-| ------------ | ------------- | ----------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `disabled`   | `disabled`    |             | `boolean`       | `false`                                                                                                                        |
-| `messages`   | --            |             | `PagerMessages` | `{     nextPage: 'Próxima',     previousPage: 'Anterior',     firstPage: 'Primeira Página',     lastPage: 'Ultima Página'   }` |
-| `page`       | `page`        |             | `number`        | `1`                                                                                                                            |
-| `pageSize`   | `page-size`   |             | `number`        | `20`                                                                                                                           |
-| `totalItems` | `total-items` |             | `number`        | `500`                                                                                                                          |
+| Property     | Attribute     | Description | Type            | Default     |
+| ------------ | ------------- | ----------- | --------------- | ----------- |
+| `disabled`   | `disabled`    |             | `boolean`       | `false`     |
+| `messages`   | --            |             | `PagerMessages` | `undefined` |
+| `page`       | `page`        |             | `number`        | `1`         |
+| `pageSize`   | `page-size`   |             | `number`        | `20`        |
+| `totalItems` | `total-items` |             | `number`        | `500`       |
 
 
 ## Events
